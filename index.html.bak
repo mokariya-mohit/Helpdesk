@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write your todays task - 8.bloqs</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%231c201e'/><path d='M368 112H144C126.3 112 112 126.3 112 144V368C112 385.7 126.3 400 144 400H272L368 304V144C368 126.3 353.7 112 336 112H368ZM256 384V304H336L256 384Z' fill='%23faf9f5'/></svg>">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #f7f6f0;
+            --bg-card: #ffffff;
+            --bg-secondary: #f0eee6;
+            --bg-editor: #faf9f5;
+            --border-color: #e5e3d7;
+            --border-hover: #cfcbc0;
+            --text-main: #1c201e;
+            --text-muted: #6e7570;
+            --text-light: #9ba19c;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --accent-amber: #d97706;
+            --shadow-sm: 0 2px 8px rgba(90, 85, 60, 0.04);
+            --shadow-md: 0 8px 24px rgba(90, 85, 60, 0.07);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: calc(100vh - 40px);
+        }
+
+        /* Top Header */
+        header {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: #1c201e;
+            color: #f7f6f0;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Header Date Selector */
+        .date-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-nav {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav:hover {
+            color: var(--text-main);
+            background: #ffffff;
+        }
+
+        .date-picker {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: var(--radius-sm);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .action-btns {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-hover);
+        }
+
+        .btn-primary {
+            background: #1c201e;
+            color: #ffffff;
+            border-color: #1c201e;
+        }
+
+        .btn-primary:hover {
+            background: #343a37;
+            color: #ffffff;
+        }
+
+        /* Main Workspace Layout */
+        .workspace {
+            display: grid;
+            grid-template-columns: 270px 1fr;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        @media (max-width: 768px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar: Saved Journal Logs */
+        .sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: var(--shadow-sm);
+            min-height: 0;
+        }
+
+        .sidebar-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--bg-secondary);
+        }
+
+        /* Month Filter Bar */
+        .month-filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 4px 8px;
+        }
+
+        .btn-month-nav {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-month-nav:hover {
+            background: #ffffff;
+            color: var(--text-main);
+        }
+
+        .month-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 6px 10px 6px 28px;
+            font-size: 12px;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .log-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .log-item {
+            padding: 8px 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid transparent;
+        }
+
+        .log-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .log-item.active {
+            background: var(--bg-secondary);
+            border-color: var(--border-color);
+            font-weight: 700;
+        }
+
+        .log-date {
+            font-size: 12px;
+            color: var(--text-main);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .log-badge {
+            font-size: 10px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 1px 6px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Editor Container */
+        .editor-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-sm);
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .editor-toolbar {
+            padding: 10px 16px;
+            background: #faf9f5;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .editor-title-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .editor-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Custom Project Dropdown & Management Styling */
+        .custom-project-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ffffff;
+            padding: 3px 6px 3px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        .custom-project-wrapper:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .custom-project-trigger {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1c201e;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 2px 4px;
+        }
+
+        .custom-project-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: 220px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            padding: 6px;
+            z-index: 1500;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .custom-project-menu.active {
+            display: flex;
+        }
+
+        .custom-menu-header {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 6px 8px 4px 8px;
+            border-bottom: 1px solid var(--bg-secondary);
+        }
+
+        .custom-menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .custom-menu-item {
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.15s ease;
+        }
+
+        .custom-menu-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .custom-menu-item.active {
+            background: #f0fdf4;
+            color: #15803d;
+            font-weight: 700;
+        }
+
+        .btn-add-project {
+            background: var(--bg-secondary);
+            color: #4f46e5;
+            border: 1px solid var(--border-color);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-add-project:hover {
+            background: #4f46e5;
+            color: #ffffff;
+            border-color: #4f46e5;
+        }
+
+        /* Modal Project Item List */
+        .modal-project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .modal-project-item {
+            background: #faf9f5;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .modal-project-name {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action-icon:hover {
+            background: #ffffff;
+            color: var(--primary);
+        }
+
+        .btn-action-icon.delete:hover {
+            color: #e11d48;
+        }
+
+        .inline-edit-input {
+            flex: 1;
+            background: #ffffff;
+            border: 1px solid var(--primary);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1c201e;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+        }
+
+        .editor-textarea {
+            flex: 1;
+            width: 100%;
+            padding: 20px;
+            text-indent: 0;
+            background: var(--bg-editor);
+            border: none;
+            outline: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #1a1e1c;
+            resize: none;
+            tab-size: 2;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .editor-footer {
+            padding: 8px 16px;
+            background: #faf9f5;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1c201e;
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.25s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Global Search Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(28, 32, 30, 0.45);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 680px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #faf9f5;
+        }
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-close-modal {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .btn-close-modal:hover {
+            background: var(--bg-secondary);
+            color: var(--text-main);
+        }
+
+        .modal-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .global-search-input-box {
+            position: relative;
+        }
+
+        .global-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 38px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .global-search-input:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .search-results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 440px;
+            overflow-y: auto;
+        }
+
+        .result-card {
+            background: #faf9f5;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .result-card:hover {
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-1px);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .result-date {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .result-snippet {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--text-main);
+            line-height: 1.5;
+            white-space: pre-wrap;
+            background: #ffffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        mark.highlight {
+            background: #fef08a;
+            color: #1e1b4b;
+            font-weight: 700;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        /* --- Comprehensive Responsive Design Rules --- */
+        @media (max-width: 900px) {
+            body {
+                padding: 12px;
+            }
+
+            .app-container {
+                height: auto;
+                min-height: calc(100vh - 24px);
+            }
+
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 14px;
+            }
+
+            .brand {
+                justify-content: center;
+            }
+
+            .date-controls {
+                justify-content: center;
+            }
+
+            .action-btns {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                flex: 1;
+                min-width: 110px;
+                justify-content: center;
+                padding: 8px 10px;
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .sidebar {
+                max-height: 240px;
+            }
+
+            .editor-container {
+                min-height: 480px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .brand-title {
+                font-size: 16px;
+            }
+
+            .date-picker {
+                font-size: 11px;
+                padding: 4px 6px;
+            }
+
+            .btn-nav {
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+
+            .editor-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .editor-title-group {
+                justify-content: space-between;
+            }
+
+            .editor-textarea {
+                padding: 14px 14px 14px 50px;
+                text-indent: -36px;
+                font-size: 12px;
+            }
+
+            .modal-card {
+                width: 98%;
+                max-height: 90vh;
+            }
+
+            .modal-body {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-note-sticky"></i>
+                </div>
+                <div>
+                    <h1 class="brand-title">Write your todays task</h1>
+                    <p class="brand-subtitle">Minimal Off-White Work Log Journal</p>
+                </div>
+            </div>
+
+            <!-- Date Controls -->
+            <div class="date-controls">
+                <button type="button" class="btn-nav" id="btnPrevDay" title="Previous Day">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <input type="date" id="datePicker" class="date-picker">
+                <button type="button" class="btn-nav" id="btnToday">Today</button>
+                <button type="button" class="btn-nav" id="btnNextDay" title="Next Day">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="action-btns">
+                <button type="button" class="btn" id="btnOpenGlobalSearch" title="Search across all past notes">
+                    <i class="fa-solid fa-magnifying-glass text-indigo-600"></i> Global Search
+                </button>
+                <button type="button" class="btn btn-primary" id="btnInsertTemplate"
+                    title="Insert Standard Daily Template">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Insert Template
+                </button>
+                
+                    
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <div class="workspace">
+
+            <!-- Left Sidebar: Past Daily Logs (Filtered by Month) -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <span><i class="fa-solid fa-clock-rotate-left mr-1"></i> Past Work Logs</span>
+                    <span id="logCountBadge" style="font-size: 11px; color: var(--text-muted);">0</span>
+                </div>
+
+                <!-- Month & Year Filter Bar -->
+                <div class="month-filter-bar">
+                    <button type="button" id="btnPrevMonth" class="btn-month-nav" title="Previous Month">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <span id="currentMonthDisplay" class="month-label">Aug 2026</span>
+                    <button type="button" id="btnNextMonth" class="btn-month-nav" title="Next Month">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Filter this month...">
+                </div>
+
+                <div id="logListContainer" class="log-list">
+                    <!-- Dynamically populated dates for selected month -->
+                </div>
+            </div>
+
+            <!-- Right Main Panel: Clean Text Editor -->
+            <div class="editor-container">
+                <div class="editor-toolbar">
+                    <div class="editor-title-group">
+                        <div class="editor-title">
+                            <i class="fa-solid fa-calendar-day text-slate-500"></i>
+                            <span id="activeDateTitle">26-08-2026</span>
+                        </div>
+
+                        <!-- Custom Project Selection Wrapper & Dropdown Popover -->
+                        <div class="custom-project-wrapper">
+                            <button type="button" id="btnProjectDropdownToggle" class="custom-project-trigger" title="Select Active Project">
+                                <i class="fa-solid fa-folder-open text-indigo-600"></i>
+                                <span id="activeProjectDisplay" class="font-bold">8.bloqs</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+                            </button>
+                            <button type="button" id="btnAddProject" class="btn-add-project" title="Manage Projects">
+                                <i class="fa-solid fa-plus"></i> New
+                            </button>
+
+                            <!-- Custom Popover Menu -->
+                            <div id="projectDropdownMenu" class="custom-project-menu">
+                                <div class="custom-menu-header">
+                                    <span>Select Active Project</span>
+                                </div>
+                                <div id="projectMenuList" class="custom-menu-list">
+                                    <!-- Dynamically populated list items -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn" id="btnClearCurrent"
+                            style="font-size: 11px; padding: 4px 8px;">
+                            <i class="fa-solid fa-trash text-rose-500"></i> Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Monospace Editor -->
+                <textarea id="workNotesEditor" class="editor-textarea"
+                    placeholder="Type or paste your daily task points here..."></textarea>
+
+                <div class="editor-footer">
+                    <div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span id="charCount">0 characters</span>
+                        <a href="helpdesk.html" id="btnContinueToEmail" class="btn" style="background:#6366f1; color:#ffffff; border-color:#6366f1; font-weight:600; text-decoration:none; padding: 6px 14px; border-radius: 6px; display:inline-flex; align-items:center; gap:6px; font-size:12px; box-shadow: 0 2px 5px rgba(99, 102, 241, 0.25); transition: all 0.15s ease;" title="Continue to Daily Update Generator">Continue to Email <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Footer Copyright -->
+        <footer class="app-copyright-footer" style="text-align:center; font-size:11px; color:var(--text-muted); padding:6px 0 2px 0; font-weight:500; opacity:0.85;">
+            &copy; 2026 Mohit Mokariya. All Rights Reserved. Crafted with creativity, protected by copyright.
+        </footer>
+    </div>
+
+    <!-- Global Search Modal -->
+    <div id="globalSearchModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-magnifying-glass text-indigo-600"></i>
+                    <span>Global Work Notes Search</span>
+                </div>
+                <button type="button" id="btnCloseSearchModal" class="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="global-search-input-box">
+                    <i class="fa-solid fa-search search-icon" style="left: 14px; font-size: 14px;"></i>
+                    <input type="text" id="globalSearchInput" class="global-search-input"
+                        placeholder="Type to search across ALL past work logs..." autofocus>
+                </div>
+
+                <div id="globalSearchResults" class="search-results-list">
+                    <!-- Dynamically populated search result cards -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage / Add Projects Modal -->
+    <div id="addProjectModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 480px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-folder-tree text-indigo-600"></i>
+                    <span>Project Manager</span>
+                </div>
+                <button type="button" id="btnCloseProjectModal" class="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="gap: 16px; padding: 20px;">
+                <!-- Add New Project Form -->
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Add New Project</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="newProjectInput" class="global-search-input" placeholder="e.g. client_portal, seo_reports..." style="padding-left: 14px; flex: 1;" autofocus>
+                        <button type="button" id="btnSaveProject" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add</button>
+                    </div>
+                </div>
+
+                <!-- Existing Projects List (With Edit & Delete Options) -->
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 8px;">All Existing Projects</label>
+                    <div id="modalProjectList" class="modal-project-list">
+                        <!-- Populated dynamically with edit & delete buttons -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toastNotification" class="toast">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage">Notes copied to clipboard!</span>
+    </div>
+
+        <script>
+        (function initDailyWorkNotepad() {
+            var STORAGE_KEY_LOGS = 'bloqs_daily_work_logs_v2';
+            var STORAGE_KEY_PROJECTS = 'bloqs_project_list_v1';
+            var STORAGE_KEY_LAST_PROJECT = 'bloqs_last_selected_project_v1';
+
+            var currentDateStr = getTodayDateFormatted();
+            var allLogs = loadStoredLogs();
+            var projectList = loadStoredProjects();
+            var activeProject = loadLastProject();
+
+            // Active Month & Year state for Sidebar filter (Default to current date month/year)
+            var currentFilterMonth = getMonthYearFromFormattedDate(currentDateStr);
+
+            // DOM Elements
+            var $datePicker = document.getElementById('datePicker');
+            var $activeDateTitle = document.getElementById('activeDateTitle');
+            var $editor = document.getElementById('workNotesEditor');
+            var $logListContainer = document.getElementById('logListContainer');
+            var $searchInput = document.getElementById('searchInput');
+            var $charCount = document.getElementById('charCount');
+            var $saveStatus = document.getElementById('saveStatus');
+            var $projectSelect = document.getElementById('projectSelect');
+            var $btnAddProject = document.getElementById('btnAddProject');
+            var $currentMonthDisplay = document.getElementById('currentMonthDisplay');
+
+            // Global Search Modal Elements
+            var $globalSearchModal = document.getElementById('globalSearchModal');
+            var $globalSearchInput = document.getElementById('globalSearchInput');
+            var $globalSearchResults = document.getElementById('globalSearchResults');
+
+            // Default Starter Example
+            var DEFAULT_SAMPLE_LOG = `26-08-2026  8.bloqs
+-------------------
+Backend:
+- Fixed the issues in the Domain Analytics, Competitors Domain, Keyword Gap & Local SERP, and Position Tracking reports, including data errors, target domain handling, report name/edit functionality, and layout styling problems.
+- Fixed the Page SEO Checker errors for the 4,000-domain test, including the issue with checking additional pages and handling missing error data properly.
+- Added checkboxes to the "Top Ranked Keywords" report preview so the selected keyword can be passed to the Keyword Overview report. https://prnt.sc/98snTitR755h
+- Added a new Keyword Overview report tab to the SEO Reports section and added a keyword_overview column to the seo_reports table to store the API response.
+- Created a dedicated Keyword Overview report template with a form, response preview, skeleton loader for data loading, and an AI prompt for generating the report summary.`;
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            function getTodayDateFormatted() {
+                var now = new Date();
+                var dd = String(now.getDate()).padStart(2, '0');
+                var mm = String(now.getMonth() + 1).padStart(2, '0');
+                var yyyy = now.getFullYear();
+                return dd + '-' + mm + '-' + yyyy;
+            }
+
+            function dateToInputIso(formattedDate) {
+                if (!formattedDate) return '';
+                var parts = formattedDate.split('-');
+                if (parts.length === 3) {
+                    return parts[2] + '-' + parts[1] + '-' + parts[0];
+                }
+                return '';
+            }
+
+            function inputIsoToFormatted(isoDate) {
+                if (!isoDate) return '';
+                var parts = isoDate.split('-');
+                if (parts.length === 3) {
+                    return parts[2] + '-' + parts[1] + '-' + parts[0];
+                }
+                return '';
+            }
+
+            function getMonthYearFromFormattedDate(formattedDate) {
+                if (!formattedDate) return { month: new Date().getMonth(), year: new Date().getFullYear() };
+                var parts = formattedDate.split('-');
+                if (parts.length === 3) {
+                    return { month: parseInt(parts[1], 10) - 1, year: parseInt(parts[2], 10) };
+                }
+                return { month: new Date().getMonth(), year: new Date().getFullYear() };
+            }
+
+            function formatMonthYearLabel(monthObj) {
+                var d = new Date(monthObj.year, monthObj.month, 1);
+                return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            }
+
+            // Task Counter Helper
+            function countTasks(text) {
+                if (!text || !text.trim()) return 0;
+                var lines = text.split('\n');
+                var count = 0;
+                var hasBullet = false;
+
+                for (var i = 0; i < lines.length; i++) {
+                    var l = lines[i].trim();
+                    if (/^[-*\u2022]/.test(l)) {
+                        var after = l.replace(/^[-*\u2022]+\s*/, '').trim();
+                        if (after.length > 0) {
+                            count++;
+                            hasBullet = true;
+                        }
+                    }
+                }
+
+                if (hasBullet) {
+                    return count;
+                }
+
+                for (var j = 0; j < lines.length; j++) {
+                    var line = lines[j].trim();
+                    if (!line) continue;
+                    if (/^\d{2}-\d{2}-\d{4}/.test(line) || /^[-=]{3,}$/.test(line) || line.endsWith(':')) {
+                        continue;
+                    }
+                    count++;
+                }
+                return count;
+            }
+
+            // Paste Auto-Bullet Formatter
+            function formatPastedTasks(pastedText) {
+                if (!pastedText) return '';
+                var lines = pastedText.split(/\r?\n/);
+                var formattedLines = [];
+
+                for (var i = 0; i < lines.length; i++) {
+                    var rawLine = lines[i];
+                    var trimmed = rawLine.trim();
+
+                    if (!trimmed) {
+                        formattedLines.push('');
+                        continue;
+                    }
+
+                    if (/^\d{2}-\d{2}-\d{4}/.test(trimmed) || /^[-=]{3,}$/.test(trimmed)) {
+                        formattedLines.push(trimmed);
+                        continue;
+                    }
+
+                    if (trimmed.endsWith(':')) {
+                        formattedLines.push(trimmed);
+                        continue;
+                    }
+
+                    if (/^https?:\/\//i.test(trimmed)) {
+                        formattedLines.push('  ' + trimmed);
+                        continue;
+                    }
+
+                    var taskContent = trimmed.replace(/^[-*\u2022\d+\.\)\>]+\s*/, '').trim();
+                    if (taskContent.length > 0) {
+                        formattedLines.push('- ' + taskContent);
+                    } else {
+                        formattedLines.push(trimmed);
+                    }
+                }
+
+                return formattedLines.join('\n');
+            }
+
+            // --- Storage Helpers ---
+            var MAX_COOKIE_DAYS = 400;
+
+            function setCookie(name, value, days) {
+                try {
+                    var expires = "";
+                    var maxAge = "";
+                    var d = (days !== undefined) ? days : MAX_COOKIE_DAYS;
+                    if (d) {
+                        var date = new Date();
+                        date.setTime(date.getTime() + (d * 24 * 60 * 60 * 1000));
+                        expires = "; expires=" + date.toUTCString();
+                        maxAge = "; max-age=" + Math.floor(d * 24 * 60 * 60);
+                    }
+                    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value || "") + expires + maxAge + "; path=/; SameSite=Lax";
+                } catch(e) {}
+            }
+
+            function getCookie(name) {
+                try {
+                    var nameEQ = encodeURIComponent(name) + "=";
+                    var ca = document.cookie.split(';');
+                    for (var i = 0; i < ca.length; i++) {
+                        var c = ca[i];
+                        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                        if (c.indexOf(nameEQ) === 0) {
+                            return decodeURIComponent(c.substring(nameEQ.length, c.length));
+                        }
+                    }
+                } catch(e) {}
+                return null;
+            }
+
+            function setSessionData(key, value) {
+                try { sessionStorage.setItem(key, value); } catch(e) {}
+                try { setCookie(key, value, MAX_COOKIE_DAYS); } catch(e) {}
+                try { localStorage.setItem(key, value); } catch(e) {}
+            }
+
+            function getSessionData(key) {
+                var val = null;
+                try {
+                    val = sessionStorage.getItem(key);
+                    if (val !== null && val !== undefined) return val;
+                } catch(e) {}
+
+                try {
+                    val = getCookie(key);
+                    if (val !== null && val !== undefined && val !== '') {
+                        try { sessionStorage.setItem(key, val); } catch(err) {}
+                        return val;
+                    }
+                } catch(e) {}
+
+                try {
+                    val = localStorage.getItem(key);
+                    if (val !== null && val !== undefined) {
+                        try { sessionStorage.setItem(key, val); } catch(err) {}
+                        return val;
+                    }
+                } catch(e) {}
+
+                return null;
+            }
+
+            function loadStoredLogs() {
+                try {
+                    var raw = getSessionData(STORAGE_KEY_LOGS);
+                    if (raw) return (typeof raw === 'string') ? JSON.parse(raw) : raw;
+                } catch (e) {
+                    console.error('Error reading storage:', e);
+                }
+                var sampleData = {};
+                sampleData['26-08-2026'] = DEFAULT_SAMPLE_LOG;
+                return sampleData;
+            }
+
+            var syncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('bloqs_notepad_sync') : null;
+
+            function saveStoredLogs() {
+                try {
+                    setSessionData(STORAGE_KEY_LOGS, JSON.stringify(allLogs));
+                    $saveStatus.innerText = 'Saved ' + new Date().toLocaleTimeString();
+
+                    if (syncChannel) {
+                        try {
+                            syncChannel.postMessage({ type: 'LOGS_UPDATED', logs: allLogs });
+                        } catch (e) { }
+                    }
+                } catch (e) {
+                    console.error('Error saving storage:', e);
+                }
+            }
+
+            function loadStoredProjects() {
+                try {
+                    var raw = getSessionData(STORAGE_KEY_PROJECTS);
+                    if (raw) {
+                        var arr = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+                        if (Array.isArray(arr) && arr.length > 0) return arr;
+                    }
+                } catch (e) {
+                    console.error('Error reading project list:', e);
+                }
+                return ['8.bloqs'];
+            }
+
+            function saveStoredProjects(list) {
+                try {
+                    setSessionData(STORAGE_KEY_PROJECTS, JSON.stringify(list));
+                } catch (e) {
+                    console.error('Error saving project list:', e);
+                }
+            }
+
+            function loadLastProject() {
+                try {
+                    var val = getSessionData(STORAGE_KEY_LAST_PROJECT);
+                    if (val && projectList.indexOf(val) !== -1) return val;
+                } catch (e) { }
+                return projectList[0] || '8.bloqs';
+            }
+
+            function saveLastProject(projName) {
+                try {
+                    setSessionData(STORAGE_KEY_LAST_PROJECT, projName);
+                } catch (e) { }
+            }
+
+            var $projectDropdownMenu = document.getElementById('projectDropdownMenu');
+            var $btnProjectDropdownToggle = document.getElementById('btnProjectDropdownToggle');
+
+            function toggleCustomProjectMenu() {
+                if ($projectDropdownMenu) {
+                    $projectDropdownMenu.classList.toggle('active');
+                }
+            }
+
+            function closeCustomProjectMenu() {
+                if ($projectDropdownMenu) {
+                    $projectDropdownMenu.classList.remove('active');
+                }
+            }
+
+            if ($btnProjectDropdownToggle) {
+                $btnProjectDropdownToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    toggleCustomProjectMenu();
+                });
+            }
+
+            document.addEventListener('click', function (e) {
+                if ($projectDropdownMenu && !$projectDropdownMenu.contains(e.target) && e.target !== $btnProjectDropdownToggle) {
+                    closeCustomProjectMenu();
+                }
+            });
+
+            function renderProjectDropdown() {
+                var $display = document.getElementById('activeProjectDisplay');
+                if ($display) {
+                    $display.innerText = activeProject;
+                }
+
+                var $menuList = document.getElementById('projectMenuList');
+                if ($menuList) {
+                    var html = '';
+                    projectList.forEach(function (p) {
+                        var isActive = (p === activeProject);
+                        html += '<div class="custom-menu-item ' + (isActive ? 'active' : '') + '" data-project="' + escapeHtml(p) + '">';
+                        html += '  <span style="display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-folder"></i> ' + escapeHtml(p) + '</span>';
+                        if (isActive) {
+                            html += '  <i class="fa-solid fa-check text-xs"></i>';
+                        }
+                        html += '</div>';
+                    });
+                    $menuList.innerHTML = html;
+
+                    var items = $menuList.querySelectorAll('.custom-menu-item');
+                    items.forEach(function (item) {
+                        item.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            var p = this.getAttribute('data-project');
+                            activeProject = p;
+                            saveLastProject(activeProject);
+                            renderProjectDropdown();
+                            closeCustomProjectMenu();
+                            showToast('Active project set to: ' + activeProject);
+                        });
+                    });
+                }
+            }
+
+            // Project Management Modal
+            var $projectManagementModal = document.getElementById('projectManagementModal');
+            var $btnManageProjects = document.getElementById('btnManageProjects');
+            var $btnCloseProjectModal = document.getElementById('btnCloseProjectModal');
+            var $btnAddNewProjectInModal = document.getElementById('btnAddNewProjectInModal');
+            var $newProjectInputModal = document.getElementById('newProjectInputModal');
+            var $modalProjectList = document.getElementById('modalProjectList');
+
+            function openProjectManagementModal() {
+                closeCustomProjectMenu();
+                renderModalProjectList();
+                if ($projectManagementModal) $projectManagementModal.classList.add('active');
+            }
+
+            function closeProjectManagementModal() {
+                if ($projectManagementModal) $projectManagementModal.classList.remove('active');
+            }
+
+            if ($btnManageProjects) {
+                $btnManageProjects.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    openProjectManagementModal();
+                });
+            }
+
+            if ($btnCloseProjectModal) {
+                $btnCloseProjectModal.addEventListener('click', closeProjectManagementModal);
+            }
+
+            if ($btnAddNewProjectInModal && $newProjectInputModal) {
+                $btnAddNewProjectInModal.addEventListener('click', function () {
+                    var val = $newProjectInputModal.value.trim();
+                    if (!val) return;
+                    if (projectList.indexOf(val) === -1) {
+                        projectList.push(val);
+                        saveStoredProjects(projectList);
+                        activeProject = val;
+                        saveLastProject(activeProject);
+                        renderProjectDropdown();
+                        renderModalProjectList();
+                        $newProjectInputModal.value = '';
+                        showToast('Project "' + val + '" added!');
+                    } else {
+                        showToast('Project already exists!');
+                    }
+                });
+            }
+
+            function renderModalProjectList() {
+                if (!$modalProjectList) return;
+                var html = '';
+                projectList.forEach(function (p) {
+                    var isDefault = (p === '8.bloqs');
+                    html += '<div class="project-list-row">';
+                    html += '  <span class="project-name-text">' + escapeHtml(p) + '</span>';
+                    html += '  <div class="project-action-btns">';
+                    if (!isDefault) {
+                        html += '    <button type="button" class="btn-proj-action btn-delete-proj" data-project="' + escapeHtml(p) + '" title="Delete Project"><i class="fa-solid fa-trash"></i></button>';
+                    }
+                    html += '  </div>';
+                    html += '</div>';
+                });
+                $modalProjectList.innerHTML = html;
+
+                $modalProjectList.querySelectorAll('.btn-delete-proj').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var delProj = this.getAttribute('data-project');
+                        if (confirm('Are you sure you want to delete project "' + delProj + '"?')) {
+                            var idx = projectList.indexOf(delProj);
+                            if (idx !== -1) {
+                                projectList.splice(idx, 1);
+                                saveStoredProjects(projectList);
+                            }
+                            if (activeProject === delProj) {
+                                activeProject = projectList[0] || '8.bloqs';
+                                saveLastProject(activeProject);
+                            }
+                            renderProjectDropdown();
+                            renderModalProjectList();
+                            showToast('Project "' + delProj + '" deleted!');
+                        }
+                    });
+                });
+            }
+
+            function showToast(msg) {
+                var $toast = document.getElementById('toastNotification');
+                var $msg = document.getElementById('toastMessage');
+                if ($msg && $toast) {
+                    $msg.innerText = msg;
+                    $toast.classList.add('show');
+                    setTimeout(function () { $toast.classList.remove('show'); }, 2200);
+                }
+            }
+
+            function setDate(formattedDate) {
+                currentDateStr = formattedDate;
+                if ($datePicker) $datePicker.value = dateToInputIso(formattedDate);
+                if ($activeDateTitle) $activeDateTitle.innerText = formattedDate;
+
+                currentFilterMonth = getMonthYearFromFormattedDate(formattedDate);
+
+                var noteText = allLogs[formattedDate] || '';
+                if ($editor) $editor.value = noteText;
+
+                if (noteText) {
+                    var firstLine = noteText.split('\n')[0] || '';
+                    var match = firstLine.match(/^\d{2}-\d{2}-\d{4}\s+(.+)$/);
+                    if (match && match[1]) {
+                        var foundProj = match[1].trim();
+                        if (foundProj) {
+                            if (projectList.indexOf(foundProj) === -1) {
+                                projectList.push(foundProj);
+                                saveStoredProjects(projectList);
+                            }
+                            activeProject = foundProj;
+                            saveLastProject(activeProject);
+                        }
+                    }
+                }
+
+                renderProjectDropdown();
+                updateCharCount();
+                renderSidebar();
+            }
+
+            function updateCharCount() {
+                if (!$editor || !$charCount) return;
+                var len = $editor.value.length;
+                var taskCount = countTasks($editor.value);
+                var taskText = taskCount + (taskCount === 1 ? ' task' : ' tasks');
+                $charCount.innerText = len + ' characters | ' + taskText;
+            }
+
+            // Textarea Paste listener
+            if ($editor) {
+                $editor.addEventListener('paste', function (e) {
+                    var pasted = (e.clipboardData || window.clipboardData).getData('text');
+                    if (!pasted || !pasted.trim()) return;
+
+                    e.preventDefault();
+                    var formatted = formatPastedTasks(pasted);
+
+                    var start = this.selectionStart;
+                    var end = this.selectionEnd;
+                    var val = this.value;
+
+                    this.value = val.substring(0, start) + formatted + val.substring(end);
+                    this.selectionStart = this.selectionEnd = start + formatted.length;
+
+                    allLogs[currentDateStr] = this.value;
+                    saveStoredLogs();
+                    updateCharCount();
+                    renderSidebar();
+                });
+
+                // Textarea Keydown listener
+                $editor.addEventListener('keydown', function (e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        var start = this.selectionStart;
+                        var end = this.selectionEnd;
+                        this.value = this.value.substring(0, start) + '\t' + this.value.substring(end);
+                        this.selectionStart = this.selectionEnd = start + 1;
+                        allLogs[currentDateStr] = this.value;
+                        saveStoredLogs();
+                        return;
+                    }
+
+                    if (e.key === 'Enter') {
+                        var start = this.selectionStart;
+                        var end = this.selectionEnd;
+                        var val = this.value;
+
+                        var lineStart = val.lastIndexOf('\n', start - 1) + 1;
+                        var currentLine = val.substring(lineStart, start);
+                        var trimmedLine = currentLine.trim();
+
+                        if (/^[-*\u2022]\s*$/.test(trimmedLine)) {
+                            e.preventDefault();
+                            this.value = val.substring(0, lineStart) + val.substring(end);
+                            this.selectionStart = this.selectionEnd = lineStart;
+                            allLogs[currentDateStr] = this.value;
+                            saveStoredLogs();
+                            updateCharCount();
+                            return;
+                        }
+
+                        if (trimmedLine.endsWith(':')) {
+                            e.preventDefault();
+                            var insertText = '\n- ';
+                            this.value = val.substring(0, start) + insertText + val.substring(end);
+                            this.selectionStart = this.selectionEnd = start + insertText.length;
+                            allLogs[currentDateStr] = this.value;
+                            saveStoredLogs();
+                            updateCharCount();
+                            return;
+                        }
+
+                        if (/^\d{2}-\d{2}-\d{4}/.test(trimmedLine) || /^[-=]{3,}/.test(trimmedLine)) {
+                            return;
+                        }
+
+                        if (/^[-*\u2022]\s+/.test(currentLine)) {
+                            e.preventDefault();
+                            var insertText = '\n- ';
+                            this.value = val.substring(0, start) + insertText + val.substring(end);
+                            this.selectionStart = this.selectionEnd = start + insertText.length;
+                            allLogs[currentDateStr] = this.value;
+                            saveStoredLogs();
+                            updateCharCount();
+                            return;
+                        }
+
+                        if (trimmedLine.length > 0) {
+                            e.preventDefault();
+                            var insertText = '\n- ';
+                            this.value = val.substring(0, start) + insertText + val.substring(end);
+                            this.selectionStart = this.selectionEnd = start + insertText.length;
+                            allLogs[currentDateStr] = this.value;
+                            saveStoredLogs();
+                            updateCharCount();
+                            return;
+                        }
+                    }
+                });
+
+                // Textarea Input listener
+                $editor.addEventListener('input', function () {
+                    var val = this.value;
+                    if (val.length === 1 && !/[-*\u2022\n\r]/.test(val)) {
+                        this.value = '- ' + val;
+                        this.selectionStart = this.selectionEnd = this.value.length;
+                    }
+
+                    allLogs[currentDateStr] = this.value;
+                    saveStoredLogs();
+                    updateCharCount();
+                    renderSidebar();
+                });
+            }
+
+            // Month Navigation for Sidebar
+            var $btnPrevMonth = document.getElementById('btnPrevMonth');
+            if ($btnPrevMonth) {
+                $btnPrevMonth.addEventListener('click', function () {
+                    if (currentFilterMonth.month === 0) {
+                        currentFilterMonth.month = 11;
+                        currentFilterMonth.year -= 1;
+                    } else {
+                        currentFilterMonth.month -= 1;
+                    }
+                    renderSidebar();
+                });
+            }
+
+            var $btnNextMonth = document.getElementById('btnNextMonth');
+            if ($btnNextMonth) {
+                $btnNextMonth.addEventListener('click', function () {
+                    if (currentFilterMonth.month === 11) {
+                        currentFilterMonth.month = 0;
+                        currentFilterMonth.year += 1;
+                    } else {
+                        currentFilterMonth.month += 1;
+                    }
+                    renderSidebar();
+                });
+            }
+
+            // Day Navigation
+            var $btnPrevDay = document.getElementById('btnPrevDay');
+            if ($btnPrevDay) {
+                $btnPrevDay.addEventListener('click', function () {
+                    var parts = currentDateStr.split('-');
+                    var d = new Date(parts[2], parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+                    d.setDate(d.getDate() - 1);
+                    var dd = String(d.getDate()).padStart(2, '0');
+                    var mm = String(d.getMonth() + 1).padStart(2, '0');
+                    var yyyy = d.getFullYear();
+                    setDate(dd + '-' + mm + '-' + yyyy);
+                });
+            }
+
+            var $btnNextDay = document.getElementById('btnNextDay');
+            if ($btnNextDay) {
+                $btnNextDay.addEventListener('click', function () {
+                    var parts = currentDateStr.split('-');
+                    var d = new Date(parts[2], parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+                    d.setDate(d.getDate() + 1);
+                    var dd = String(d.getDate()).padStart(2, '0');
+                    var mm = String(d.getMonth() + 1).padStart(2, '0');
+                    var yyyy = d.getFullYear();
+                    setDate(dd + '-' + mm + '-' + yyyy);
+                });
+            }
+
+            var $btnToday = document.getElementById('btnToday');
+            if ($btnToday) {
+                $btnToday.addEventListener('click', function () {
+                    setDate(getTodayDateFormatted());
+                });
+            }
+
+            if ($datePicker) {
+                $datePicker.addEventListener('change', function () {
+                    var formatted = inputIsoToFormatted(this.value);
+                    if (formatted) setDate(formatted);
+                });
+            }
+
+            // Insert Template Button
+            var $btnInsertTpl = document.getElementById('btnInsertTemplate');
+            if ($btnInsertTpl) {
+                $btnInsertTpl.addEventListener('click', function () {
+                    var currentProj = activeProject || '8.bloqs';
+                    var tpl = currentDateStr + '  ' + currentProj + '\n-------------------\nBackend:\n- \n\nFrontend:\n- \n';
+                    if ($editor.value.trim().length > 0) {
+                        if (confirm('Insert template at top of current note?')) {
+                            $editor.value = tpl + '\n' + $editor.value;
+                        }
+                    } else {
+                        $editor.value = tpl;
+                    }
+                    allLogs[currentDateStr] = $editor.value;
+                    saveStoredLogs();
+                    updateCharCount();
+                    showToast('Daily template inserted for ' + currentProj + '!');
+                });
+            }
+
+            function extractWorkContentOnly(text) {
+                if (!text) return '';
+                var lines = text.split('\n');
+                var startIndex = 0;
+                if (lines.length > 0 && /^\d{2}-\d{2}-\d{4}/.test(lines[0].trim())) {
+                    startIndex = 1;
+                    if (lines.length > 1 && /^[-=]{3,}/.test(lines[1].trim())) {
+                        startIndex = 2;
+                    }
+                }
+                return lines.slice(startIndex).join('\n').trim();
+            }
+
+            // Clear Current Note
+            var $btnClear = document.getElementById('btnClearCurrent');
+            if ($btnClear) {
+                $btnClear.addEventListener('click', function () {
+                    if (confirm('Clear notes for ' + currentDateStr + '?')) {
+                        $editor.value = '';
+                        allLogs[currentDateStr] = '';
+                        saveStoredLogs();
+                        updateCharCount();
+                        renderSidebar();
+                        showToast('Notes cleared.');
+                    }
+                });
+            }
+
+            // Continue to Email Button
+            var $btnContinue = document.getElementById('btnContinueToEmail');
+            if ($btnContinue) {
+                $btnContinue.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    allLogs[currentDateStr] = $editor.value;
+                    saveStoredLogs();
+                    var fullText = $editor.value;
+                    var copyText = extractWorkContentOnly(fullText);
+                    var url = 'helpdesk.html';
+                    if (copyText) {
+                        url += '#tasks=' + encodeURIComponent(copyText) + '&proj=' + encodeURIComponent(activeProject);
+                    }
+                    window.location.href = url;
+                });
+            }
+
+            // Search in Sidebar
+            if ($searchInput) {
+                $searchInput.addEventListener('input', function () {
+                    renderSidebar();
+                });
+            }
+
+            // Sidebar Render
+            function renderSidebar() {
+                if ($currentMonthDisplay) $currentMonthDisplay.innerText = formatMonthYearLabel(currentFilterMonth);
+
+                var searchQuery = $searchInput ? $searchInput.value.toLowerCase().trim() : '';
+                var keys = Object.keys(allLogs).filter(function (k) { return allLogs[k] && allLogs[k].trim().length > 0; });
+
+                // Filter by currentFilterMonth
+                var monthKeys = keys.filter(function (d) {
+                    var mObj = getMonthYearFromFormattedDate(d);
+                    return mObj.month === currentFilterMonth.month && mObj.year === currentFilterMonth.year;
+                });
+
+                // Sort dates descending
+                monthKeys.sort(function (a, b) {
+                    var pa = a.split('-');
+                    var pb = b.split('-');
+                    var da = new Date(pa[2], pa[1] - 1, pa[0]);
+                    var db = new Date(pb[2], pb[1] - 1, pb[0]);
+                    return db - da;
+                });
+
+                if (searchQuery) {
+                    monthKeys = monthKeys.filter(function (k) {
+                        return k.indexOf(searchQuery) !== -1 || allLogs[k].toLowerCase().indexOf(searchQuery) !== -1;
+                    });
+                }
+
+                var $badge = document.getElementById('logCountBadge');
+                if ($badge) $badge.innerText = monthKeys.length;
+
+                if (!$logListContainer) return;
+
+                if (monthKeys.length === 0) {
+                    $logListContainer.innerHTML = '<div style="font-size:11px; color:var(--text-muted); text-align:center; padding:12px;">No work logs for ' + formatMonthYearLabel(currentFilterMonth) + '.</div>';
+                    return;
+                }
+
+                var html = '';
+                monthKeys.forEach(function (d) {
+                    var isActive = (d === currentDateStr);
+                    var taskCount = countTasks(allLogs[d] || '');
+                    var taskText = taskCount + (taskCount === 1 ? ' task' : ' tasks');
+                    html += '<div class="log-item ' + (isActive ? 'active' : '') + '" data-date="' + d + '">';
+                    html += '  <span class="log-date">' + d + '</span>';
+                    html += '  <span class="log-badge">' + taskText + '</span>';
+                    html += '</div>';
+                });
+
+                $logListContainer.innerHTML = html;
+
+                var items = $logListContainer.querySelectorAll('.log-item');
+                items.forEach(function (item) {
+                    item.addEventListener('click', function () {
+                        var d = this.getAttribute('data-date');
+                        setDate(d);
+                    });
+                });
+            }
+
+            // Global Search Modal Logic
+            function closeGlobalSearchModal() {
+                if ($globalSearchModal) {
+                    $globalSearchModal.classList.remove('active');
+                    if ($globalSearchInput) $globalSearchInput.value = '';
+                    if ($globalSearchResults) {
+                        $globalSearchResults.innerHTML = '<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px;">Type any keyword above to search across ALL dates and notes.</div>';
+                    }
+                }
+            }
+
+            var $btnOpenSearch = document.getElementById('btnOpenGlobalSearch');
+            if ($btnOpenSearch) {
+                $btnOpenSearch.addEventListener('click', function () {
+                    if ($globalSearchInput) $globalSearchInput.value = '';
+                    if ($globalSearchResults) {
+                        $globalSearchResults.innerHTML = '<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px;">Type any keyword above to search across ALL dates and notes.</div>';
+                    }
+                    if ($globalSearchModal) {
+                        $globalSearchModal.classList.add('active');
+                        setTimeout(function () { if ($globalSearchInput) $globalSearchInput.focus(); }, 100);
+                    }
+                });
+            }
+
+            var $btnCloseSearch = document.getElementById('btnCloseSearchModal');
+            if ($btnCloseSearch) {
+                $btnCloseSearch.addEventListener('click', closeGlobalSearchModal);
+            }
+
+            if ($globalSearchModal) {
+                $globalSearchModal.addEventListener('click', function (e) {
+                    if (e.target === $globalSearchModal) closeGlobalSearchModal();
+                });
+            }
+
+            if ($globalSearchInput) {
+                $globalSearchInput.addEventListener('input', function () {
+                    var query = this.value.trim().toLowerCase();
+                    if (!query) {
+                        $globalSearchResults.innerHTML = '<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px;">Type any keyword above to search across ALL dates and notes.</div>';
+                        return;
+                    }
+                    var keys = Object.keys(allLogs).filter(function (k) { return allLogs[k] && allLogs[k].trim().length > 0; });
+                    keys.sort(function (a, b) {
+                        var pa = a.split('-');
+                        var pb = b.split('-');
+                        return new Date(pb[2], pb[1] - 1, pb[0]) - new Date(pa[2], pa[1] - 1, pa[0]);
+                    });
+
+                    var matched = [];
+                    keys.forEach(function (d) {
+                        var content = allLogs[d];
+                        if (d.indexOf(query) !== -1 || content.toLowerCase().indexOf(query) !== -1) {
+                            matched.push({ date: d, text: content });
+                        }
+                    });
+
+                    if (matched.length === 0) {
+                        $globalSearchResults.innerHTML = '<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px;">No matching notes found for "' + escapeHtml(query) + '".</div>';
+                        return;
+                    }
+
+                    var html = '';
+                    matched.forEach(function (m) {
+                        html += '<div class="global-search-item" data-date="' + m.date + '">';
+                        html += '  <div class="search-item-date"><i class="fa-regular fa-calendar"></i> ' + m.date + '</div>';
+                        var preview = m.text.length > 180 ? m.text.substring(0, 180) + '...' : m.text;
+                        html += '  <div class="search-item-snippet">' + escapeHtml(preview) + '</div>';
+                        html += '</div>';
+                    });
+
+                    $globalSearchResults.innerHTML = html;
+
+                    $globalSearchResults.querySelectorAll('.global-search-item').forEach(function (item) {
+                        item.addEventListener('click', function () {
+                            var d = this.getAttribute('data-date');
+                            closeGlobalSearchModal();
+                            setDate(d);
+                        });
+                    });
+                });
+            }
+
+            // Initialize App
+            renderProjectDropdown();
+            var allKeys = Object.keys(allLogs).filter(function(k){ return allLogs[k] && allLogs[k].trim().length > 0; });
+            if (allKeys.indexOf(currentDateStr) !== -1) {
+                setDate(currentDateStr);
+            } else if (allKeys.length > 0) {
+                allKeys.sort(function(a,b){
+                    var pa = a.split('-'); var pb = b.split('-');
+                    return new Date(pb[2], pb[1]-1, pb[0]) - new Date(pa[2], pa[1]-1, pa[0]);
+                });
+                setDate(allKeys[0]);
+            } else {
+                setDate(currentDateStr);
+            }
+        })();
+    </script>
+</body>
+
+</html>

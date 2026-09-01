@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Daily Update Writer</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%236366f1'/><path d='M448 64L16 224L208 288L272 480L448 64Z' fill='%23ffffff'/></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f7f7f4;
+            color: #27272a;
+            padding: 12px 16px;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container-fluid {
+            max-width: 1520px;
+            margin: 0 auto;
+            padding-left: 0;
+            padding-right: 0;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+        }
+
+        .app-header {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .app-header h1 {
+            font-weight: 700;
+            font-size: 20px;
+            color: #18181b;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-header p {
+            color: #71717a;
+            font-size: 13px;
+            margin: 2px 0 0 0;
+        }
+
+        .main-content-row {
+            flex: 1;
+            display: flex;
+            min-height: 0;
+            margin-left: -8px;
+            margin-right: -8px;
+        }
+
+        .main-content-row > [class*="col-"] {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 0;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .card-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e4e4e0;
+            padding: 16px 20px;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            font-size: 15px;
+            font-weight: 600;
+            color: #18181b;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f4f4f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #52525b;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #d4d4d0;
+            padding: 7px 12px;
+            font-size: 14px;
+            color: #18181b;
+            height: auto;
+            transition: all 0.15s ease;
+            box-shadow: none;
+            background-color: #fafaf8;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+            outline: none;
+        }
+
+        textarea.task_detail {
+            resize: vertical;
+            min-height: 68px;
+            line-height: 1.45;
+            font-family: inherit;
+        }
+
+        /* Preview Card */
+        .preview-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e4e4e0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            background: #fafaf8;
+            padding: 12px 18px;
+            border-bottom: 1px solid #e4e4e0;
+            flex-shrink: 0;
+        }
+
+        .preview-header h3 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: #27272a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-copy-subject {
+            background: #f4f4f0;
+            color: #27272a;
+            border: 1px solid #d4d4d0;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-copy-subject:hover {
+            background: #e4e4e0;
+            color: #000000;
+        }
+
+        .btn-copy-content {
+            background: #6366f1;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-copy-content:hover {
+            background: #4f46e5;
+            color: #ffffff;
+        }
+
+        
+        .btn-back-theme {
+            background: #1c201e;
+            color: #ffffff;
+            border: 1px solid #1c201e;
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-back-theme:hover {
+            background: #343a37;
+            border-color: #343a37;
+            color: #ffffff;
+            text-decoration: none;
+        }
+    
+        .btn-secondary-custom {
+            background: #ffffff;
+            color: #52525b;
+            border: 1px solid #d4d4d0;
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #f4f4f0;
+            color: #18181b;
+        }
+
+        .email-body {
+            padding: 18px;
+            font-size: 14px;
+            line-height: 1.55;
+            color: #27272a;
+            background: #ffffff;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        .subject-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e4e4e0;
+            margin-bottom: 8px;
+            gap: 12px;
+        }
+
+        .subject-row .subject {
+            font-weight: 700;
+            color: #18181b;
+            font-size: 15px;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .content-header-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        ol {
+            padding-left: 20px;
+            margin-top: 4px;
+            margin-bottom: 12px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        /* Custom Modern Scrollbars */
+        .card-panel::-webkit-scrollbar,
+        .email-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .card-panel::-webkit-scrollbar-track,
+        .email-body::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .card-panel::-webkit-scrollbar-thumb,
+        .email-body::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .card-panel::-webkit-scrollbar-thumb:hover,
+        .email-body::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+
+        @media (max-width: 991px) {
+            html, body {
+                height: auto;
+                overflow: auto;
+            }
+            .main-content-row {
+                flex-direction: column;
+                height: auto;
+            }
+            .main-content-row > [class*="col-"] {
+                height: auto;
+                margin-bottom: 16px;
+            }
+            .card-panel {
+                max-height: 500px;
+            }
+            .preview-card {
+                height: 500px;
+            }
+        }
+
+        /* Toast notification */
+        #toast {
+            visibility: hidden;
+            min-width: 220px;
+            background-color: #18181b;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px 16px;
+            position: fixed;
+            z-index: 9999;
+            right: 20px;
+            bottom: 20px;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: opacity 0.25s, bottom 0.25s;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 24px;
+        }
+    
+    
+    
+    </style>
+
+    <script type="text/javascript">
+        function formatTaskSection(txt_name) {
+            var rawTextLines = [];
+            $("textarea[name='" + txt_name + "'], input[name='" + txt_name + "']").each(function () {
+                var val = $(this).val();
+                if (val && val.trim() !== '') {
+                    rawTextLines.push(val);
+                }
+            });
+
+            var fullText = rawTextLines.join('\n');
+            var lines = fullText.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
+
+            if (lines.length === 0) {
+                $('.' + txt_name).empty();
+                if (txt_name === 'list_done') {
+                    $('.review_note').empty();
+                }
+                return;
+            }
+
+            var isDoneList = (txt_name === 'list_done');
+            if (isDoneList) {
+                $('.review_note').html('Please check with the latest updates and let us know your thoughts for the same.<br>');
+            }
+
+            var sectionLabel = $("textarea[name='" + txt_name + "'], input[name='" + txt_name + "']").first().closest('.form-group').find('label').text().replace(/\s*:\s*$/, '').trim();
+            var task_detail = "<b><u>" + sectionLabel + "</u></b><br>";
+            var inList = false;
+
+            lines.forEach(function(rawLine) {
+                var isHeader = rawLine.endsWith(':');
+
+                if (isHeader) {
+                    if (inList) {
+                        task_detail += "</ol>";
+                        inList = false;
+                    }
+                    var headerText = rawLine.replace(/^[-*\u2022\d+\.]+\s*/, '');
+                    task_detail += "<b>" + headerText + "</b>";
+                } else {
+                    var taskText = rawLine.replace(/^[-*\u2022\d+\.]+\s*/, '');
+                    if (!inList) {
+                        task_detail += "<ol type='1'>";
+                        inList = true;
+                    }
+                    if (isDoneList) {
+                        task_detail += "<li>" + taskText + " <b>[Done]</b></li>";
+                    } else {
+                        task_detail += "<li>" + taskText + "</li>";
+                    }
+                }
+            });
+
+            if (inList) {
+                task_detail += "</ol>";
+            }
+
+            $('.' + txt_name).empty().html(task_detail);
+        }
+
+        $(document).on('keyup change input', '.task_detail', function (e) {
+            var txt_name = $(this).attr('name');
+            formatTaskSection(txt_name);
+        });
+
+        function getOrdinal(n) {
+            if ((parseFloat(n) == parseInt(n)) && !isNaN(n)) {
+                var s = ["th", "st", "nd", "rd"],
+                    v = n % 100;
+                return n + (s[(v - 20) % 10] || s[v] || s[0]);
+            }
+            return n;
+        }
+
+        function currentDate() {
+            var date = new Date();
+            var month = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+            return getOrdinal(date.getDate()) + " " + month[date.getMonth()] + ", " + date.getFullYear();
+        }
+
+        
+        // --- Session & Cookie Storage Helper Functions ---
+        // Maximum cookie expiration limit supported across modern browsers (Chromium cap is 400 days)
+        var MAX_COOKIE_DAYS = 400;
+
+                function setCookie(name, value, days) {
+            try {
+                var expires = "";
+                var maxAge = "";
+                var d = (days !== undefined) ? days : MAX_COOKIE_DAYS;
+                if (d) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (d * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toUTCString();
+                    maxAge = "; max-age=" + Math.floor(d * 24 * 60 * 60);
+                }
+                var isHttps = (window.location.protocol === 'https:');
+                var secureFlag = isHttps ? '; Secure' : '';
+                document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value || "") + expires + maxAge + "; path=/; SameSite=Lax" + secureFlag;
+            } catch(e) {
+                console.warn("Error setting cookie:", e);
+            }
+        }
+
+        function getCookie(name) {
+            try {
+                var nameEQ = encodeURIComponent(name) + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) {
+                        return decodeURIComponent(c.substring(nameEQ.length, c.length));
+                    }
+                }
+            } catch(e) {
+                console.warn("Error reading cookie:", e);
+            }
+            return null;
+        }
+
+        function removeCookie(name) {
+            try {
+                document.cookie = encodeURIComponent(name) + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=/; SameSite=Lax";
+            } catch(e) {}
+        }
+
+        function setSessionData(key, value) {
+            // 1. Store in sessionStorage (Session level)
+            try {
+                sessionStorage.setItem(key, value);
+            } catch(e) {}
+
+            // 2. Store in Cookie with Maximum Expiration limit (400 days / max-age)
+            try {
+                setCookie(key, value, MAX_COOKIE_DAYS);
+            } catch(e) {}
+
+            // 3. Keep in localStorage for compatibility and cross-tab syncing
+            try {
+                localStorage.setItem(key, value);
+            } catch(e) {}
+        }
+
+        function getSessionData(key) {
+            var val = null;
+            // 1. Check sessionStorage first
+            try {
+                val = sessionStorage.getItem(key);
+                if (val !== null && val !== undefined) return val;
+            } catch(e) {}
+
+            // 2. Check Cookie (with max limit)
+            try {
+                val = getCookie(key);
+                if (val !== null && val !== undefined && val !== '') {
+                    try { sessionStorage.setItem(key, val); } catch(err) {}
+                    return val;
+                }
+            } catch(e) {}
+
+            // 3. Fallback to localStorage
+            try {
+                val = localStorage.getItem(key);
+                if (val !== null && val !== undefined) {
+                    try { sessionStorage.setItem(key, val); } catch(err) {}
+                    return val;
+                }
+            } catch(e) {}
+
+            return null;
+        }
+
+        function removeSessionData(key) {
+            try { sessionStorage.removeItem(key); } catch(e) {}
+            try { removeCookie(key); } catch(e) {}
+            try { localStorage.removeItem(key); } catch(e) {}
+        }
+
+        function setClientName(client_name) {
+            var el = $(client_name);
+            var val = el.val();
+            if (el.length && val && val !== '') {
+                setSessionData('selected_client_name', val);
+
+                var welcome_msg = 'Hi ' + val + ',<br><br>';
+                $('.client_name').html(welcome_msg);
+
+                var tlVal = val + '.';
+                $('#tl_name').val(tlVal);
+                SetTlName('#tl_name');
+            } else {
+                $('.client_name').html('');
+                $('#tl_name').val('');
+                SetTlName('#tl_name');
+            }
+        }
+
+        function setProjectName(project_name) {
+            var el = $(project_name);
+            var val = el.val();
+            if (el.length && val && val !== '') {
+                setSessionData('saved_project_name', val);
+                var projectName = val;
+                var update_msg = 'Following are the updates for ' + projectName + ' as on ' + currentDate() + ':<br><br>';
+                var subject = 'Updates for ' + projectName + ' as on ' + currentDate();
+                $('.update_msg').html(update_msg);
+                $('.subject').html(subject);
+            } else {
+                $('.update_msg').html('');
+                $('.subject').html('');
+            }
+        }
+
+        function SetTlName(tl_name) {
+            var el = $(tl_name);
+            if (el.length && el.val() !== '') {
+                var thanks_msg = '<br>Thanks,<br>' + el.val();
+                $('.thanks').html(thanks_msg);
+            } else {
+                $('.thanks').html('');
+            }
+        }
+
+        function showToast(msg) {
+            var toast = $('#toast');
+            toast.text(msg).addClass('show');
+            setTimeout(function() {
+                toast.removeClass('show');
+            }, 2500);
+        }
+
+        function copySubject() {
+            var rawSubject = $('.subject').text().trim();
+            if (!rawSubject) {
+                showToast('⚠️ No Subject to copy');
+                return;
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(rawSubject).then(function() {
+                    showToast('📌 Subject copied to clipboard!');
+                }).catch(function() {
+                    fallbackCopyText(rawSubject, '📌 Subject copied!');
+                });
+            } else {
+                fallbackCopyText(rawSubject, '📌 Subject copied!');
+            }
+        }
+
+        function copyContent() {
+            var container = document.querySelector('.mail_body');
+            if (!container || !container.innerText.trim()) {
+                showToast('⚠️ No Mail Content to copy');
+                return;
+            }
+
+            var range = document.createRange();
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            range.selectNodeContents(container);
+            selection.addRange(range);
+
+            try {
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                showToast('✨ Mail Content copied to clipboard!');
+            } catch (err) {
+                showToast('Failed to copy content');
+            }
+        }
+
+        function fallbackCopyText(text, successMsg) {
+            var temp = $('<input>');
+            $('body').append(temp);
+            temp.val(text).select();
+            document.execCommand('copy');
+            temp.remove();
+            showToast(successMsg);
+        }
+
+        function clearAllTaskFields() {
+            $('textarea.task_detail').val('');
+            formatTaskSection('list_done');
+            formatTaskSection('list_progress');
+            formatTaskSection('list_remaining');
+            formatTaskSection('list_query');
+            formatTaskSection('list_note');
+            showToast('🧹 All task textareas cleared!');
+        }
+
+                // --- Daily Work Notepad Auto-Sync Logic ---
+        function processAndFillTodayNotes(logs) {
+            try {
+                if (typeof logs === 'string') {
+                    logs = JSON.parse(logs);
+                }
+                if (!logs || typeof logs !== 'object') {
+                    if ($('#txt_done_task').val() !== '') {
+                        $('#txt_done_task').val('');
+                        formatTaskSection('list_done');
+                    }
+                    return;
+                }
+
+                var now = new Date();
+                var dd = String(now.getDate()).padStart(2, '0');
+                var mm = String(now.getMonth() + 1).padStart(2, '0');
+                var yyyy = now.getFullYear();
+                var todayStr = dd + '-' + mm + '-' + yyyy;
+
+                var todayNote = logs[todayStr] || '';
+                var cleanTasks = '';
+                var detectedProj = '';
+
+                if (todayNote && todayNote.trim() !== '') {
+                    var lines = todayNote.split('\n');
+                    var startIndex = 0;
+
+                    // Check if line 0 has date & project (e.g. "31-08-2026  8.bloqs")
+                    if (lines.length > 0 && /^\d{2}-\d{2}-\d{4}/.test(lines[0].trim())) {
+                        var match = lines[0].trim().match(/^\d{2}-\d{2}-\d{4}\s+(.+)$/);
+                        if (match && match[1]) {
+                            detectedProj = match[1].trim();
+                        }
+                        startIndex = 1;
+                        if (lines.length > 1 && /^[-=]{3,}/.test(lines[1].trim())) {
+                            startIndex = 2;
+                        }
+                    }
+
+                    cleanTasks = lines.slice(startIndex).join('\n').trim();
+                }
+
+                // Instantly update & clear #txt_done_task whenever Notepad text is cleared or deleted
+                if ($('#txt_done_task').val() !== cleanTasks) {
+                    $('#txt_done_task').val(cleanTasks);
+                    formatTaskSection('list_done');
+                }
+
+                if (detectedProj && $('#project_name').val() !== detectedProj) {
+                    $('#project_name').val(detectedProj);
+                    setProjectName('#project_name');
+                }
+            } catch (e) {
+                console.error('Error processing today notes:', e);
+            }
+        }
+
+        
+        function syncTodayTasksFromDailyWorkLog() {
+            var STORAGE_KEY_LOGS = 'bloqs_daily_work_logs_v2';
+            try {
+                // Read from localStorage / sessionStorage / cookies seamlessly
+                var raw = localStorage.getItem(STORAGE_KEY_LOGS) || sessionStorage.getItem(STORAGE_KEY_LOGS) || getSessionData(STORAGE_KEY_LOGS);
+                if (raw) {
+                    processAndFillTodayNotes(raw);
+                }
+            } catch (e) {
+                console.error('Error syncing from Daily Work Log:', e);
+            }
+        }
+
+        // Live Auto-Sync Broadcast Channel
+        try {
+            var syncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('bloqs_notepad_sync') : null;
+            if (syncChannel) {
+                syncChannel.onmessage = function(e) {
+                    if (e.data) {
+                        if (e.data.logs) {
+                            processAndFillTodayNotes(e.data.logs);
+                        } else if (e.data.type === 'LOGS_UPDATED') {
+                            syncTodayTasksFromDailyWorkLog();
+                        }
+                    }
+                };
+            }
+        } catch(e) {}
+
+        // Immediate sync when tab becomes visible or gets focus
+        window.addEventListener('focus', syncTodayTasksFromDailyWorkLog);
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                syncTodayTasksFromDailyWorkLog();
+            }
+        });
+
+        // Real-time tab sync whenever Daily Work Log changes in another tab
+        window.addEventListener('storage', function(e) {
+            if (!e.key || e.key === 'bloqs_daily_work_logs_v2' || e.key === 'bloqs_last_selected_project_v1') {
+                syncTodayTasksFromDailyWorkLog();
+            }
+        });
+    
+
+        
+        function parseAndFillPastedNotes(rawText) {
+            if (!rawText || !rawText.trim()) return;
+            var lines = rawText.trim().split('\n');
+            var startIndex = 0;
+            var detectedProj = '';
+
+            if (lines.length > 0 && /^\d{2}-\d{2}-\d{4}/.test(lines[0].trim())) {
+                var match = lines[0].trim().match(/^\d{2}-\d{2}-\d{4}\s+(.+)$/);
+                if (match && match[1]) {
+                    detectedProj = match[1].trim();
+                }
+                startIndex = 1;
+                if (lines.length > 1 && /^[-=]{3,}/.test(lines[1].trim())) {
+                    startIndex = 2;
+                }
+            }
+
+            var cleanTasks = lines.slice(startIndex).join('\n').trim();
+
+            if (cleanTasks) {
+                $('#txt_done_task').val(cleanTasks);
+                formatTaskSection('list_done');
+            }
+            if (detectedProj) {
+                $('#project_name').val(detectedProj);
+                setProjectName('#project_name');
+            }
+            showToast('✅ Notes imported successfully!');
+        }
+
+        function pasteFromClipboardAndFill() {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then(function(text) {
+                    if (text && text.trim()) {
+                        parseAndFillPastedNotes(text);
+                    } else {
+                        promptForManualPaste();
+                    }
+                }).catch(function() {
+                    promptForManualPaste();
+                });
+            } else {
+                promptForManualPaste();
+            }
+        }
+
+        function promptForManualPaste() {
+            var pasted = prompt("Paste your copied notes from Daily Work Notepad here:");
+            if (pasted) {
+                parseAndFillPastedNotes(pasted);
+            }
+        }
+
+        function syncFromNotepadPopup() {
+            showToast('Connecting to Notepad...');
+            var syncWin = window.open('https://personalnotepad1.netlify.app/#mode=export_today', 'notepad_sync_win', 'width=380,height=260');
+            if (syncWin) {
+                setTimeout(function() {
+                    try { syncWin.close(); } catch(e) {}
+                }, 2500);
+            }
+        }
+
+        // Global Paste listener (Ctrl+V anywhere)
+        document.addEventListener('paste', function(e) {
+            var activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+            if (activeTag !== 'textarea' && activeTag !== 'input') {
+                var pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                if (pastedText && pastedText.trim()) {
+                    parseAndFillPastedNotes(pastedText);
+                }
+            }
+        });
+
+        function checkUrlHashAndFill() {
+            if (window.location.hash) {
+                try {
+                    var hashStr = window.location.hash.substring(1);
+                    var params = new URLSearchParams(hashStr);
+                    var tasksParam = params.get('tasks');
+                    var projParam = params.get('proj');
+
+                    if (tasksParam) {
+                        $('#txt_done_task').val(tasksParam);
+                        formatTaskSection('list_done');
+                        showToast();
+                    }
+                    if (projParam) {
+                        $('#project_name').val(projParam);
+                        setProjectName('#project_name');
+                    }
+                } catch(e) {}
+            }
+        }
+
+        window.addEventListener('hashchange', checkUrlHashAndFill);
+
+        $(document).ready(function() {
+            try {
+                var savedClient = getSessionData('selected_client_name');
+                if (savedClient && $('#client_name option[value="' + savedClient + '"]').length > 0) {
+                    $('#client_name').val(savedClient);
+                }
+            } catch(e) {}
+
+            try {
+                var savedProject = getSessionData('saved_project_name') || localStorage.getItem('bloqs_last_selected_project_v1');
+                if (savedProject && savedProject !== '') {
+                    $('#project_name').val(savedProject);
+                }
+            } catch(e) {}
+
+            setClientName('#client_name');
+            setProjectName('#project_name');
+
+            // Check URL hash first (from Continue to Email)
+            checkUrlHashAndFill();
+
+            // If empty, auto-sync from today's work log
+            if (!$('#txt_done_task').val() || $('#txt_done_task').val().trim() === '') {
+                syncTodayTasksFromDailyWorkLog();
+            }
+
+            setInterval(syncTodayTasksFromDailyWorkLog, 1000);
+        });
+    
+
+        // Cross-Domain message listener from Netlify notepad app (https://personalnotepad1.netlify.app/)
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'TODAY_NOTES_DATA') {
+                processAndFillTodayNotes(event.data.logs);
+            }
+        });
+
+        // Real-time tab sync whenever Daily Work Log changes locally
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'bloqs_daily_work_logs_v2') {
+                syncTodayTasksFromDailyWorkLog();
+            }
+        });
+    
+    
+    
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid">
+                <div class="app-header">
+            <div>
+                <h1><i class="fa-solid fa-paper-plane" style="color: #6366f1;"></i> Daily Update Generator</h1>
+                <p>I'm here to write your daily update.</p>
+            </div>
+            
+            <div style="display:flex; align-items:center; gap:8px;">
+                <a href="index.html" class="btn-back-theme" title="Back to Task Notepad"><i class="fa-solid fa-arrow-left"></i> Back to Tasks</a>
+                <button class="btn-secondary-custom" onclick="clearAllTaskFields()"><i class="fa-solid fa-rotate-left"></i> Reset Tasks</button>
+            </div>
+        </div>
+
+        <div class="main-content-row">
+            <!-- Form Input Panel -->
+            <div class="col-md-6 col-sm-12">
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <span><i class="fa-solid fa-pen-to-square" style="color: #6366f1;"></i> Update Details</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="client_name">Client Name :</label>
+                        <select class="form-control" id="client_name" onchange="setClientName(this);" onkeyup="setClientName(this);">
+                            <option value="Hitesh sir" selected>Hitesh sir</option>
+                            <option value="Suresh sir">Suresh sir</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project_name">Project Name :</label>
+                        <input type="text" class="form-control" id="project_name" placeholder="Enter Project Name" autocomplete="off" onkeyup="setProjectName(this);" onchange="setProjectName(this);" oninput="setProjectName(this);">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="task_label" for="txt_done_task">List of Completed Tasks :</label>
+                        <textarea placeholder="Paste all Done Tasks here (one per line)..." name="list_done" id="txt_done_task" class="form-control custom-input task_detail done_task" rows="3" autocomplete="off"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="task_label" for="txt_progress_task">List of In-Progress Tasks :</label>
+                        <textarea placeholder="Paste In-Progress Tasks here..." name="list_progress" id="txt_progress_task" class="form-control custom-input task_detail progress_task" rows="3" autocomplete="off"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="task_label" for="txt_remaining_task">List of Remaining Tasks :</label>
+                        <textarea placeholder="Paste Remaining Tasks here..." name="list_remaining" id="txt_remaining_task" class="form-control custom-input task_detail remaining_task" rows="3" autocomplete="off"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="task_label" for="txt_query">Queries :</label>
+                        <textarea placeholder="Paste Queries here..." name="list_query" id="txt_query" class="form-control custom-input task_detail query_task" rows="3" autocomplete="off"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="task_label" for="txt_note">Notes :</label>
+                        <textarea placeholder="Paste Notes here..." name="list_note" id="txt_note" class="form-control custom-input task_detail note_task" rows="3" autocomplete="off"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tl_name">TL Name :</label>
+                        <input type="text" class="form-control" id="tl_name" placeholder="TL Name" onkeyup="SetTlName(this);" onchange="SetTlName(this);" oninput="SetTlName(this);">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Live Preview Panel -->
+            <div class="col-md-6 col-sm-12">
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <h3><i class="fa-solid fa-eye" style="color: #6366f1;"></i> Live Email Preview</h3>
+                    </div>
+
+                    <div class="email-body">
+                        <div class="mail_body_wrapper">
+                            <div class="subject-row">
+                                <span class="subject"></span>
+                                <button class="btn-copy-subject" onclick="copySubject()"><i class="fa-solid fa-heading"></i> Copy Subject</button>
+                            </div>
+
+                            <div class="content-header-row">
+                                <button class="btn-copy-content" onclick="copyContent()"><i class="fa-solid fa-copy"></i> Copy Content</button>
+                            </div>
+
+                            <div class="mail_body">
+                                <span class="client_name"></span>
+                                <span class="update_msg"></span>
+                                <span class="list_done"></span>
+                                <span class="list_progress"></span>
+                                <span class="list_remaining"></span>
+                                <span class="list_query"></span>
+                                <span class="list_note"></span>
+                                <span class="review_note"></span>
+                                <span class="thanks"></span>
+                                <span class="total_worked"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Copyright -->
+        <footer class="app-copyright-footer" style="text-align:center; font-size:11px; color:#71717a; padding:6px 0 2px 0; font-weight:500; opacity:0.85; flex-shrink:0;">
+            &copy; 2026 Mohit Mokariya. All Rights Reserved. Crafted with creativity, protected by copyright.
+        </footer>
+    </div>
+
+    <!-- Hidden Cross-Domain Notepad Bridge iFrame -->
+    <iframe id="notepadBridgeFrame" src="https://personalnotepad1.netlify.app/" style="display:none; width:0; height:0; border:none;" onload="try { this.contentWindow.postMessage({ type: 'GET_TODAY_NOTES' }, '*'); } catch(e) {}"></iframe>
+
+    <div id="toast">✨ Content copied to clipboard!</div>
+
+    
+        </div>
+    </div>
+    
+</body>
+</html>
