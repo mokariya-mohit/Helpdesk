@@ -61,9 +61,9 @@ class Application extends BaseApplication
          * Only try to load DebugKit in development mode
          * Debug Kit should not be installed on a production system
          */
-        if (Configure::read('debug')) {
-            $this->addPlugin('DebugKit');
-        }
+        // if (Configure::read('debug')) {
+        //     $this->addPlugin('DebugKit');
+        // }
 
         // Load more plugins here
     }
@@ -99,9 +99,13 @@ class Application extends BaseApplication
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-            ->add(new CsrfProtectionMiddleware([
+            ->add((new CsrfProtectionMiddleware([
                 'httponly' => false,
-            ]));
+            ]))->skipCheckCallback(function ($request) {
+                // Skip CSRF check for third-party Google Sign-In credential POST
+                $path = $request->getPath();
+                return str_contains($path, 'google-login');
+            }));
 
         return $middlewareQueue;
     }

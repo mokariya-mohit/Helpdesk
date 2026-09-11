@@ -47,6 +47,9 @@ class DailyUpdatesTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+        ]);
         $this->belongsTo('Projects', [
             'foreignKey' => 'project_id',
         ]);
@@ -116,8 +119,7 @@ class DailyUpdatesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->isUnique(['update_date', 'project_id'], ['allowMultipleNulls' => true]), ['errorField' => 'update_date', 'message' => __('This combination of update_date and project_id already exists')]);
-        $rules->add($rules->existsIn(['project_id'], 'Projects'), ['errorField' => 'project_id']);
+        $rules->add($rules->isUnique(['user_id', 'update_date'], ['allowMultipleNulls' => true]), ['errorField' => 'update_date', 'message' => __('A daily update for this date already exists.')]);
 
         return $rules;
     }

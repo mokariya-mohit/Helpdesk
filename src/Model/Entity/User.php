@@ -29,7 +29,11 @@ class User extends Entity
     protected array $_accessible = [
         'name' => true,
         'email' => true,
+        'google_id' => true,
+        'picture' => true,
         'password' => true,
+        'password_set' => true,
+        'smtp_password' => true,
         'api_key' => true,
         'created' => true,
         'modified' => true,

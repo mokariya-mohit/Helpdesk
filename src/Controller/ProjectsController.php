@@ -19,7 +19,7 @@ class ProjectsController extends AppController
     protected function getCurrentUserId(): int
     {
         $auth = $this->getAuthUser();
-        return $auth ? (int)$auth['id'] : 1;
+        return $auth ? (int)$auth['id'] : 0;
     }
 
     /**

@@ -55,12 +55,20 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/daily-updates', ['controller' => 'DailyUpdates', 'action' => 'index']);
         $builder->connect('/helpdesk', ['controller' => 'DailyUpdates', 'action' => 'index']);
 
-        // Auth routes
         $builder->connect('/login', ['controller' => 'Users', 'action' => 'login']);
         $builder->connect('/signup', ['controller' => 'Users', 'action' => 'signup']);
         $builder->connect('/register', ['controller' => 'Users', 'action' => 'signup']);
         $builder->connect('/logout', ['controller' => 'Users', 'action' => 'logout']);
         $builder->connect('/profile', ['controller' => 'Users', 'action' => 'profile']);
+        $builder->connect('/users/get-profile', ['controller' => 'Users', 'action' => 'getProfile']);
+        $builder->connect('/users/update-profile', ['controller' => 'Users', 'action' => 'updateProfile']);
+        $builder->connect('/users/google-login', ['controller' => 'Users', 'action' => 'googleLogin']);
+        $builder->connect('/users/google-auth', ['controller' => 'Users', 'action' => 'googleAuth']);
+        $builder->connect('/users/google-callback', ['controller' => 'Users', 'action' => 'googleCallback']);
+        $builder->connect('/forgot-password', ['controller' => 'Users', 'action' => 'forgotPassword']);
+        $builder->connect('/users/forgot-password', ['controller' => 'Users', 'action' => 'forgotPassword']);
+        $builder->connect('/users/verify-reset-otp', ['controller' => 'Users', 'action' => 'verifyResetOtp']);
+        $builder->connect('/users/reset-password', ['controller' => 'Users', 'action' => 'resetPassword']);
 
         $builder->connect('/pages/*', 'Pages::display');
 

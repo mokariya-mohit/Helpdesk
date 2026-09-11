@@ -27,6 +27,10 @@ class ClientsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+ 
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+        ]);
     }
 
     /**
@@ -46,6 +50,11 @@ class ClientsTable extends Table
             ->maxLength('name', 100)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
+
+        $validator
+            ->email('email', false, 'Please provide a valid email address (e.g. client@company.com)')
+            ->maxLength('email', 255, 'Email address cannot exceed 255 characters')
+            ->allowEmptyString('email');
 
         $validator
             ->boolean('is_default')

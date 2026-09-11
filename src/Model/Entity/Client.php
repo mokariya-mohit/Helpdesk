@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int|null $user_id
  * @property string $name
+ * @property string|null $email
  * @property bool|null $is_default
  * @property \Cake\I18n\DateTime|null $created
  * @property \Cake\I18n\DateTime|null $modified
@@ -25,6 +26,7 @@ class Client extends Entity
     protected array $_accessible = [
         'user_id' => true,
         'name' => true,
+        'email' => true,
         'is_default' => true,
         'created' => true,
         'modified' => true,

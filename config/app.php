@@ -5,6 +5,7 @@ use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Log\Engine\FileLog;
 use Cake\Mailer\Transport\MailTransport;
+use Cake\Mailer\Transport\SmtpTransport;
 
 return [
     /*
@@ -79,6 +80,27 @@ return [
     ],
 
     /*
+     * Google OAuth 2.0 & Google Identity Services Configuration
+     */
+    'Google' => [
+        'clientId' => env('GOOGLE_CLIENT_ID', ''),
+        'clientSecret' => env('GOOGLE_CLIENT_SECRET', ''),
+    ],
+
+    /*
+     * Configure session configuration with long-lived persistence.
+     */
+    'Session' => [
+        'defaults' => 'php',
+        'timeout' => 43200,
+        'cookie' => 'helpdesk_sess',
+        'ini' => [
+            'session.cookie_lifetime' => 2592000,
+            'session.gc_maxlifetime' => 2592000,
+        ],
+    ],
+
+    /*
      * Apply timestamps with the last modified time to static assets (js, css, images).
      * Will append a querystring parameter containing the time the file was modified.
      * This is useful for busting browser caches.
@@ -117,6 +139,18 @@ return [
         ],
 
         /*
+         * Configure the cache used for I18n translations in CakePHP 5.1+.
+         */
+        '_cake_translations_' => [
+            'className' => FileEngine::class,
+            'prefix' => 'myapp_cake_translations_',
+            'path' => CACHE . 'persistent' . DS,
+            'serialize' => true,
+            'duration' => '+1 years',
+            'url' => env('CACHE_CAKETRANSLATIONS_URL', null),
+        ],
+
+        /*
          * Configure the cache for model and datasource caches. This cache
          * configuration is used to store schema descriptions, and table listings
          * in connections.
@@ -134,47 +168,15 @@ return [
 
     /*
      * Configure the Error and Exception handlers used by your application.
-     *
-     * By default errors are displayed using Debugger, when debug is true and logged
-     * by Cake\Log\Log when debug is false.
-     *
-     * In CLI environments exceptions will be printed to stderr with a backtrace.
-     * In web environments an HTML page will be displayed for the exception.
-     * With debug true, framework errors like Missing Controller will be displayed.
-     * When debug is false, framework errors will be coerced into generic HTTP errors.
-     *
-     * Options:
-     *
-     * - `errorLevel` - int - The level of errors you are interested in capturing.
-     * - `trace` - boolean - Whether or not backtraces should be included in
-     *   logged errors/exceptions.
-     * - `log` - boolean - Whether or not you want exceptions logged.
-     * - `exceptionRenderer` - string - The class responsible for rendering uncaught exceptions.
-     *   The chosen class will be used for for both CLI and web environments. If you want different
-     *   classes used in CLI and web environments you'll need to write that conditional logic as well.
-     *   The conventional location for custom renderers is in `src/Error`. Your exception renderer needs to
-     *   implement the `render()` method and return either a string or Http\Response.
-     *   `errorRenderer` - string - The class responsible for rendering PHP errors. The selected
-     *   class will be used for both web and CLI contexts. If you want different classes for each environment
-     *   you'll need to write that conditional logic as well. Error renderers need to
-     *   to implement the `Cake\Error\ErrorRendererInterface`.
-     * - `skipLog` - array - List of exceptions to skip for logging. Exceptions that
-     *   extend one of the listed exceptions will also be skipped for logging.
-     *   E.g.:
-     *   `'skipLog' => ['Cake\Http\Exception\NotFoundException', 'Cake\Http\Exception\UnauthorizedException']`
-     * - `extraFatalErrorMemory` - int - The number of megabytes to increase the memory limit by
-     *   when a fatal error is encountered. This allows
-     *   breathing room to complete logging or error handling.
-     * - `ignoredDeprecationPaths` - array - A list of glob compatible file paths that deprecations
-     *   should be ignored in. Use this to ignore deprecations for plugins or parts of
-     *   your application that still emit deprecations.
      */
     'Error' => [
-        'errorLevel' => E_ALL,
+        'errorLevel' => E_ALL & ~E_USER_DEPRECATED & ~E_DEPRECATED,
         'skipLog' => [],
         'log' => true,
         'trace' => true,
-        'ignoredDeprecationPaths' => [],
+        'ignoredDeprecationPaths' => [
+            'vendor/cakephp/*',
+        ],
     ],
 
     /*
@@ -212,45 +214,42 @@ return [
      * appropriate file to src/Mailer/Transport. Transports should be named
      * 'YourTransport.php', where 'Your' is the name of the transport.
      */
+    /*
+     * Email Transports
+     * Master System SMTP Configuration for system emails (e.g. Password Reset OTP)
+     */
     'EmailTransport' => [
         'default' => [
-            'className' => MailTransport::class,
-            /*
-             * The keys host, port, timeout, username, password, client and tls
-             * are used in SMTP transports
-             */
-            'host' => 'localhost',
-            'port' => 25,
-            'timeout' => 30,
-            /*
-             * It is recommended to set these options through your environment or app_local.php
-             */
-            //'username' => null,
-            //'password' => null,
+            'className' => SmtpTransport::class,
+            'host' => env('EMAIL_SMTP_HOST', 'ssl://smtp.gmail.com'),
+            'port' => (int)env('EMAIL_SMTP_PORT', 465),
+            'timeout' => 15,
+            'username' => env('EMAIL_SMTP_USERNAME', 'ql.mohit.123@gmail.com'),
+            'password' => env('EMAIL_SMTP_PASSWORD', 'kjrs lavm yijg jkdc'),
             'client' => null,
-            'tls' => false,
-            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            'tls' => null,
+        ],
+        'smtp' => [
+            'className' => SmtpTransport::class,
+            'host' => 'ssl://smtp.gmail.com',
+            'port' => 465,
+            'timeout' => 15,
+            'username' => 'ql.mohit.123@gmail.com',
+            'password' => 'kjrs lavm yijg jkdc',
+            'client' => null,
+            'tls' => null,
         ],
     ],
 
     /*
-     * Email delivery profiles
-     *
-     * Delivery profiles allow you to predefine various properties about email
-     * messages from your application and give the settings a name. This saves
-     * duplication across your application and makes maintenance and development
-     * easier. Each profile accepts a number of keys. See `Cake\Mailer\Email`
-     * for more information.
+     * Email Delivery Profiles
      */
     'Email' => [
         'default' => [
             'transport' => 'default',
-            'from' => 'you@localhost',
-            /*
-             * Will by default be set to config value of App.encoding, if that exists otherwise to UTF-8.
-             */
-            //'charset' => 'utf-8',
-            //'headerCharset' => 'utf-8',
+            'from' => ['mokariyamohit123@gmail.com' => 'Helpdesk System'],
+            'charset' => 'utf-8',
+            'headerCharset' => 'utf-8',
         ],
     ],
 

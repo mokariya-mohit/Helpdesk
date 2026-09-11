@@ -12,6 +12,7 @@ class TasksController extends AppController
     protected ?\App\Model\Table\ProjectsTable $Projects = null;
     protected ?\App\Model\Table\ClientsTable $Clients = null;
     protected ?\App\Model\Table\UsersTable $Users = null;
+    protected ?\App\Model\Table\DailyUpdatesTable $DailyUpdates = null;
 
     public function initialize(): void
     {
@@ -20,6 +21,7 @@ class TasksController extends AppController
         $this->Projects = $this->fetchTable('Projects');
         $this->Clients = $this->fetchTable('Clients');
         $this->Users = $this->fetchTable('Users');
+        $this->DailyUpdates = $this->fetchTable('DailyUpdates');
     }
 
     /**
@@ -28,7 +30,7 @@ class TasksController extends AppController
     protected function getCurrentUserId(): int
     {
         $auth = $this->getAuthUser();
-        return $auth ? (int)$auth['id'] : 1;
+        return $auth ? (int)$auth['id'] : 0;
     }
 
     /**
@@ -109,34 +111,41 @@ class TasksController extends AppController
             return 0;
         }
 
-        $lines = explode("\n", $text);
+        $lines = preg_split('/\r?\n/', $text);
         $count = 0;
-        $hasBullet = false;
 
         foreach ($lines as $rawLine) {
-            $line = trim($rawLine);
-            if (preg_match('/^[-*\x{2022}]/u', $line)) {
-                $after = preg_replace('/^[-*\x{2022}]+\s*/u', '', $line);
-                if (mb_strlen(trim($after)) > 0) {
-                    $count++;
-                    $hasBullet = true;
-                }
-            }
-        }
-
-        if ($hasBullet) {
-            return $count;
-        }
-
-        foreach ($lines as $rawLine) {
-            $line = trim($rawLine);
-            if ($line === '') {
+            $trimmed = trim($rawLine);
+            if ($trimmed === '') {
                 continue;
             }
-            if (preg_match('/^\d{2}-\d{2}-\d{4}/', $line) || preg_match('/^[-=]{3,}$/', $line) || str_ends_with($line, ':')) {
+
+            // Skip Date headers (e.g. 03-09-2026)
+            if (preg_match('/^\d{2}-\d{2}-\d{4}/', $trimmed)) {
                 continue;
             }
-            $count++;
+
+            // Skip Separator lines (e.g. -------------------)
+            if (preg_match('/^[-=]{3,}$/', $trimmed)) {
+                continue;
+            }
+
+            // Skip Category Headers (e.g. "Backend:", "**Backend:**", "Frontend & UI:")
+            $cleanHeaderCandidate = trim(preg_replace('/^\*\*|\*\*$/', '', $trimmed));
+            if (preg_match('/^[A-Za-z0-9\s_\-\/&]{2,60}:$/', $cleanHeaderCandidate) && !preg_match('/^\d+[\.\)]/', $trimmed) && !preg_match('/^[•▪▫◦*\-–—]/u', $trimmed)) {
+                continue;
+            }
+
+            // Skip Indented Sub-points (lines starting with 2+ spaces or tab)
+            if (preg_match('/^(\s{2,}|\t)/', $rawLine)) {
+                continue;
+            }
+
+            // Clean leading bullet/numbers to verify task body
+            $clean = preg_replace('/^(\d+[\.\)]|[a-zA-Z][\.\)]|\[\d+\]|[•▪▫◦*\-–—]+)\s*/u', '', $trimmed);
+            if (trim($clean) !== '') {
+                $count++;
+            }
         }
 
         return $count;
@@ -272,6 +281,28 @@ class TasksController extends AppController
             $clientId = $cl->id;
         }
 
+        // If note content is completely empty or cleared
+        if (trim($content) === '') {
+            $existing = $this->WorkLogs->find()->where(['user_id' => $userId, 'log_date' => $isoDate])->first();
+            if ($existing) {
+                $this->WorkLogs->delete($existing);
+            }
+            $this->DailyUpdates->deleteAll([
+                'user_id' => $userId,
+                'update_date' => $isoDate,
+            ]);
+
+            $istTime = new \DateTime('now', new \DateTimeZone('Asia/Kolkata'));
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode([
+                    'success' => true,
+                    'message' => 'Note cleared from database',
+                    'saved_at' => $istTime->format('h:i:s A'),
+                    'task_count' => 0,
+                    'log_id' => null,
+                ]));
+        }
+
         // Find existing for this date or create new
         $log = $this->WorkLogs->find()
             ->where([
@@ -297,6 +328,34 @@ class TasksController extends AppController
         }
 
         if ($this->WorkLogs->save($log)) {
+            // Also auto-sync DailyUpdates table so both work_logs and daily_updates stay in sync
+            try {
+                $dailyUpdate = $this->DailyUpdates->find()
+                    ->where(['user_id' => $userId, 'update_date' => $isoDate])
+                    ->first();
+
+                if (!$dailyUpdate) {
+                    $dailyUpdate = $this->DailyUpdates->newEmptyEntity();
+                    $dailyUpdate->user_id = $userId;
+                    $dailyUpdate->update_date = new \Cake\I18n\Date($isoDate);
+                }
+
+                if (!empty($projectId)) {
+                    $dailyUpdate->project_id = (int)$projectId;
+                }
+                if (!empty($projectName)) {
+                    $dailyUpdate->project_name = $projectName;
+                }
+                if (!empty($clientName)) {
+                    $dailyUpdate->client_name = $clientName;
+                    $dailyUpdate->tl_name = rtrim($clientName, '.') . '.';
+                }
+                $dailyUpdate->done_tasks = $this->extractTaskLines($content);
+                $this->DailyUpdates->save($dailyUpdate);
+            } catch (\Exception $e) {
+                // Ignore silent sync error to not block work log save
+            }
+
             $istTime = new \DateTime('now', new \DateTimeZone('Asia/Kolkata'));
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
@@ -339,6 +398,11 @@ class TasksController extends AppController
         if ($log) {
             $this->WorkLogs->delete($log);
         }
+
+        $this->DailyUpdates->deleteAll([
+            'user_id' => $userId,
+            'update_date' => $isoDate,
+        ]);
 
         return $this->response->withType('application/json')
             ->withStringBody(json_encode([
@@ -384,6 +448,48 @@ class TasksController extends AppController
                 'date_formatted' => $dateFormatted,
                 'iso_date' => $isoDate,
                 'day_name' => $dayName,
+                'project_id' => $l->project_id,
+                'project_name' => $l->project ? $l->project->name : '8.bloqs',
+                'task_count' => $l->task_count,
+                'preview' => mb_substr(trim($l->content ?? ''), 0, 80),
+            ];
+        }
+
+        return $this->response->withType('application/json')
+            ->withStringBody(json_encode([
+                'success' => true,
+                'logs' => $result,
+                'count' => count($result),
+            ]));
+    }
+
+    /**
+     * AJAX Endpoint: Get list of ALL notes / logs for Logged-In User for global date filtering
+     */
+    public function getAllLogs()
+    {
+        $this->request->allowMethod(['get', 'post']);
+        $userId = $this->getCurrentUserId();
+
+        $logs = $this->WorkLogs->find()
+            ->where(['WorkLogs.user_id' => $userId])
+            ->contain(['Projects'])
+            ->orderBy(['WorkLogs.log_date' => 'DESC'])
+            ->all();
+
+        $result = [];
+        foreach ($logs as $l) {
+            $dateFormatted = $l->log_date ? $l->log_date->format('d-m-Y') : '';
+            $isoDate = $l->log_date ? $l->log_date->format('Y-m-d') : '';
+            $dayName = $l->log_date ? $l->log_date->format('D') : '';
+
+            $result[] = [
+                'id' => $l->id,
+                'date_formatted' => $dateFormatted,
+                'iso_date' => $isoDate,
+                'day_name' => $dayName,
+                'year' => $l->log_date ? (int)$l->log_date->format('Y') : 0,
+                'month' => $l->log_date ? (int)$l->log_date->format('n') : 0,
                 'project_id' => $l->project_id,
                 'project_name' => $l->project ? $l->project->name : '8.bloqs',
                 'task_count' => $l->task_count,
@@ -533,15 +639,23 @@ class TasksController extends AppController
                 ]));
         }
 
-        $promptText = "You are an assistant that polishes daily software engineering work task notes.\n\n" .
-            "Key Instructions:\n" .
-            "1. PRESERVE ORIGINAL MEANING: Do NOT over-rewrite, exaggerate, or change the original meaning of any task. Keep all tasks accurate to what the user intended.\n" .
-            "2. SIMPLE & EASY ENGLISH: Use simple, clean, natural, and easy-to-understand everyday English words. Do NOT use overly complex, fancy, or artificial vocabulary.\n" .
-            "3. FOR TASKS ALREADY IN ENGLISH: If a task is already written in English, ONLY fix grammar mistakes, spelling typos, punctuation, and slight awkward phrasing. Keep the sentence structure close and true to the original.\n" .
-            "4. TRANSLATE GUJARATI / GUJLISH: If a task or phrase is written in Gujarati (ગુજરાતી) or Romanized Gujarati / Gujlish / Hinglish (e.g. 'aa feature banavyu', 'bug solve karyo', 'api call ma issue hato te fix karyo', 'design complete kari'), translate it into simple, direct, natural English (e.g. 'Created the feature', 'Fixed the bug', 'Resolved the issue in API call', 'Completed the design').\n" .
-            "5. PRESERVE FORMATTING & HEADERS: Keep date headers ('DD-MM-YYYY ProjectName', '-------------------'), category headers ('Backend:', 'Frontend:', 'Design:', etc.), ticket IDs, URLs, and bullet points exactly intact.\n" .
-            "6. STRICT OUTPUT: Output ONLY the final polished task notes text. Do NOT add any conversational comments, explanations, thought steps, or markdown code fences.\n\n" .
-            "Work Notes to Polish:\n" . $content;
+        $promptText = "You are a professional daily work task text editor.\n\n" .
+            "STRICT RULES:\n" .
+            "1. EXACT FORMAT PRESERVATION (CRITICAL):\n" .
+            "   - Preserve the EXACT line-by-line structure, bullet markers, and indentation of the input.\n" .
+            "   - If a line starts with '- ', keep '- '. If it starts with '1. ', keep '1. '. If it has indentation/sub-points (spaces/tabs), keep the exact same indentation.\n" .
+            "   - If there is a date or project line at the top (e.g. 'DD-MM-YYYY ProjectName'), keep it untouched.\n" .
+            "   - If there are category headers (e.g. 'Backend:', 'Frontend:', 'Design:'), keep them exactly as headers ending with a colon.\n" .
+            "   - Do NOT add new sections, do NOT combine lines, and do NOT change the layout.\n\n" .
+            "2. TRANSLATE GUJARATI / GUJLISH TO SIMPLE ENGLISH:\n" .
+            "   - If any task or note is written in Gujarati script (ગુજરાતી) or Romanized Gujarati / Gujlish / Hinglish (e.g. 'aa bug solve karyo', 'api ma issue hato te fix karyo', 'design complete kari'), translate it into simple, clean, natural English (e.g. 'Fixed the bug', 'Resolved the issue in API', 'Completed the design').\n\n" .
+            "3. ENGLISH GRAMMAR, SPELLING & PUNCTUATION:\n" .
+            "   - For English text, check and correct all spelling mistakes, grammatical errors, commas (,), periods (.), and proper capitalization.\n" .
+            "   - Use simple, direct, professional everyday English. Do NOT use fancy or artificial corporate buzzwords.\n\n" .
+            "4. NO EXTRA TEXT / NO COMMENTARY / NO HEADINGS:\n" .
+            "   - Do NOT add any greeting, intro, title, summary, note, checklist, or conversational remark.\n" .
+            "   - Output ONLY the polished task text directly.\n\n" .
+            "Input Content to Polish:\n" . $content;
 
         // 1. Try known popular models first
         $candidateModels = [
@@ -596,7 +710,7 @@ class TasksController extends AppController
             $payload = [
                 'system_instruction' => [
                     'parts' => [
-                        ['text' => 'You are a clear daily work log editor. Use simple, natural English words. Correct grammar and spelling, translate Gujarati/Gujlish if present, and never over-rewrite or alter the original meaning. Output only the final notes text directly.']
+                        ['text' => 'You are a precise work task editor. Translate any Gujarati/Gujlish to simple English, correct English spelling, grammar, and commas/periods, and preserve the EXACT original layout, bullets, and indentation line by line. Output ONLY the polished task notes with zero extra text or commentary.']
                     ]
                 ],
                 'contents' => [
@@ -670,29 +784,57 @@ class TasksController extends AppController
         $text = preg_replace('/^```[a-z]*\s*\n/i', '', $text);
         $text = preg_replace('/\n\s*```$/i', '', $text);
 
-        // 2. Filter out internal thought/meta lines
+        // 2. Filter out internal thought/meta lines & checklists
         $lines = explode("\n", $text);
         $cleanLines = [];
-        $thoughtPattern = '/^\s*(\*|-)?\s*(Input:|Task:|Goal:|Constraints:|Rules:|Date:|Header:|Category:|Task\s+\d+:|Role:|Self-Correction:|The input|I will|No markdown|No explanations|Only the text|Wait|Since|Actually|Note:|Note\s*\()/i';
+        $thoughtPattern = '/^\s*(\*|-)?\s*(Input:|Task:|Goal:|Constraints:|Rules:|Date:|Header:|Category:|Task\s+\d+:|Role:|Self-Correction:|The input|I will|No markdown|No explanations|Only the text|Wait|Since|Actually|Note:|Note\s*\(|Checklist|Self-check|Review:|Summary:)/i';
+        $checklistAnswerPattern = '/^\s*[\*\-]?\s*.*?\?\s*(Yes|No|Done|Correct|Passed|True|N\/A|N\/a)\.?\s*$/i';
+        $checklistKeywordPattern = '/^\s*[\*\-]?\s*(Simple English|Corrected Gujarati|Preserved formatting|No extra text|Meaning preserved|Grammar corrected|Formatting preserved)\b/i';
 
         foreach ($lines as $line) {
             $trimmed = trim($line);
+
+            // Filter out thought or checklist patterns
             if (preg_match($thoughtPattern, $trimmed)) {
                 continue;
             }
-            if (preg_match('/^\s*\d+\.\s*(Translate|Fix grammar|Use professional|Preserve layout|Strict output)/i', $trimmed)) {
+            if (preg_match($checklistAnswerPattern, $trimmed)) {
+                continue;
+            }
+            if (preg_match($checklistKeywordPattern, $trimmed)) {
+                continue;
+            }
+            if (preg_match('/^\s*\d+\.\s*(Translate|Fix grammar|Use professional|Preserve layout|Strict output|Preserve original)/i', $trimmed)) {
                 continue;
             }
             if (preg_match('/^\s*\((No markdown|No chat|No explanations|Already professional)/i', $trimmed)) {
                 continue;
             }
 
-            // Remove leading indentation so Backend: / Frontend: / tasks align with column 0
-            $line = preg_replace('/^[ \t]+/', '', $line);
+            // Remove leading bullet erroneously attached to separator line (e.g. "* -------------------" -> "-------------------")
+            if (preg_match('/^\s*[\*\-]\s+([-=]{3,})/', $line, $sepMatch)) {
+                $line = $sepMatch[1];
+            }
 
-            // Keep ONLY the date on the date header line (strip project name from header)
-            if (preg_match('/^\d{2}-\d{2}-\d{4}/', $line)) {
-                $line = preg_replace('/^(\d{2}-\d{2}-\d{4})\b.*$/', '$1', $line);
+            // Remove leading bullet erroneously attached to category header (e.g. "* Backend:" -> "Backend:")
+            if (preg_match('/^\s*[\*\-]\s+([A-Za-z0-9\s_\-\/&]+:)\s*$/', $line, $catMatch)) {
+                $line = $catMatch[1];
+            }
+
+            // Remove leading bullet erroneously attached to date header (e.g. "* 01-09-2026" -> "01-09-2026")
+            if (preg_match('/^\s*[\*\-]\s+(\d{2}-\d{2}-\d{4}.*)$/', $line, $dateMatch)) {
+                $line = $dateMatch[1];
+            }
+
+            // If header or date line, trim leading spaces. If task or sub-bullet, preserve indentation.
+            if (preg_match('/^(\d{2}-\d{2}-\d{4}|[A-Za-z0-9\s_\-\/&]+:|[-=]{3,})/', $trimmed)) {
+                $line = $trimmed;
+            }
+
+            // Clean date header line (preserve date + project name, e.g. "01-09-2026  8 Bloqs")
+            if (preg_match('/^(\d{2}-\d{2}-\d{4})\s*(.*)$/', $line, $dateMatch)) {
+                $pName = trim($dateMatch[2]);
+                $line = $dateMatch[1] . ($pName !== '' ? '  ' . $pName : '');
             }
 
             // Remove any "Create Project" placeholder anywhere in task note
@@ -710,5 +852,36 @@ class TasksController extends AppController
         }
 
         return $cleaned;
+    }
+
+    /**
+     * Clean raw work note text to extract only task bullet points (preserving all user indentation)
+     */
+    private function extractTaskLines(?string $text): string
+    {
+        if (empty($text) || trim($text) === '') {
+            return '';
+        }
+
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
+        $lines = explode("\n", $text);
+        $startIndex = 0;
+
+        if (count($lines) > 0 && preg_match('/^\d{2}-\d{2}-\d{4}/', trim($lines[0]))) {
+            $startIndex = 1;
+            if (count($lines) > 1 && preg_match('/^[-=]{3,}/', trim($lines[1]))) {
+                $startIndex = 2;
+            }
+        }
+
+        $extracted = array_slice($lines, $startIndex);
+        while (!empty($extracted) && trim($extracted[0]) === '') {
+            array_shift($extracted);
+        }
+        while (!empty($extracted) && trim(end($extracted)) === '') {
+            array_pop($extracted);
+        }
+
+        return implode("\n", $extracted);
     }
 }

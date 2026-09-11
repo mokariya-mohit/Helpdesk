@@ -48,6 +48,9 @@ class ProjectsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+        ]);
         $this->hasMany('DailyUpdates', [
             'foreignKey' => 'project_id',
         ]);
@@ -68,8 +71,7 @@ class ProjectsTable extends Table
             ->scalar('name')
             ->maxLength('name', 100)
             ->requirePresence('name', 'create')
-            ->notEmptyString('name')
-            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->notEmptyString('name');
 
         $validator
             ->boolean('is_default')
@@ -87,7 +89,7 @@ class ProjectsTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->isUnique(['name']), ['errorField' => 'name']);
+        $rules->add($rules->isUnique(['user_id', 'name']), ['errorField' => 'name', 'message' => 'Project already exists']);
 
         return $rules;
     }
