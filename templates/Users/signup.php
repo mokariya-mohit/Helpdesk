@@ -3,34 +3,188 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\User $user
  */
-$this->assign('title', 'Create Helpdesk Account - Register Today');
+$this->assign('title', 'Create Account - Helpdesk');
 $this->assign('meta_description', 'Join Helpdesk to streamline daily task management, work journal logging, and automated client email updates.');
 $this->assign('meta_keywords', 'helpdesk register, create account, daily task management, sign up');
 ?>
 
 <style>
+    /* =========================================================
+       Glassmorphism & Sunrise Theme - Inspired by Rulse Design
+       ========================================================= */
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.76);
+        --glass-border: rgba(255, 255, 255, 0.88);
+        --glass-border-subtle: rgba(255, 255, 255, 0.6);
+        --glass-shadow: 0 24px 50px -12px rgba(15, 23, 42, 0.14), 0 8px 24px -4px rgba(0, 0, 0, 0.04);
+        --glass-inset: 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        --input-bg: rgba(255, 255, 255, 0.58);
+        --input-border: rgba(203, 213, 225, 0.82);
+        --input-text: #0f172a;
+        --text-headline: #0f172a;
+        --text-sub: #64748b;
+        --primary-gradient: linear-gradient(135deg, #5b52e8 0%, #4338ca 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+        --sun-accent: #fde047;
+    }
+
+    [data-theme="dark"] {
+        --glass-bg: rgba(22, 28, 45, 0.78);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-border-subtle: rgba(255, 255, 255, 0.06);
+        --glass-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.6);
+        --glass-inset: 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+        --input-bg: rgba(15, 23, 42, 0.6);
+        --input-border: rgba(255, 255, 255, 0.12);
+        --input-text: #f8fafc;
+        --text-headline: #f8fafc;
+        --text-sub: #94a3b8;
+    }
+
     body {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        background-color: var(--bg-main);
-        color: var(--text-main);
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         min-height: 100vh;
+        margin: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
+        padding: 24px 16px;
+        position: relative;
+        overflow-x: hidden;
+        background: #80bdfc;
+        background: radial-gradient(circle at 15% 15%, #93c5fd 0%, transparent 40%),
+                    radial-gradient(circle at 85% 20%, #c4b5fd 0%, transparent 45%),
+                    radial-gradient(circle at 80% 85%, #fef08a 0%, #fed7aa 25%, transparent 55%),
+                    radial-gradient(circle at 10% 85%, #a7f3d0 0%, transparent 40%),
+                    linear-gradient(135deg, #60a5fa 0%, #93c5fd 35%, #e0e7ff 70%, #fef3c7 100%);
+        background-attachment: fixed;
     }
 
+    [data-theme="dark"] body {
+        background: #090d16;
+        background: radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.25) 0%, transparent 45%),
+                    radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 55%),
+                    linear-gradient(135deg, #090d16 0%, #111827 50%, #0f172a 100%);
+        background-attachment: fixed;
+    }
+
+    /* Ambient Glowing Mesh Blobs */
+    .ambient-glow-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(75px);
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.65;
+        animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+        width: 440px;
+        height: 440px;
+        top: -80px;
+        left: -80px;
+        background: radial-gradient(circle, #60a5fa, #818cf8);
+    }
+
+    .orb-2 {
+        width: 480px;
+        height: 480px;
+        bottom: -100px;
+        right: -80px;
+        background: radial-gradient(circle, #fde047, #fb923c);
+        animation-delay: -6s;
+    }
+
+    .orb-3 {
+        width: 360px;
+        height: 360px;
+        top: 35%;
+        right: 12%;
+        background: radial-gradient(circle, #c084fc, #e879f9);
+        animation-delay: -12s;
+    }
+
+    @keyframes floatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, -25px) scale(1.06); }
+        100% { transform: translate(-25px, 20px) scale(0.95); }
+    }
+
+    /* Glass Card Container */
     .auth-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
+        position: relative;
+        z-index: 1;
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(190%);
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border);
+        border-radius: 28px;
+        box-shadow: var(--glass-shadow), var(--glass-inset);
         width: 100%;
-        max-width: 440px;
-        padding: 36px 30px;
+        max-width: 450px;
+        padding: 38px 32px;
         display: flex;
         flex-direction: column;
-        gap: 22px;
+        gap: 20px;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Top Pill Header (Sunrise Mode Badge) */
+    .top-pill-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 2px;
+    }
+
+    .pill-sunrise {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #1e293b;
+        letter-spacing: 0.2px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        backdrop-filter: blur(10px);
+    }
+
+    [data-theme="dark"] .pill-sunrise {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+    }
+
+    .pill-sunrise i {
+        color: #f59e0b;
+    }
+
+    .pill-sparkle {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        background: linear-gradient(135deg, rgba(235, 248, 74, 0.3) 0%, rgba(254, 240, 138, 0.4) 100%);
+        border: 1px solid rgba(235, 248, 74, 0.6);
+        border-radius: 999px;
+        font-size: 10.5px;
+        font-weight: 800;
+        color: #854d0e;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    [data-theme="dark"] .pill-sparkle {
+        background: rgba(235, 248, 74, 0.15);
+        border-color: rgba(235, 248, 74, 0.3);
+        color: #fef08a;
     }
 
     .auth-header {
@@ -42,142 +196,49 @@ $this->assign('meta_keywords', 'helpdesk register, create account, daily task ma
     }
 
     .auth-logo {
-        width: 48px;
-        height: 48px;
-        background: var(--bg-secondary);
-        color: var(--primary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
+        width: 54px;
+        height: 54px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(238, 242, 255, 0.8) 100%);
+        color: #4f46e5;
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-        margin-bottom: 4px;
+        font-size: 22px;
+        box-shadow: 0 10px 22px -4px rgba(79, 70, 229, 0.24), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+        margin-bottom: 2px;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    [data-theme="dark"] .auth-logo {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+        color: #818cf8;
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 10px 22px -4px rgba(0, 0, 0, 0.4);
+    }
+
+    .auth-logo:hover {
+        transform: translateY(-2px) scale(1.05);
     }
 
     .auth-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 22px;
+        font-size: 26px;
         font-weight: 800;
-        color: var(--text-main);
+        color: var(--text-headline);
+        letter-spacing: -0.6px;
+        margin: 0;
     }
 
     .auth-subtitle {
-        font-size: 13px;
-        color: var(--text-muted);
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .form-label {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--text-muted);
-    }
-
-    .input-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-
-    .input-icon {
-        position: absolute;
-        left: 12px;
-        color: var(--text-muted);
-        font-size: 13px;
-        pointer-events: none;
-    }
-
-    .form-input {
-        width: 100%;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 10px 12px 10px 36px;
-        font-size: 13px;
-        color: var(--text-main);
-        font-family: inherit;
-        outline: none;
-        transition: all 0.2s ease;
-    }
-
-    .form-input:focus {
-        background: var(--bg-card);
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        color: var(--text-main);
-    }
-
-    .form-input:-webkit-autofill,
-    .form-input:-webkit-autofill:hover, 
-    .form-input:-webkit-autofill:focus {
-        -webkit-text-fill-color: var(--text-main) !important;
-        -webkit-box-shadow: 0 0 0px 1000px var(--bg-secondary) inset !important;
-        transition: background-color 5000s ease-in-out 0s;
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-        color: #ffffff;
-        border: 1px solid #4f46e5;
-        border-radius: var(--radius-sm);
-        padding: 11px 16px;
         font-size: 13.5px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 6px;
-        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+        color: var(--text-sub);
+        font-weight: 500;
+        margin: 0;
     }
 
-    .btn-submit:hover {
-        background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
-    }
-
-    .auth-footer {
-        text-align: center;
-        font-size: 13px;
-        color: var(--text-muted);
-        border-top: 1px solid var(--border-color);
-        padding-top: 18px;
-    }
-
-    .oauth-divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        margin: 4px 0;
-    }
-
-    .oauth-divider::before,
-    .oauth-divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .oauth-divider span {
-        padding: 0 12px;
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--text-muted);
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-
+    /* Google Button Glassmorphism */
     .google-auth-container {
         display: flex;
         flex-direction: column;
@@ -192,55 +253,316 @@ $this->assign('meta_keywords', 'helpdesk register, create account, daily task ma
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        background: var(--bg-secondary);
-        color: var(--text-main);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 10px 16px;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.68);
+        color: var(--text-headline);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 11px 18px;
         font-size: 13.5px;
         font-weight: 600;
         text-decoration: none;
-        transition: all 0.2s ease;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         box-sizing: border-box;
         cursor: pointer;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.05);
+        backdrop-filter: blur(12px);
+    }
+
+    [data-theme="dark"] .btn-google-action {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
     }
 
     .btn-google-action:hover {
-        background: var(--bg-card);
-        border-color: var(--primary);
-        color: var(--text-main);
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-sm);
+        background: #ffffff;
+        border-color: rgba(99, 102, 241, 0.4);
+        color: var(--text-headline);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px -4px rgba(79, 70, 229, 0.16);
+    }
+
+    [data-theme="dark"] .btn-google-action:hover {
+        background: rgba(30, 41, 59, 0.95);
+        border-color: rgba(99, 102, 241, 0.5);
+    }
+
+    /* Divider */
+    .oauth-divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 2px 0;
+    }
+
+    .oauth-divider::before,
+    .oauth-divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid rgba(203, 213, 225, 0.7);
+    }
+
+    [data-theme="dark"] .oauth-divider::before,
+    [data-theme="dark"] .oauth-divider::after {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .oauth-divider span {
+        padding: 4px 14px;
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--text-sub);
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 999px;
+        margin: 0 8px;
+        backdrop-filter: blur(8px);
+    }
+
+    [data-theme="dark"] .oauth-divider span {
+        background: rgba(30, 41, 59, 0.65);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Form Fields */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .form-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: #475569;
+    }
+
+    [data-theme="dark"] .form-label {
+        color: #94a3b8;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: var(--input-bg);
+        border: 1.5px solid var(--input-border);
+        border-radius: 16px;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02) inset;
+    }
+
+    .input-wrapper:focus-within {
+        background: #ffffff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16), 0 4px 14px rgba(0, 0, 0, 0.03);
+    }
+
+    [data-theme="dark"] .input-wrapper:focus-within {
+        background: rgba(15, 23, 42, 0.95);
+        border-color: #818cf8;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 14px;
+        color: #94a3b8;
+        font-size: 13.5px;
+        pointer-events: none;
+        transition: color 0.2s;
+    }
+
+    .input-wrapper:focus-within .input-icon {
+        color: #4f46e5;
+    }
+
+    [data-theme="dark"] .input-wrapper:focus-within .input-icon {
+        color: #818cf8;
+    }
+
+    .form-input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        padding: 11px 14px 11px 42px;
+        font-size: 13.5px;
+        color: var(--input-text);
+        font-family: inherit;
+        font-weight: 500;
+        outline: none;
+    }
+
+    .form-input::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+    }
+
+    .form-input:-webkit-autofill,
+    .form-input:-webkit-autofill:hover, 
+    .form-input:-webkit-autofill:focus {
+        -webkit-text-fill-color: var(--input-text) !important;
+        -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.8) inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    [data-theme="dark"] .form-input:-webkit-autofill,
+    [data-theme="dark"] .form-input:-webkit-autofill:hover, 
+    [data-theme="dark"] .form-input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.9) inset !important;
+    }
+
+    .form-input.is-invalid {
+        color: #ef4444;
+    }
+
+    .field-error-msg {
+        display: none;
+        align-items: center;
+        gap: 5px;
+        font-size: 11.5px;
+        color: #ef4444;
+        font-weight: 600;
+        margin-top: 1px;
+    }
+
+    .field-error-msg.show {
+        display: flex;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        background: var(--primary-gradient);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 16px;
+        padding: 13px 20px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        margin-top: 6px;
+        box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        letter-spacing: 0.2px;
+    }
+
+    .btn-submit:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px -4px rgba(79, 70, 229, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+    }
+
+    .auth-footer {
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-sub);
+        border-top: 1px solid rgba(203, 213, 225, 0.7);
+        padding-top: 16px;
+    }
+
+    [data-theme="dark"] .auth-footer {
+        border-top-color: rgba(255, 255, 255, 0.1);
     }
 
     .auth-link {
-        color: var(--primary);
+        color: #4f46e5;
         font-weight: 700;
         text-decoration: none;
+        transition: color 0.15s;
+    }
+
+    [data-theme="dark"] .auth-link {
+        color: #818cf8;
     }
 
     .auth-link:hover {
         text-decoration: underline;
+        color: #3730a3;
     }
 
-    /* Floating Toast Notification */
+    /* Toast Notification Floating Pill */
+    .toast {
+        display: none;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 10000;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        color: #0f172a;
+        padding: 12px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.2);
+        align-items: center;
+        gap: 10px;
+        animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] .toast {
+        background: rgba(22, 28, 45, 0.92);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+    }
+
+    .toast.toast-error {
+        border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .toast.toast-error i {
+        color: #ef4444;
+    }
+
+    .toast.toast-warning i {
+        color: #f59e0b;
+    }
+
+    .toast.toast-success i {
+        color: #10b981;
+    }
+
+    .toast.toast-info i {
+        color: #3b82f6;
+    }
+
+    .toast.show {
+        display: inline-flex !important;
+    }
+
+    @keyframes toastIn {
+        from { opacity: 0; transform: translateY(12px) scale(0.96); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     @media (max-width: 480px) {
         body {
-            padding: 12px;
+            padding: 14px;
         }
         .auth-card {
-            padding: 24px 18px;
+            padding: 28px 20px;
+            border-radius: 24px;
             gap: 16px;
-            border-radius: var(--radius-md);
         }
         .auth-title {
-            font-size: 20px;
-        }
-        .btn-submit {
-            padding: 12px 16px;
-            font-size: 13.5px;
+            font-size: 22px;
         }
     }
 </style>
@@ -248,7 +570,21 @@ $this->assign('meta_keywords', 'helpdesk register, create account, daily task ma
 <!-- Google Identity Services SDK -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+<!-- Ambient Glowing Orbs -->
+<div class="ambient-glow-orb orb-1"></div>
+<div class="ambient-glow-orb orb-2"></div>
+<div class="ambient-glow-orb orb-3"></div>
+
 <div class="auth-card">
+    <div class="top-pill-row">
+        <span class="pill-sunrise">
+            <i class="fa-solid fa-cloud-sun"></i> Mode: Sunrise
+        </span>
+        <span class="pill-sparkle">
+            <i class="fa-solid fa-user-plus"></i> Join System
+        </span>
+    </div>
+
     <div class="auth-header">
         <div class="auth-logo">
             <i class="fa-solid fa-user-plus"></i>
