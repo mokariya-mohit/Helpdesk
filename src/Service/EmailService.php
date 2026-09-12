@@ -104,7 +104,12 @@ class EmailService
             $fromName = 'Daily Work Update';
         }
 
-        // 4. Wrap HTML into a clean, modern, responsive email layout
+        // 4. Strip any buttons, scripts, or copy controls from HTML body
+        $contentHtml = preg_replace('/<button\b[^>]*>(.*?)<\/button>/is', '', $contentHtml);
+        $contentHtml = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $contentHtml);
+        $contentHtml = preg_replace('/<a\b[^>]*\bclass=["\'][^"\']*\b(btn-copy|btn)\b[^"\']*["\'][^>]*>(.*?)<\/a>/is', '', $contentHtml);
+
+        // Wrap HTML into a clean, modern, responsive email layout
         $fullHtml = $this->wrapInEmailTemplate($subject, $contentHtml);
 
         // 5. Dynamic Sender Transport Resolution (Direct, Instant & Per-User Isolated)
@@ -555,7 +560,10 @@ class EmailService
      */
     private function wrapInEmailTemplate(string $subject, string $contentHtml): string
     {
-        $processedHtml = self::autolinkUrls($contentHtml);
+        $cleanHtml = preg_replace('/<button\b[^>]*>(.*?)<\/button>/is', '', $contentHtml);
+        $cleanHtml = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $cleanHtml);
+        $cleanHtml = preg_replace('/<a\b[^>]*\bclass=["\'][^"\']*\b(btn-copy|btn)\b[^"\']*["\'][^>]*>(.*?)<\/a>/is', '', $cleanHtml);
+        $processedHtml = self::autolinkUrls($cleanHtml);
 
         return '<!DOCTYPE html>
 <html lang="en">

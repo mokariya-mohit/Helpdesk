@@ -417,6 +417,9 @@ class DailyUpdatesController extends AppController
         }
 
         $bodyHtml = (string)$this->request->getData('body_html');
+        // Strip any buttons or interactive preview controls
+        $bodyHtml = preg_replace('/<button\b[^>]*>(.*?)<\/button>/is', '', $bodyHtml);
+        $bodyHtml = preg_replace('/<a\b[^>]*class=["\'][^"\']*\bbtn-copy\b[^"\']*["\'][^>]*>(.*?)<\/a>/is', '', $bodyHtml);
 
         $smtpPass = '';
         if ($userEntity && !empty($userEntity->smtp_password)) {

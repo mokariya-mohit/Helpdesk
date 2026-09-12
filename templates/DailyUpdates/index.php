@@ -682,16 +682,13 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    /* Copy Content: Vibrant Indigo/Purple Gradient Pill inside Email Preview Box */
+    /* Copy Content: Vibrant Indigo/Purple Gradient Pill */
     .btn-copy-content, #btnCopyContent {
-        float: right;
-        margin-left: 14px;
-        margin-bottom: 8px;
         background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
         color: #ffffff !important;
         border: none !important;
         border-radius: var(--radius-pill) !important;
-        padding: 6px 16px !important;
+        padding: 6px 14px !important;
         font-size: 11.5px !important;
         font-weight: 800 !important;
         box-shadow: 0 4px 14px rgba(79, 70, 229, 0.38) !important;
@@ -700,7 +697,7 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         align-items: center;
         gap: 6px;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 5;
+        flex-shrink: 0;
     }
 
     .btn-copy-content:hover, #btnCopyContent:hover {
@@ -1671,13 +1668,15 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
                 <div class="mail_body_wrapper">
                     <div class="subject-row">
                         <span class="subject"></span>
-                        <button type="button" class="btn-copy-subject" id="btnCopySubject"><i class="fa-solid fa-heading"></i> Copy Subject</button>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                            <button type="button" class="btn-copy-subject" id="btnCopySubject"><i class="fa-solid fa-heading"></i> Copy Subject</button>
+                            <button type="button" class="btn-copy-content" id="btnCopyContent" title="Copy email content (formatted)">
+                                <i class="fa-solid fa-copy"></i> Copy Content
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mail_body">
-                        <button type="button" class="btn-copy-content" id="btnCopyContent" title="Copy email content (formatted)">
-                            <i class="fa-solid fa-copy"></i> Copy Content
-                        </button>
                         <span class="client_name"></span>
                         <span class="update_msg"></span>
                         <span class="list_done"></span>
@@ -2563,9 +2562,21 @@ $(document).ready(function() {
         $('#emailBcc').focus();
     });
 
+    function getCleanMailBodyHtml() {
+        var $clone = $('.mail_body').clone();
+        $clone.find('button, .btn, .btn-copy-content, .btn-copy-subject, .btn-copy-preview-modal, script, style').remove();
+        return $clone.html().trim();
+    }
+
+    function getCleanMailBodyText() {
+        var $clone = $('.mail_body').clone();
+        $clone.find('button, .btn, .btn-copy-content, .btn-copy-subject, .btn-copy-preview-modal, script, style').remove();
+        return $clone.text().trim();
+    }
+
     function openSendEmailModal() {
         var currentSubject = $('.subject').text().trim();
-        var currentMailHtml = $('.mail_body').html().trim();
+        var currentMailHtml = getCleanMailBodyHtml();
 
         $('#emailSubject').val(currentSubject);
         $('#emailHtmlPreviewContainer').html(currentMailHtml || '<i>No tasks or content to display. Please add tasks first.</i>');
@@ -2663,8 +2674,8 @@ $(document).ready(function() {
         var ccVal = $('#rowCc').hasClass('hidden-row') ? '' : $('#emailCc').val().trim();
         var bccVal = $('#rowBcc').hasClass('hidden-row') ? '' : $('#emailBcc').val().trim();
         var subjectVal = $('#emailSubject').val().trim();
-        var bodyHtmlVal = $('.mail_body').html().trim();
-        var bodyTextVal = $('.mail_body').text().trim();
+        var bodyHtmlVal = getCleanMailBodyHtml();
+        var bodyTextVal = getCleanMailBodyText();
 
         var alertBox = $('#sendEmailAlert');
         // Reset visual row styles
