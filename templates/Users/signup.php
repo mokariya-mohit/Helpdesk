@@ -495,7 +495,83 @@ $this->assign('meta_keywords', 'helpdesk register, create account, daily task ma
         color: #3730a3;
     }
 
+    /* Toast Notification Floating Pill */
+    .toast {
+        display: none;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 10000;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        color: #0f172a;
+        padding: 12px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.2);
+        align-items: center;
+        gap: 10px;
+        animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
+    [data-theme="dark"] .toast {
+        background: rgba(22, 28, 45, 0.92);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+    }
+
+    .toast.toast-error,
+    .toast.error {
+        border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .toast.toast-error i,
+    .toast.error i {
+        color: #ef4444;
+    }
+
+    .toast.toast-warning,
+    .toast.warning {
+        border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .toast.toast-warning i,
+    .toast.warning i {
+        color: #f59e0b;
+    }
+
+    .toast.toast-success,
+    .toast.success {
+        border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .toast:not(.error) i,
+    .toast.toast-success i,
+    .toast.success i {
+        color: #10b981;
+    }
+
+    .toast.toast-info,
+    .toast.info {
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .toast.toast-info i,
+    .toast.info i {
+        color: #3b82f6;
+    }
+
+    .toast.show {
+        display: inline-flex !important;
+    }
+
+    @keyframes toastIn {
+        from { opacity: 0; transform: translateY(12px) scale(0.96); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
     @media (max-width: 480px) {
         body {
             padding: 14px;
