@@ -20,6 +20,46 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
+    /* =========================================================
+       Glassmorphism & Sunrise Theme - Inspired by Rulse Design
+       ========================================================= */
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.74);
+        --glass-bg-hover: rgba(255, 255, 255, 0.88);
+        --glass-bg-subtle: rgba(255, 255, 255, 0.52);
+        --glass-border: rgba(255, 255, 255, 0.90);
+        --glass-border-subtle: rgba(226, 232, 240, 0.80);
+        --glass-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.10), 0 4px 16px rgba(0, 0, 0, 0.04);
+        --text-headline: #0f172a;
+        --text-body: #1e293b;
+        --text-muted: #64748b;
+        --text-light: #94a3b8;
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --sun-yellow: #ebf84a;
+        --sun-yellow-hover: #e2f038;
+        --radius-xl: 24px;
+        --radius-lg: 18px;
+        --radius-md: 14px;
+        --radius-sm: 10px;
+        --radius-pill: 999px;
+    }
+
+    [data-theme="dark"] {
+        --glass-bg: rgba(15, 23, 42, 0.76);
+        --glass-bg-hover: rgba(30, 41, 59, 0.85);
+        --glass-bg-subtle: rgba(15, 23, 42, 0.55);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-border-subtle: rgba(255, 255, 255, 0.08);
+        --glass-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.6);
+        --text-headline: #f8fafc;
+        --text-body: #e2e8f0;
+        --text-muted: #94a3b8;
+        --text-light: #64748b;
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+    }
+
     * {
         box-sizing: border-box;
         margin: 0;
@@ -28,21 +68,97 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
 
     html, body {
         height: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
     }
 
     body {
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: var(--bg-main);
-        color: var(--text-main);
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #80bdfc;
+        background: radial-gradient(circle at 15% 12%, #93c5fd 0%, transparent 40%),
+                    radial-gradient(circle at 85% 18%, #c4b5fd 0%, transparent 45%),
+                    radial-gradient(circle at 80% 85%, #fef08a 0%, #fed7aa 25%, transparent 55%),
+                    radial-gradient(circle at 10% 85%, #a7f3d0 0%, transparent 40%),
+                    linear-gradient(135deg, #60a5fa 0%, #93c5fd 35%, #e0e7ff 70%, #fef3c7 100%);
+        background-attachment: fixed;
+        color: var(--text-body);
         padding: 16px 20px;
-        font-size: 14px;
+        font-size: 13.5px;
         display: flex;
         flex-direction: column;
+        position: relative;
+    }
+
+    [data-theme="dark"] body {
+        background: #090d16;
+        background: radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.22) 0%, transparent 45%),
+                    radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.12) 0%, transparent 55%),
+                    linear-gradient(135deg, #090d16 0%, #111827 50%, #0f172a 100%);
+        background-attachment: fixed;
+        color: var(--text-body);
+    }
+
+    /* Ambient Glowing Floating Orbs */
+    .ambient-glow-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(80px);
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.65;
+        animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+
+    [data-theme="dark"] .ambient-glow-orb {
+        opacity: 0.28;
+    }
+
+    .orb-1 {
+        width: 480px;
+        height: 480px;
+        top: -80px;
+        left: -80px;
+        background: radial-gradient(circle, #60a5fa, #818cf8);
+    }
+
+    [data-theme="dark"] .orb-1 {
+        background: radial-gradient(circle, #3b82f6, #6366f1);
+    }
+
+    .orb-2 {
+        width: 520px;
+        height: 520px;
+        bottom: -100px;
+        right: -80px;
+        background: radial-gradient(circle, #fde047, #fb923c);
+        animation-delay: -6s;
+    }
+
+    [data-theme="dark"] .orb-2 {
+        background: radial-gradient(circle, #6366f1, #8b5cf6);
+    }
+
+    .orb-3 {
+        width: 380px;
+        height: 380px;
+        top: 30%;
+        right: 15%;
+        background: radial-gradient(circle, #c084fc, #e879f9);
+        animation-delay: -12s;
+    }
+
+    [data-theme="dark"] .orb-3 {
+        background: radial-gradient(circle, #8b5cf6, #ec4899);
+    }
+
+    @keyframes floatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, -25px) scale(1.06); }
+        100% { transform: translate(-20px, 20px) scale(0.96); }
     }
 
     .container-fluid {
-        max-width: 1400px;
+        max-width: 1440px;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
@@ -50,21 +166,28 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         min-height: 0;
         width: 100%;
         gap: 14px;
+        position: relative;
+        z-index: 1;
     }
 
-    /* Top Header matching Tasks */
+    /* Top Header: Floating Frosted Glass Bar */
     header.app-header {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        padding: 12px 20px;
-        box-shadow: var(--shadow-sm);
+        position: relative;
+        z-index: 1100;
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(190%);
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: 12px 22px;
+        box-shadow: var(--glass-shadow);
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
         flex-wrap: wrap;
         flex-shrink: 0;
+        transition: all 0.25s ease;
     }
 
     .brand {
@@ -74,27 +197,35 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
     }
 
     .brand-icon {
-        width: 40px;
-        height: 40px;
-        background: var(--primary);
-        color: var(--bg-card);
-        border-radius: var(--radius-sm);
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fde047;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 19px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+    }
+
+    [data-theme="dark"] .brand-icon {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #fde047;
     }
 
     .brand-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 18px;
+        font-size: 19px;
         font-weight: 800;
-        color: var(--text-main);
+        color: var(--text-headline);
         line-height: 1.2;
+        letter-spacing: -0.02em;
     }
 
     .brand-subtitle {
-        font-size: 11px;
+        font-size: 11.5px;
         color: var(--text-muted);
         font-weight: 500;
     }
@@ -102,293 +233,571 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
     .header-actions {
         display: flex;
         align-items: center;
+        gap: 10px;
+    }
+
+    /* Back to Tasks: Clean Dark Glass Pill */
+    .btn-dark, #btnBackToTasks {
+        background: #0f172a !important;
+        color: #ffffff !important;
+        border: 1.5px solid #0f172a !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 8px 18px !important;
+        font-size: 12.5px !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2) !important;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
         gap: 8px;
+        text-decoration: none;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .btn-dark {
-        background: #1c201e;
-        color: #f7f6f0;
-        border: 1px solid #1c201e;
+    .btn-dark:hover, #btnBackToTasks:hover {
+        background: #1e293b !important;
+        border-color: #1e293b !important;
+        transform: translateY(-1.5px);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.3) !important;
+        color: #ffffff !important;
     }
 
-    .btn-dark:hover {
-        background: #343a37;
+    [data-theme="dark"] .btn-dark,
+    [data-theme="dark"] #btnBackToTasks {
+        background: #1e293b !important;
+        color: #f8fafc !important;
+        border: 1.5px solid #334155 !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    [data-theme="dark"] .btn-dark:hover,
+    [data-theme="dark"] #btnBackToTasks:hover {
+        background: #334155 !important;
+        border-color: #6366f1 !important;
+        color: #ffffff !important;
+        transform: translateY(-1.5px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3) !important;
+    }
+
+    /* Sync Today's Tasks: Signature Rulse Sunshine Yellow CTA Button */
+    #btnSyncFromDb {
+        background: var(--sun-yellow) !important;
+        color: #0f172a !important;
+        border: 1.5px solid #d9e638 !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 8px 18px !important;
+        font-size: 12.5px !important;
+        font-weight: 800 !important;
+        box-shadow: 0 4px 12px rgba(161, 98, 7, 0.15) !important;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #btnSyncFromDb:hover {
+        background: var(--sun-yellow-hover) !important;
+        transform: translateY(-1.5px) scale(1.02) !important;
+        box-shadow: 0 6px 18px rgba(161, 98, 7, 0.25) !important;
+    }
+
+    [data-theme="dark"] #btnSyncFromDb {
+        background: #facc15 !important;
+        color: #090d16 !important;
+        border: 1.5px solid #fde047 !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    [data-theme="dark"] #btnSyncFromDb:hover {
+        background: #fde047 !important;
+        border-color: #fef08a !important;
+        color: #000000 !important;
+        transform: translateY(-1.5px) scale(1.02) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* Reset Tasks Button */
+    #btnResetTasks {
+        background: var(--glass-bg);
+        border: 1.5px solid var(--glass-border);
+        color: var(--text-headline);
+        padding: 8px 16px;
+        border-radius: var(--radius-pill);
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #btnResetTasks:hover {
+        background: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    [data-theme="dark"] #btnResetTasks {
+        background: #1e293b !important;
+        border: 1.5px solid #334155 !important;
+        color: #f1f5f9 !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    [data-theme="dark"] #btnResetTasks:hover {
+        background: #334155 !important;
+        border-color: #6366f1 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(99, 102, 241, 0.25) !important;
+    }
+
+    /* User Pill Button */
+    .user-menu-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .user-pill-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 9px !important;
+        background: var(--glass-bg) !important;
+        border: 1.5px solid var(--glass-border) !important;
+        color: var(--text-headline) !important;
+        padding: 5px 14px !important;
+        border-radius: var(--radius-pill) !important;
+        font-size: 12.5px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+        font-family: inherit;
+    }
+
+    .user-pill-btn:hover, .user-pill-btn.active {
+        background: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    [data-theme="dark"] .user-pill-btn:hover,
+    [data-theme="dark"] .user-pill-btn.active {
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .user-avatar-badge {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
         color: #ffffff;
-        border-color: #343a37;
+        font-size: 11px;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
     }
 
-    .btn-primary {
-        background: var(--primary);
-        color: #ffffff;
-        border-color: var(--primary);
+    .user-popover-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 10px);
+        min-width: 250px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(32px) saturate(190%);
+        -webkit-backdrop-filter: blur(32px) saturate(190%);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.2), 0 6px 16px rgba(0, 0, 0, 0.06);
+        padding: 12px;
+        z-index: 2500;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        animation: fadeIn 0.18s ease-out;
     }
 
-    .btn-primary:hover {
-        background: var(--primary-hover);
-        border-color: var(--primary-hover);
-        color: #ffffff;
+    .user-popover-menu.show {
+        display: flex;
     }
 
-    .user-pill {
+    .user-popover-header {
         display: flex;
         align-items: center;
-        gap: 7px;
-        padding: 6px 12px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-main);
+        gap: 12px;
+        padding: 10px 12px;
     }
 
+    .user-popover-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 800;
+        box-shadow: 0 4px 10px rgba(99, 102, 241, 0.35);
+        flex-shrink: 0;
+    }
+
+    .user-popover-name {
+        font-family: 'Outfit', sans-serif;
+        font-size: 13.5px;
+        font-weight: 800;
+        color: var(--text-headline);
+    }
+
+    .user-popover-email {
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+
+    .user-popover-divider {
+        height: 1px;
+        background: var(--glass-border-subtle);
+        margin: 4px 6px;
+    }
+
+    .user-popover-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        color: var(--text-body);
+        font-size: 12.5px;
+        font-weight: 600;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        transition: all 0.15s ease;
+        text-decoration: none;
+        font-family: inherit;
+    }
+
+    .user-popover-item:hover {
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--primary);
+    }
+
+    [data-theme="dark"] .user-popover-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-popover-item.item-logout {
+        color: #ef4444;
+    }
+
+    .user-popover-item.item-logout:hover {
+        background: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
+    }
+
+    /* Main Content Row: 2 Frosted Cards Grid */
     .main-content-row {
         flex: 1;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 14px;
+        gap: 16px;
         min-height: 0;
     }
 
-    .card-panel, .preview-card {
-        background: var(--bg-card);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-sm);
-        border: 1px solid var(--border-color);
+    /* Left Panel: Update Details */
+    .card-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(190%);
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--glass-shadow);
+        padding: 20px 24px;
         display: flex;
         flex-direction: column;
+        gap: 12px;
         min-height: 0;
-    }
-
-    .card-panel {
-        padding: 16px 20px;
         overflow-y: auto;
     }
 
     .panel-header {
-        font-family: 'Outfit', sans-serif;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--text-main);
-        margin-bottom: 14px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--border-color);
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        border-bottom: 1.5px solid var(--glass-border-subtle);
+        font-family: 'Outfit', sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text-headline);
+    }
+
+    #updateSaveStatus {
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        color: #4f46e5 !important;
+        background: rgba(99, 102, 241, 0.12) !important;
+        border: 1px solid rgba(99, 102, 241, 0.25) !important;
+        padding: 3px 11px !important;
+        border-radius: var(--radius-pill) !important;
+    }
+
+    [data-theme="dark"] #updateSaveStatus {
+        color: #818cf8 !important;
+        background: rgba(99, 102, 241, 0.2) !important;
     }
 
     .form-group {
-        margin-bottom: 6px;
-    }
-
-    label {
-        font-weight: 700;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--text-muted);
-        margin-bottom: 5px;
-        display: block;
-    }
-
-    .form-control {
-        width: 100%;
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--border-color);
-        padding: 8px 12px;
-        font-size: 13px;
-        color: var(--text-main);
-        background-color: var(--bg-editor);
-        transition: all 0.15s ease;
-        outline: none;
-        font-family: inherit;
-    }
-
-    .form-control:focus {
-        background-color: #ffffff;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
-    }
-
-    textarea.task_detail {
-        resize: vertical;
-        min-height: 64px;
-        line-height: 1.5;
-        font-family: inherit;
-    }
-
-    /* Preview Card */
-    .preview-header {
-        background: var(--bg-secondary);
-        padding: 12px 18px;
-        border-bottom: 1px solid var(--border-color);
-        border-top-left-radius: var(--radius-md);
-        border-top-right-radius: var(--radius-md);
-        flex-shrink: 0;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .form-group label, .task_label {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+    }
+
+    .form-control, .custom-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1.5px solid rgba(203, 213, 225, 0.85);
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-family: 'Fira Code', monospace;
+        font-size: 13px;
+        color: var(--text-headline);
+        outline: none;
+        transition: all 0.2s ease;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus, .custom-input:focus {
+        background: #ffffff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    [data-theme="dark"] .form-control,
+    [data-theme="dark"] .custom-input {
+        background: rgba(15, 23, 42, 0.6);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+    }
+
+    /* Right Panel: Live Email Preview */
+    .preview-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(190%);
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--glass-shadow);
+        padding: 20px 24px;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .preview-header {
+        padding-bottom: 12px;
+        border-bottom: 1.5px solid var(--glass-border-subtle);
+        margin-bottom: 14px;
     }
 
     .preview-header h3 {
-        margin: 0;
         font-family: 'Outfit', sans-serif;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--text-main);
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text-headline);
         display: flex;
         align-items: center;
-        gap: 7px;
-    }
-
-    .btn-copy-subject {
-        background: var(--bg-card);
-        color: var(--text-main);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 5px 12px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        white-space: nowrap;
-        font-family: inherit;
-    }
-
-    .btn-copy-subject:hover {
-        background: var(--bg-secondary);
-        border-color: var(--border-hover);
-    }
-
-    .btn-copy-content {
-        background: var(--primary);
-        color: #ffffff;
-        border: 1px solid var(--primary);
-        border-radius: var(--radius-sm);
-        padding: 6px 14px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        white-space: nowrap;
-        font-family: inherit;
-    }
-
-    .btn-copy-content:hover {
-        background: var(--primary-hover);
-        border-color: var(--primary-hover);
+        gap: 8px;
     }
 
     .email-body {
-        padding: 20px;
-        font-size: 14px;
-        line-height: 1.6;
-        color: var(--text-main);
-        background: var(--bg-card);
         flex: 1;
-        min-height: 0;
         overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mail_body_wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
     }
 
     .subject-row {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border-color);
-        margin-bottom: 12px;
+        justify-content: space-between;
         gap: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--glass-border-subtle);
     }
 
     .subject-row .subject {
         font-family: 'Outfit', sans-serif;
-        font-weight: 700;
-        color: var(--text-main);
         font-size: 15px;
-        margin: 0;
-        flex-grow: 1;
+        font-weight: 800;
+        color: var(--text-headline);
+        flex: 1;
+        min-width: 0;
     }
 
-    .content-header-row {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 12px;
+    .btn-copy-subject {
+        background: rgba(255, 255, 255, 0.85);
+        border: 1.5px solid rgba(203, 213, 225, 0.85);
+        border-radius: var(--radius-pill);
+        padding: 6px 14px;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--text-headline);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
     }
 
-    ol {
-        padding-left: 22px;
-        margin-top: 5px;
-        margin-bottom: 14px;
+    .btn-copy-subject:hover {
+        background: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    li {
-        margin-bottom: 5px;
+    /* Copy Content: Vibrant Indigo/Purple Gradient Pill inside Email Preview Box */
+    .btn-copy-content, #btnCopyContent {
+        float: right;
+        margin-left: 14px;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 6px 16px !important;
+        font-size: 11.5px !important;
+        font-weight: 800 !important;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.38) !important;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 5;
     }
 
-    /* Toast */
-    #toast {
-        visibility: hidden;
-        min-width: 220px;
-        background-color: #1c201e;
-        color: #f7f6f0;
-        text-align: center;
-        border-radius: var(--radius-sm);
-        padding: 10px 18px;
-        position: fixed;
-        z-index: 9999;
-        right: 24px;
-        bottom: 24px;
-        font-size: 13px;
-        font-weight: 600;
-        box-shadow: var(--shadow-md);
-        opacity: 0;
-        transition: opacity 0.25s, bottom 0.25s;
+    .btn-copy-content:hover, #btnCopyContent:hover {
+        transform: translateY(-1.5px) scale(1.02);
+        box-shadow: 0 6px 22px rgba(79, 70, 229, 0.55) !important;
     }
 
-    #toast.show {
-        visibility: visible;
-        opacity: 1;
-        bottom: 28px;
+    [data-theme="dark"] .btn-copy-content,
+    [data-theme="dark"] #btnCopyContent {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.45) !important;
     }
 
-    #toast.toast-success, #toast.success {
-        background-color: #059669 !important;
+    [data-theme="dark"] .btn-copy-content:hover,
+    [data-theme="dark"] #btnCopyContent:hover {
+        background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%) !important;
+        box-shadow: 0 6px 22px rgba(124, 58, 237, 0.65) !important;
+        transform: translateY(-1.5px) scale(1.02) !important;
         color: #ffffff !important;
     }
 
-    #toast.toast-error, #toast.error {
-        background-color: #dc2626 !important;
-        color: #ffffff !important;
+    .mail_body {
+        position: relative;
+        background: rgba(255, 255, 255, 0.6);
+        border: 1.5px solid var(--glass-border-subtle);
+        border-radius: 16px;
+        padding: 18px 20px;
+        font-size: 13.5px;
+        line-height: 1.75;
+        color: var(--text-headline);
     }
 
-    #toast.toast-warning, #toast.warning {
-        background-color: #d97706 !important;
-        color: #ffffff !important;
+    [data-theme="dark"] .mail_body {
+        background: rgba(15, 23, 42, 0.6);
+        color: #f1f5f9;
     }
 
-    #toast.toast-info, #toast.info {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
+    /* Preview Footer / Google App Password Notice */
+    .preview-footer {
+        padding: 12px 18px !important;
+        border-top: 1.5px solid var(--glass-border-subtle) !important;
+        background: var(--glass-bg-subtle) !important;
+        border-radius: 0 0 var(--radius-xl) var(--radius-xl);
     }
 
-    /* Modal Overlay & Card */
+    #smtpSetupNotice {
+        background: rgba(239, 246, 255, 0.85);
+        border: 1.5px solid rgba(191, 219, 254, 0.9);
+        border-radius: 14px;
+        padding: 10px 14px;
+        color: #1e40af;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.45;
+    }
+
+    [data-theme="dark"] #smtpSetupNotice {
+        background: rgba(30, 58, 138, 0.3);
+        border-color: rgba(59, 130, 246, 0.3);
+        color: #93c5fd;
+    }
+
+    .btn-send-email-bottom {
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 8px 22px !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(79, 70, 229, 0.4) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-send-email-bottom:hover {
+        transform: translateY(-1.5px) scale(1.02);
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.6) !important;
+    }
+
+    /* Modals & Dialogs: Frosted Glass Floating Style */
     .modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(28, 32, 30, 0.45);
-        backdrop-filter: blur(4px);
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 20px;
-        z-index: 2000;
+        z-index: 99999 !important;
         opacity: 0;
         pointer-events: none;
         transition: all 0.2s ease;
@@ -400,36 +809,44 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
     }
 
     .modal-card {
-        background: #ffffff;
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(32px) saturate(190%);
+        -webkit-backdrop-filter: blur(32px) saturate(190%);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 28px;
         width: 95%;
-        max-width: 760px;
-        max-height: 90vh;
+        max-width: 680px;
+        max-height: 88vh;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.25);
         overflow: hidden;
     }
 
+    [data-theme="dark"] .modal-card {
+        background: rgba(22, 28, 45, 0.88);
+        border: 1.5px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+    }
+
     .modal-header {
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--border-color);
+        padding: 18px 24px;
+        border-bottom: 1.5px solid var(--glass-border-subtle);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: var(--bg-editor);
+        background: var(--glass-bg-subtle);
         flex-shrink: 0;
     }
 
     .modal-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 16px;
+        font-size: 17px;
         font-weight: 800;
-        color: var(--text-main);
+        color: var(--text-headline);
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }
 
     .btn-close-modal {
@@ -438,391 +855,637 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         font-size: 22px;
         color: var(--text-muted);
         cursor: pointer;
-        padding: 2px 8px;
-        border-radius: 6px;
-        line-height: 1;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         transition: all 0.15s ease;
     }
 
     .btn-close-modal:hover {
-        background: var(--bg-secondary);
-        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text-headline);
+    }
+
+    [data-theme="dark"] .btn-close-modal:hover {
+        background: rgba(255, 255, 255, 0.12);
     }
 
     .modal-body {
-        padding: 16px 20px;
+        padding: 24px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 14px;
         overflow-y: auto;
         flex: 1;
-        min-height: 0; /* CRITICAL: Enables proper nested flex scrolling on all screens */
-        background: #ffffff;
+        min-height: 0;
     }
 
     .modal-footer {
-        padding: 12px 20px;
-        border-top: 1px solid var(--border-color);
-        background: var(--bg-editor);
+        padding: 14px 24px;
+        border-top: 1.5px solid var(--glass-border-subtle);
+        background: var(--glass-bg-subtle);
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 12px;
         flex-shrink: 0;
+    }
+
+    /* User Profile Modal Specific Styling (Matching Screenshot 2) */
+    .profile-modal-card {
+        max-width: 640px;
+    }
+
+    .profile-banner-card {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+    }
+
+    [data-theme="dark"] .profile-banner-card {
+        background: rgba(15, 23, 42, 0.6);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-avatar-circle {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 800;
+        font-family: 'Outfit', sans-serif;
+        flex-shrink: 0;
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+
+    .profile-banner-name {
+        font-family: 'Outfit', sans-serif;
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--text-headline);
+        line-height: 1.2;
+    }
+
+    .profile-banner-sub {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 4px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .profile-section-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 11.5px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .profile-field-label {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .profile-input-field {
+        width: 100%;
+        border-radius: 12px;
+        border: 1.5px solid rgba(203, 213, 225, 0.85);
+        padding: 10px 14px;
+        font-size: 13px;
+        color: var(--text-headline);
+        background: rgba(255, 255, 255, 0.7);
+        transition: all 0.2s ease;
+        outline: none;
+        font-family: 'Inter', system-ui, sans-serif;
+        box-sizing: border-box;
+    }
+
+    .profile-input-field:focus {
+        background: #ffffff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    [data-theme="dark"] .profile-input-field {
+        background: rgba(15, 23, 42, 0.6);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+    }
+
+    .profile-box-panel {
+        background: rgba(255, 255, 255, 0.55);
+        border: 1.5px solid var(--glass-border-subtle);
+        border-radius: 18px;
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    [data-theme="dark"] .profile-box-panel {
+        background: rgba(15, 23, 42, 0.5);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 4px 8px;
+        font-size: 13px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+    }
+
+    .btn-toggle-password:hover {
+        color: var(--text-headline);
+    }
+
+    .btn-prof-cancel {
+        background: rgba(255, 255, 255, 0.85);
+        border: 1.5px solid rgba(203, 213, 225, 0.85);
+        color: var(--text-headline);
+        padding: 8px 20px;
+        border-radius: var(--radius-pill);
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .btn-prof-cancel:hover {
+        background: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    /* Save Changes: High-Impact Indigo Gradient Pill Button */
+    .btn-prof-save {
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+        border: none !important;
+        color: #ffffff !important;
+        padding: 9px 24px !important;
+        border-radius: var(--radius-pill) !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.42) !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-prof-save:hover {
+        transform: translateY(-1.5px) scale(1.02);
+        box-shadow: 0 8px 26px rgba(79, 70, 229, 0.6) !important;
+    }
+
+    .hidden-row {
+        display: none !important;
+    }
+
+    .hidden-row,
+    #rowBcc.hidden-row,
+    #rowCc.hidden-row {
+        display: none !important;
+    }
+
+    /* Send Email Modal Compose Elements - Theme-Matched Glassmorphic Design */
+    .send-email-modal-card {
+        max-width: 760px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(36px) saturate(200%);
+        -webkit-backdrop-filter: blur(36px) saturate(200%);
+        border: 1.5px solid rgba(255, 255, 255, 0.9);
+        border-radius: 24px;
+        box-shadow: 0 35px 80px -15px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(99, 102, 241, 0.08);
+    }
+
+    [data-theme="dark"] .send-email-modal-card {
+        background: #0d121c !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(99, 102, 241, 0.15) !important;
+        border-radius: 24px !important;
+    }
+
+    [data-theme="dark"] .send-email-modal-card .modal-header {
+        background: #151b26 !important;
+        border-bottom: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+        padding: 16px 24px;
+    }
+
+    [data-theme="dark"] .send-email-modal-card .modal-title span:first-child {
+        color: #f8fafc !important;
+    }
+
+    [data-theme="dark"] .send-email-modal-card .modal-title span:last-child {
+        color: #94a3b8 !important;
+    }
+
+    [data-theme="dark"] .send-email-modal-card .modal-body {
+        background: #0d121c !important;
+        padding: 20px 24px;
+    }
+
+    [data-theme="dark"] .send-email-modal-card .modal-footer {
+        background: #151b26 !important;
+        border-top: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+        padding: 14px 24px;
+    }
+
+    .compose-card-fields {
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1.5px solid rgba(226, 232, 240, 0.9);
+        border-radius: 18px;
+        padding: 6px 16px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03);
+    }
+
+    [data-theme="dark"] .compose-card-fields {
+        background: #151b26 !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+        border-radius: 18px !important;
     }
 
     .compose-field-row {
         display: flex;
         align-items: center;
-        border-bottom: 1px solid var(--border-color);
-        padding: 6px 2px;
-        gap: 10px;
-        transition: all 0.15s ease;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.75);
+        padding: 9px 4px;
+        gap: 12px;
         min-width: 0;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    [data-theme="dark"] .compose-field-row {
+        border-bottom-color: rgba(255, 255, 255, 0.07) !important;
     }
 
     .compose-from-row {
-        background: var(--bg-editor);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 8px 12px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.04) 100%);
+        border: 1.5px solid rgba(99, 102, 241, 0.2);
+        border-radius: 16px;
+        padding: 10px 16px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
     }
 
-    .compose-from-meta {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        min-width: 0;
-        flex-wrap: wrap;
+    [data-theme="dark"] .compose-from-row {
+        background: #151b26 !important;
+        border: 1.5px solid rgba(99, 102, 241, 0.28) !important;
+        border-radius: 16px !important;
     }
 
     .compose-from-text {
         font-size: 13px;
-        font-weight: 600;
-        color: var(--text-main);
-        word-break: break-all;
+        font-weight: 700;
+        color: var(--text-headline);
+    }
+
+    [data-theme="dark"] .compose-from-text {
+        color: #f8fafc !important;
     }
 
     .compose-account-badge {
-        font-size: 10.5px;
-        background: #e0e7ff;
-        color: #4338ca;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-weight: 700;
-        white-space: nowrap;
+        font-size: 11px;
+        background: rgba(16, 185, 129, 0.12);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.28);
+        padding: 3px 12px;
+        border-radius: var(--radius-pill);
+        font-weight: 800;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
-        flex-shrink: 0;
+        gap: 5px;
     }
 
-    .compose-field-row.hidden-row {
-        display: none !important;
+    [data-theme="dark"] .compose-account-badge {
+        background: rgba(16, 185, 129, 0.18) !important;
+        color: #34d399 !important;
+        border-color: rgba(16, 185, 129, 0.35) !important;
     }
 
     .compose-field-label {
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--text-muted);
-        min-width: 50px;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+        background: rgba(99, 102, 241, 0.12);
+        color: #4f46e5;
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        padding: 4px 10px;
+        border-radius: 8px;
+        min-width: 58px;
+        text-align: center;
         user-select: none;
-        flex-shrink: 0;
+    }
+
+    [data-theme="dark"] .compose-field-label {
+        background: rgba(99, 102, 241, 0.22) !important;
+        color: #c7d2fe !important;
+        border-color: rgba(99, 102, 241, 0.35) !important;
     }
 
     .compose-field-input {
         flex: 1;
         min-width: 0;
-        border: none;
-        background: transparent;
+        border: none !important;
+        background: transparent !important;
         font-size: 13.5px;
-        color: var(--text-main);
-        outline: none;
-        padding: 4px 0;
+        font-weight: 600;
+        color: var(--text-headline);
+        outline: none !important;
+        box-shadow: none !important;
+        padding: 4px 6px;
         font-family: inherit;
     }
 
-    .compose-field-input:focus {
-        outline: none;
+    [data-theme="dark"] .compose-field-input {
+        color: #f8fafc !important;
     }
 
-    .compose-toggles {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        user-select: none;
-        white-space: nowrap;
-        flex-shrink: 0;
+    [data-theme="dark"] .compose-field-input::placeholder {
+        color: #64748b !important;
     }
 
     .compose-toggle-btn {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        color: var(--text-main);
-        font-size: 12px;
-        font-weight: 700;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1.5px solid rgba(99, 102, 241, 0.3);
+        color: #4f46e5;
+        font-size: 11px;
+        font-weight: 800;
         cursor: pointer;
-        padding: 2px 7px;
-        border-radius: 4px;
-        transition: all 0.15s ease;
+        padding: 4px 14px;
+        border-radius: var(--radius-pill);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.03em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .compose-toggle-btn:hover {
-        color: var(--primary);
-        border-color: var(--primary);
-        background: #ffffff;
-    }
-
-    .email-preview-box {
-        background: #ffffff;
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 12px 14px;
-        flex: 1;
-        min-height: 120px;
-        max-height: 36vh;
-        overflow-y: auto;
-        font-size: 13px;
-        line-height: 1.6;
-        color: var(--text-main);
-        word-break: break-word;
-        overflow-wrap: break-word;
-    }
-
-    .email-preview-box a, .mail_body a, #emailHtmlPreviewContainer a {
-        color: rgb(59, 130, 246) !important;
-        text-decoration: underline !important;
-        cursor: pointer !important;
-        word-break: break-all;
-        transition: color 0.15s ease;
-    }
-
-    .email-preview-box a:hover, .mail_body a:hover, #emailHtmlPreviewContainer a:hover {
-        color: rgb(30, 58, 138) !important;
-        text-decoration: none !important;
-    }
-
-    .alert-box {
-        padding: 10px 14px;
-        border-radius: var(--radius-sm);
-        font-size: 13px;
-        font-weight: 500;
-    }
-
-    .alert-danger {
-        background-color: #fef2f2;
-        border: 1px solid #fecaca;
-        color: #b91c1c;
-    }
-
-    .alert-success {
-        background-color: #f0fdf4;
-        border: 1px solid #bbf7d0;
-        color: #15803d;
-    }
-
-    .btn-send-email-bottom {
-        background: var(--primary);
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         color: #ffffff;
-        border: 1px solid var(--primary);
-        border-radius: var(--radius-sm);
-        padding: 7px 18px;
-        font-size: 13px;
-        font-weight: 700;
+        border-color: transparent;
+        box-shadow: 0 3px 12px rgba(79, 70, 229, 0.35);
+        transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] .compose-toggle-btn {
+        background: rgba(99, 102, 241, 0.18) !important;
+        border: 1.5px solid rgba(99, 102, 241, 0.35) !important;
+        color: #c7d2fe !important;
+    }
+
+    [data-theme="dark"] .compose-toggle-btn:hover {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        color: #ffffff !important;
+        border-color: transparent !important;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.5) !important;
+    }
+
+    .btn-copy-preview-modal {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 6px 16px !important;
+        font-size: 11.5px !important;
+        font-weight: 800 !important;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
-        gap: 7px;
-        transition: all 0.15s ease;
-        font-family: inherit;
-        box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
+        gap: 6px;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .btn-send-email-bottom:hover {
-        background: var(--primary-hover);
-        border-color: var(--primary-hover);
+    .btn-copy-preview-modal:hover {
+        transform: translateY(-1.5px) scale(1.02);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
+    }
+
+    /* Email Preview Box: Theme-Matched & Readable */
+    .email-preview-box {
+        background: #ffffff;
+        border: 1.5px solid rgba(226, 232, 240, 0.95);
+        border-radius: 16px;
+        padding: 18px 22px;
+        flex: 1;
+        min-height: 140px;
+        max-height: 38vh;
+        overflow-y: auto;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        font-size: 13.5px;
+        line-height: 1.7;
+        color: #0f172a;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03), inset 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .email-preview-box b u,
+    #emailHtmlPreviewContainer b u {
+        color: #2563eb;
+        font-weight: 800;
+        text-decoration: underline;
+    }
+
+    .email-preview-box .task-category-header,
+    #emailHtmlPreviewContainer .task-category-header {
+        color: #4f46e5;
+        font-weight: 700;
+    }
+
+    .email-preview-box .task-done-badge,
+    #emailHtmlPreviewContainer .task-done-badge {
+        color: #059669;
+        font-weight: 800;
+    }
+
+    .email-preview-box a,
+    #emailHtmlPreviewContainer a {
+        color: #2563eb;
+        text-decoration: underline;
+    }
+
+    /* Dark Mode: Matching our dark UI theme with crisp, beautiful, glowing text */
+    [data-theme="dark"] .email-preview-box {
+        background: #111622 !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+        color: #f8fafc !important;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.03) !important;
+    }
+
+    [data-theme="dark"] .email-preview-box *,
+    [data-theme="dark"] #emailHtmlPreviewContainer,
+    [data-theme="dark"] #emailHtmlPreviewContainer * {
+        color: #f8fafc !important;
+        background-color: transparent !important;
+    }
+
+    [data-theme="dark"] .email-preview-box b,
+    [data-theme="dark"] .email-preview-box strong,
+    [data-theme="dark"] #emailHtmlPreviewContainer b,
+    [data-theme="dark"] #emailHtmlPreviewContainer strong {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+
+    [data-theme="dark"] .email-preview-box b u,
+    [data-theme="dark"] #emailHtmlPreviewContainer b u {
+        color: #38bdf8 !important; /* Sky blue headers matching Tasks UI */
+        font-weight: 800 !important;
+        text-decoration: underline !important;
+    }
+
+    [data-theme="dark"] .email-preview-box .task-category-header,
+    [data-theme="dark"] #emailHtmlPreviewContainer .task-category-header {
+        color: #a5b4fc !important; /* Indigo category headers */
+        font-weight: 700 !important;
+    }
+
+    [data-theme="dark"] .email-preview-box .task-done-badge,
+    [data-theme="dark"] #emailHtmlPreviewContainer .task-done-badge {
+        color: #34d399 !important; /* Emerald green [Done] */
+        font-weight: 800 !important;
+    }
+
+    [data-theme="dark"] .email-preview-box a,
+    [data-theme="dark"] #emailHtmlPreviewContainer a {
+        color: #60a5fa !important;
+        text-decoration: underline !important;
+    }
+
+    [data-theme="dark"] .email-preview-box ol,
+    [data-theme="dark"] #emailHtmlPreviewContainer ol {
+        color: #cbd5e1 !important;
+    }
+
+    [data-theme="dark"] .email-preview-box li,
+    [data-theme="dark"] #emailHtmlPreviewContainer li {
+        color: #f1f5f9 !important;
+        margin-bottom: 4px;
+        line-height: 1.6;
+    }
+
+    /* Modal Footer Buttons matching Our UI */
+    .btn-cancel-modal {
+        background: rgba(241, 245, 249, 0.95);
+        border: 1.5px solid rgba(203, 213, 225, 0.95);
+        color: #334155;
+        border-radius: var(--radius-pill);
+        padding: 10px 26px;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-cancel-modal:hover {
+        background: #ffffff;
+        color: #0f172a;
+        border-color: #94a3b8;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    /* User Menu Dropdown Popover */
-    .user-menu-wrapper {
-        position: relative;
-        display: inline-block;
+    [data-theme="dark"] .btn-cancel-modal {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
+        color: #f1f5f9 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
     }
 
-    .user-pill-btn {
+    [data-theme="dark"] .btn-cancel-modal:hover {
+        background: rgba(255, 255, 255, 0.16) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    .btn-send-email-submit {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: var(--radius-pill) !important;
+        font-weight: 800 !important;
+        font-size: 13.5px !important;
+        padding: 11px 32px !important;
+        box-shadow: 0 8px 25px -4px rgba(79, 70, 229, 0.5) !important;
+        cursor: pointer;
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: #ffffff;
-        border: 1px solid var(--border-color);
-        color: var(--text-main);
-        padding: 5px 12px;
-        border-radius: var(--radius-sm);
-        font-size: 12.5px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-        font-family: inherit;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.02em;
     }
 
-    .user-pill-btn:hover, .user-pill-btn.active {
-        background: #f8fafc;
-        border-color: #6366f1;
-        color: #4f46e5;
+    .btn-send-email-submit:hover {
+        transform: translateY(-1.5px) scale(1.02);
+        box-shadow: 0 12px 32px -4px rgba(79, 70, 229, 0.7) !important;
     }
 
-    .user-avatar-badge {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
-        color: #ffffff;
-        font-size: 11px;
-        font-weight: 700;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .user-popover-menu {
-        position: absolute;
-        right: 0;
-        top: calc(100% + 8px);
-        min-width: 230px;
-        background: #ffffff;
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
-        padding: 6px;
-        z-index: 1060;
-        display: none;
-    }
-
-    .user-popover-menu.show {
-        display: block;
-        animation: popoverFadeIn 0.15s ease-out;
-    }
-
-    @keyframes popoverFadeIn {
-        from { opacity: 0; transform: translateY(-6px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .user-popover-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 10px 6px 10px;
-    }
-
-    .user-popover-avatar {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: 700;
-        flex-shrink: 0;
-    }
-
-    .user-popover-meta {
-        overflow: hidden;
-    }
-
-    .user-popover-name {
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--text-main);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .user-popover-email {
-        font-size: 11px;
-        color: var(--text-muted);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .user-popover-divider {
-        height: 1px;
-        background: var(--border-color);
-        margin: 4px 0;
-    }
-
-    .user-popover-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 12px;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text-main);
-        text-decoration: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        border: none;
-        background: none;
-        width: 100%;
-        text-align: left;
-        font-family: inherit;
-    }
-
-    .user-popover-item:hover {
-        background: #f1f5f9;
-        color: #4f46e5;
-    }
-
-    .user-popover-item.item-logout {
-        color: #ef4444;
-    }
-
-    .user-popover-item.item-logout:hover {
-        background: #fef2f2;
-        color: #dc2626;
-    }
 
     /* Multi-Device Responsive Breakpoints */
     @media (max-width: 1200px) {
-        .container-fluid {
-            padding: 12px 16px;
-        }
         .main-content-row {
-            grid-template-columns: 1.1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 14px;
         }
     }
 
     @media (max-width: 991px) {
-        html, body {
-            height: auto;
-            overflow-y: auto;
-        }
-        .container-fluid {
-            padding: 10px;
-            height: auto;
-            min-height: calc(100vh - 20px);
-        }
         .app-header {
             flex-direction: column;
             align-items: stretch;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 14px 16px;
         }
         .header-actions {
             width: 100%;
@@ -831,158 +1494,36 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
             flex-wrap: wrap;
             gap: 8px;
         }
-        .header-actions .btn {
+        .header-actions .btn, #btnBackToTasks, #btnSyncFromDb, #btnResetTasks {
             flex: 1 1 auto;
             justify-content: center;
-            padding: 8px 12px;
-            font-size: 12px;
+            padding: 9px 14px;
         }
         .main-content-row {
             grid-template-columns: 1fr;
             height: auto;
             gap: 14px;
         }
-        .card-panel, .preview-card {
-            height: auto;
-            max-height: none;
-            min-height: auto;
-        }
-        .preview-footer {
-            display: flex !important;
-            padding: 10px 14px !important;
-        }
-        #btnSendEmailBottom {
-            width: 100%;
-            justify-content: center;
-            padding: 10px 16px;
-            font-size: 13.5px;
-        }
     }
 
     @media (max-width: 767px) {
-        .container-fluid {
-            padding: 6px;
+        body {
+            padding: 8px;
         }
         .brand-title {
-            font-size: 16px;
+            font-size: 17px;
         }
         .brand-subtitle {
             display: none;
         }
         .brand-icon {
-            width: 34px;
-            height: 34px;
-            font-size: 15px;
-        }
-        .header-actions .btn {
-            font-size: 11px;
-            padding: 7px 8px;
-        }
-        .card-panel, .preview-card {
-            padding: 12px 14px;
-        }
-        .subject-row {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 8px;
-        }
-        .btn-copy-subject, .btn-copy-content {
-            width: 100%;
-            justify-content: center;
-            padding: 7px 12px;
-            font-size: 12px;
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
         }
         .modal-card {
             width: 95% !important;
-            max-width: 95% !important;
-            margin: 10px auto !important;
-            max-height: 92vh !important;
-            border-radius: var(--radius-md) !important;
-        }
-        .profile-modal-card {
-            width: 95% !important;
-            max-width: 95% !important;
-            max-height: 92vh !important;
-        }
-        .profile-modal-body {
-            padding: 12px 14px !important;
-            gap: 12px !important;
-        }
-        .profile-modal-body div[style*="grid-template-columns: 1fr 1fr"] {
-            grid-template-columns: 1fr !important;
-            gap: 10px !important;
-        }
-        .profile-banner-card {
-            padding: 10px 12px !important;
-            gap: 10px !important;
-        }
-        .profile-banner-sub {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 3px !important;
-        }
-        .profile-avatar-circle {
-            width: 40px !important;
-            height: 40px !important;
-            font-size: 17px !important;
-        }
-        #sendEmailModal {
-            padding: 8px !important;
-        }
-        .send-email-modal-card {
-            width: 100% !important;
-            max-width: 100% !important;
-            max-height: 94vh !important;
-            border-radius: var(--radius-md) !important;
-        }
-        .send-email-modal-card .modal-header {
-            padding: 12px 14px !important;
-        }
-        .send-email-modal-card .modal-title {
-            font-size: 15px !important;
-        }
-        .send-email-modal-card .modal-body {
-            padding: 12px 14px !important;
-            gap: 8px !important;
-        }
-        .send-email-modal-card .compose-from-row {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 4px !important;
-            padding: 8px 10px !important;
-        }
-        .send-email-modal-card .compose-from-meta {
-            width: 100% !important;
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 4px !important;
-        }
-        .send-email-modal-card .compose-field-row {
-            padding: 6px 0 !important;
-        }
-        .send-email-modal-card .compose-field-label {
-            min-width: 44px !important;
-            font-size: 12px !important;
-        }
-        .send-email-modal-card .compose-field-input {
-            font-size: 13px !important;
-        }
-        .send-email-modal-card .email-preview-box {
-            min-height: 100px !important;
-            max-height: 25vh !important;
-            font-size: 12px !important;
-            padding: 8px 10px !important;
-        }
-        .send-email-modal-card .modal-footer {
-            padding: 10px 14px !important;
-            display: flex !important;
-            gap: 8px !important;
-        }
-        .send-email-modal-card .modal-footer .btn {
-            flex: 1 !important;
-            justify-content: center !important;
-            padding: 10px 14px !important;
-            font-size: 13px !important;
+            border-radius: var(--radius-xl) !important;
         }
         .user-menu-wrapper {
             width: 100% !important;
@@ -994,93 +1535,21 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         .user-popover-menu {
             width: 100% !important;
             min-width: 240px !important;
-            max-width: 100% !important;
             left: 0 !important;
             right: 0 !important;
         }
     }
 
-    @media (max-width: 480px) {
-        .app-header {
-            padding: 10px 12px;
-        }
-        .header-actions {
-            gap: 6px;
-        }
-        .header-actions .btn {
-            font-size: 10.5px;
-            padding: 6px 6px;
-            gap: 4px;
-        }
-        .card-panel, .preview-card {
-            padding: 10px 12px;
-        }
-        .form-control {
-            font-size: 13px !important;
-            padding: 8px 10px !important;
-        }
-        #sendEmailModal {
-            padding: 4px !important;
-        }
-        .send-email-modal-card {
-            width: 100% !important;
-            max-width: 100% !important;
-            max-height: 96vh !important;
-        }
-        .send-email-modal-card .modal-header {
-            padding: 10px 12px !important;
-        }
-        .send-email-modal-card .modal-body {
-            padding: 10px 12px !important;
-        }
-        .send-email-modal-card .modal-footer {
-            padding: 8px 12px !important;
-        }
-        .compose-toggle-btn {
-            padding: 2px 6px !important;
-            font-size: 11px !important;
-        }
-        #toast {
-            left: 14px !important;
-            right: 14px !important;
-            bottom: 14px !important;
-            min-width: 0 !important;
-            width: auto !important;
-            max-width: calc(100% - 28px) !important;
-            margin: 0 auto !important;
-            justify-content: center !important;
-            text-align: center !important;
-        }
-    }
-
-    /* Small Screen Height (e.g. Laptops with small height, landscape phones) */
-    @media (max-height: 768px) {
-        .send-email-modal-card {
-            max-height: 96vh !important;
-        }
-        .send-email-modal-card .modal-header {
-            padding: 8px 16px !important;
-        }
-        .send-email-modal-card .modal-body {
-            padding: 8px 16px !important;
-            gap: 6px !important;
-        }
-        .send-email-modal-card .compose-field-row {
-            padding: 4px 0 !important;
-        }
-        .send-email-modal-card .compose-from-row {
-            padding: 5px 8px !important;
-        }
-        .send-email-modal-card .email-preview-box {
-            min-height: 80px !important;
-            max-height: 140px !important;
-            padding: 6px 10px !important;
-        }
-        .send-email-modal-card .modal-footer {
-            padding: 8px 16px !important;
-        }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
+
+<!-- Radiant Ambient Glowing Mesh Orbs -->
+<div class="ambient-glow-orb orb-1"></div>
+<div class="ambient-glow-orb orb-2"></div>
+<div class="ambient-glow-orb orb-3"></div>
 
 <div class="container-fluid">
     <!-- Top Header matching Tasks theme -->
@@ -1205,13 +1674,10 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
                         <button type="button" class="btn-copy-subject" id="btnCopySubject"><i class="fa-solid fa-heading"></i> Copy Subject</button>
                     </div>
 
-                    <div class="content-header-row">
-                        <button type="button" class="btn-copy-content" id="btnCopyContent">
+                    <div class="mail_body">
+                        <button type="button" class="btn-copy-content" id="btnCopyContent" title="Copy email content (formatted)">
                             <i class="fa-solid fa-copy"></i> Copy Content
                         </button>
-                    </div>
-
-                    <div class="mail_body">
                         <span class="client_name"></span>
                         <span class="update_msg"></span>
                         <span class="list_done"></span>
@@ -1242,22 +1708,33 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         </div>
     </div>
 
+    <!-- Footer Copyright matching Tasks theme -->
+    <footer style="text-align:center; font-size:11px; color:var(--text-muted); padding:6px 0 2px 0; font-weight:500; opacity:0.85; flex-shrink:0;">
+        &copy; <?= date('Y') ?> Mohit Mokariya. All Rights Reserved. Powered by CakePHP 5 & MySQL Database.
+    </footer>
+</div>
+
     <!-- Send Email Modal (Fully Responsive for All Screen Sizes) -->
     <div id="sendEmailModal" class="modal-overlay">
         <div class="modal-card send-email-modal-card">
             <div class="modal-header">
                 <div class="modal-title">
-                    <i class="fa-solid fa-envelope-open-text" style="color: var(--primary);"></i>
-                    <span>Send Daily Update Email</span>
+                    <div style="width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35); flex-shrink: 0;">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+                    <div>
+                        <span style="display: block; font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 800; color: var(--text-headline); line-height: 1.2;">Send Daily Update Email</span>
+                        <span style="display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 2px;">Review recipient details and dispatch your daily report</span>
+                    </div>
                 </div>
                 <button type="button" class="btn-close-modal" id="btnCloseSendEmailModal" title="Close Modal">&times;</button>
             </div>
             
-            <div class="modal-body" style="padding: 16px 20px 20px 20px;">
-                <div id="sendEmailAlert" class="alert alert-danger" style="display: none; font-size: 12px; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px;"></div>
+            <div class="modal-body" style="padding: 20px 24px; gap: 14px;">
+                <div id="sendEmailAlert" class="alert alert-danger" style="display: none; font-size: 12px; padding: 8px 12px; border-radius: 6px; margin-bottom: 4px;"></div>
 
                 <!-- From Field (Readonly pill display) -->
-                <div class="compose-from-row" style="margin-bottom: 10px;">
+                <div class="compose-from-row">
                     <span class="compose-field-label">From</span>
                     <div class="compose-from-meta">
                         <span class="compose-from-text"><span id="emailSenderName"><?= h($currentUser['name'] ?? 'Your Name') ?></span> &lt;<span id="emailSenderAddress"><?= h($currentUser['email'] ?? 'your.email@queueloopsolutions.com') ?></span>&gt;</span>
@@ -1267,55 +1744,67 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
                     </div>
                 </div>
 
-                <!-- Row 1: To -->
-                <div class="compose-field-row" id="rowTo">
-                    <span class="compose-field-label">To</span>
-                    <input type="text" id="emailTo" class="compose-field-input" placeholder="Recipient email addresses (comma-separated)" autocomplete="off" required>
-                    <div class="compose-toggles">
-                        <button type="button" class="compose-toggle-btn" id="btnToggleCc">Cc</button>
-                        <button type="button" class="compose-toggle-btn" id="btnToggleBcc">Bcc</button>
+                <!-- Recipient & Subject Fields Box -->
+                <div class="compose-card-fields">
+                    <!-- Row 1: To -->
+                    <div class="compose-field-row" id="rowTo">
+                        <span class="compose-field-label">To</span>
+                        <input type="text" id="emailTo" class="compose-field-input" placeholder="Recipient email addresses (comma-separated)" autocomplete="off" required>
+                        <div class="compose-toggles" id="toRowToggles">
+                            <button type="button" class="compose-toggle-btn" id="btnToggleCc">Cc</button>
+                            <button type="button" class="compose-toggle-btn" id="btnToggleBcc">Bcc</button>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Cc (Collapsible) -->
+                    <div class="compose-field-row hidden-row" id="rowCc" style="display: none;">
+                        <span class="compose-field-label">Cc</span>
+                        <input type="text" id="emailCc" class="compose-field-input" autocomplete="off" placeholder="Comma-separated emails">
+                        <div class="compose-toggles" id="ccRowToggles" style="display: none;">
+                            <button type="button" class="compose-toggle-btn" id="btnToggleBccFromCc">Bcc</button>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Bcc (Collapsible) -->
+                    <div class="compose-field-row hidden-row" id="rowBcc" style="display: none;">
+                        <span class="compose-field-label">Bcc</span>
+                        <input type="text" id="emailBcc" class="compose-field-input" autocomplete="off" placeholder="Comma-separated emails">
+                        <div class="compose-toggles" id="bccRowToggles" style="display: none;">
+                            <button type="button" class="compose-toggle-btn" id="btnToggleCcFromBcc">Cc</button>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Subject -->
+                    <div class="compose-field-row" style="border-bottom: none; padding-bottom: 4px;">
+                        <span class="compose-field-label">Subject</span>
+                        <input type="text" id="emailSubject" class="compose-field-input" placeholder="Daily update subject" autocomplete="off" required>
                     </div>
                 </div>
 
-                <!-- Row 2: Cc (Collapsible) -->
-                <div class="compose-field-row hidden-row" id="rowCc">
-                    <span class="compose-field-label">Cc</span>
-                    <input type="text" id="emailCc" class="compose-field-input" autocomplete="off" placeholder="Comma-separated emails">
-                    <div class="compose-toggles" id="ccRowToggles" style="display: none;">
-                        <button type="button" class="compose-toggle-btn" id="btnToggleBccFromCc">Bcc</button>
+                <!-- Email Content Preview with Dedicated Copy Action -->
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 2px; margin-bottom: 0; flex: 1; min-height: 0;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-headline); display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-file-lines" style="color: #4f46e5;"></i> Email Content Preview :
+                            </span>
+                            <span style="background: rgba(99, 102, 241, 0.1); color: #4f46e5; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">
+                                <i class="fa-solid fa-code"></i> HTML formatted
+                            </span>
+                        </div>
+                        <button type="button" class="btn-copy-preview-modal" id="btnCopyModalPreview" title="Copy email content with guaranteed black text (#000000)">
+                            <i class="fa-solid fa-copy"></i> Copy Content
+                        </button>
                     </div>
-                </div>
-
-                <!-- Row 3: Bcc (Collapsible) -->
-                <div class="compose-field-row hidden-row" id="rowBcc">
-                    <span class="compose-field-label">Bcc</span>
-                    <input type="text" id="emailBcc" class="compose-field-input" autocomplete="off" placeholder="Comma-separated emails">
-                    <div class="compose-toggles" id="bccRowToggles" style="display: none;">
-                        <button type="button" class="compose-toggle-btn" id="btnToggleCcFromBcc">Cc</button>
-                    </div>
-                </div>
-
-                <!-- Row 4: Subject -->
-                <div class="compose-field-row" style="margin-bottom: 4px;">
-                    <span class="compose-field-label">Subject</span>
-                    <input type="text" id="emailSubject" class="compose-field-input" placeholder="Daily update subject" autocomplete="off" required>
-                </div>
-
-                <!-- Email Content Preview -->
-                <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px; margin-bottom: 0; flex: 1; min-height: 0;">
-                    <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;">
-                        <span>Email Content Preview :</span>
-                        <span style="font-size: 10.5px; font-weight: 500; color: var(--text-muted); text-transform: none;"><i class="fa-solid fa-code"></i> HTML formatted</span>
-                    </label>
                     <div id="emailHtmlPreviewContainer" class="email-preview-box">
                         <!-- Live rendered HTML content -->
                     </div>
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary-custom" id="btnCancelSendEmail">Cancel</button>
-                <button type="button" class="btn btn-primary" id="btnSendEmailSubmit" style="background: var(--primary); color: #ffffff; border-color: var(--primary);">
+            <div class="modal-footer" style="padding: 16px 24px; display: flex; align-items: center; justify-content: flex-end; gap: 12px;">
+                <button type="button" class="btn-cancel-modal" id="btnCancelSendEmail">Cancel</button>
+                <button type="button" class="btn-send-email-submit" id="btnSendEmailSubmit">
                     <i class="fa-solid fa-paper-plane"></i> Send Email
                 </button>
             </div>
@@ -1475,16 +1964,10 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         </div>
     </div>
 
-    <!-- Footer Copyright matching Tasks theme -->
-    <footer style="text-align:center; font-size:11px; color:var(--text-muted); padding:6px 0 2px 0; font-weight:500; opacity:0.85; flex-shrink:0;">
-        &copy; <?= date('Y') ?> Mohit Mokariya. All Rights Reserved. Powered by CakePHP 5 & MySQL Database.
-    </footer>
-</div>
-
-<!-- Toast Notification -->
-<div id="toast" class="toast">
+<!-- Toast Notification - Strictly Bottom-Right Corner -->
+<div id="toastNotification" class="toast">
     <i class="fa-solid fa-circle-check" id="toastIcon"></i>
-    <span id="toastMessage">✨ Content copied to clipboard!</span>
+    <span id="toastMessage"></span>
 </div>
 
 <?php
@@ -1810,27 +2293,24 @@ $(document).ready(function() {
         }
     });
 
-    // Copy Content
+    // Copy Content (Always copies clean black text #000000 regardless of active theme)
     $('#btnCopyContent').click(function() {
         var container = document.querySelector('.mail_body');
         if (!container || !container.innerText.trim()) {
             showToast('No Mail Content to copy', 'warning');
             return;
         }
+        window.copyElementAsBlackText(container, 'Mail Content copied to clipboard (Black Text)!');
+    });
 
-        var range = document.createRange();
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        range.selectNodeContents(container);
-        selection.addRange(range);
-
-        try {
-            document.execCommand('copy');
-            selection.removeAllRanges();
-            showToast('Mail Content copied to clipboard!', 'success');
-        } catch (err) {
-            showToast('Failed to copy content', 'error');
+    // Copy Content from Send Email Modal Preview (Always copies clean black text #000000)
+    $(document).on('click', '#btnCopyModalPreview', function() {
+        var container = document.getElementById('emailHtmlPreviewContainer');
+        if (!container || !container.innerText.trim()) {
+            showToast('No Email Content to copy', 'warning');
+            return;
         }
+        window.copyElementAsBlackText(container, 'Email Content copied to clipboard (Black Text)!');
     });
 
     // Back to Tasks Button with safe synchronous wait
@@ -1861,6 +2341,21 @@ $(document).ready(function() {
         showToast('All task fields cleared!', 'success');
     });
 
+    // Sync Today's Tasks Button
+    $('#btnSyncFromDb').click(function() {
+        var $btn = $(this);
+        var $icon = $btn.find('i');
+        $icon.addClass('fa-spin');
+        $btn.prop('disabled', true);
+
+        checkForTaskUpdates(true, function() {
+            setTimeout(function() {
+                $icon.removeClass('fa-spin');
+                $btn.prop('disabled', false);
+            }, 400);
+        });
+    });
+
     var lastSyncedTasks = $('#txt_done_task').val() || '';
     var isCheckingTasks = false;
 
@@ -1884,8 +2379,11 @@ $(document).ready(function() {
         return extracted.join('\n');
     }
 
-    function checkForTaskUpdates(isManual) {
-        if (isCheckingTasks) return;
+    function checkForTaskUpdates(isManual, callback) {
+        if (isCheckingTasks) {
+            if (typeof callback === 'function') callback();
+            return;
+        }
         isCheckingTasks = true;
 
         $.ajax({
@@ -1895,37 +2393,62 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(res) {
                 isCheckingTasks = false;
-                if (res.success && res.found) {
+                if (res && res.success && res.found) {
                     var newTasks = res.tasks || '';
                     var currentTasks = $('#txt_done_task').val() || '';
 
-                    if (newTasks.trim() !== '' && (newTasks !== currentTasks || newTasks !== lastSyncedTasks)) {
-                        lastSyncedTasks = newTasks;
-                        $('#txt_done_task').val(newTasks);
-                        if (res.project_name && (!$('#project_name').val() || $('#project_name').val() === 'Create Project')) {
-                            $('#project_name').val(res.project_name);
-                            updateProjectHeader();
-                        }
-                        if (res.client_name && res.client_name !== '') {
-                            $('#client_name').val(res.client_name);
-                            updateClientGreeting();
-                        }
-                        formatTaskSection('list_done');
-                        updateSendEmailButtonVisibility();
-                        saveUpdateToDatabase();
-                        if (isManual) {
+                    if (isManual) {
+                        // In manual mode, always synchronize the latest DB tasks
+                        if (newTasks.trim() !== '') {
+                            lastSyncedTasks = newTasks;
+                            $('#txt_done_task').val(newTasks);
+                            if (res.project_name) {
+                                $('#project_name').val(res.project_name);
+                                updateProjectHeader();
+                            }
+                            if (res.client_name && res.client_name !== '') {
+                                $('#client_name').val(res.client_name);
+                                updateClientGreeting();
+                            }
+                            formatTaskSection('list_done');
+                            renderAllTaskSections();
+                            updateSendEmailButtonVisibility();
+                            saveUpdateToDatabase();
                             showToast('Synced latest tasks from database!', 'success');
+                        } else {
+                            showToast('No tasks recorded in database for today.', 'info');
                         }
-                    } else if (isManual) {
-                        showToast('Already up to date with DB.');
+                    } else {
+                        // In background / auto-sync mode, only update if tasks changed
+                        if (newTasks.trim() !== '' && (newTasks !== currentTasks || newTasks !== lastSyncedTasks)) {
+                            lastSyncedTasks = newTasks;
+                            $('#txt_done_task').val(newTasks);
+                            if (res.project_name && (!$('#project_name').val() || $('#project_name').val() === 'Create Project')) {
+                                $('#project_name').val(res.project_name);
+                                updateProjectHeader();
+                            }
+                            if (res.client_name && res.client_name !== '') {
+                                $('#client_name').val(res.client_name);
+                                updateClientGreeting();
+                            }
+                            formatTaskSection('list_done');
+                            renderAllTaskSections();
+                            updateSendEmailButtonVisibility();
+                            saveUpdateToDatabase();
+                        }
                     }
                 } else if (isManual) {
-                    showToast('No tasks found in DB for this date.');
+                    showToast('No tasks found in DB for ' + currentDateFormatted(currentDateIso), 'info');
                 }
                 updateSendEmailButtonVisibility();
+                if (typeof callback === 'function') callback(res);
             },
-            error: function() {
+            error: function(xhr, status, err) {
                 isCheckingTasks = false;
+                if (isManual) {
+                    showToast('Failed to sync tasks from DB: ' + (err || 'Server error'), 'error');
+                }
+                if (typeof callback === 'function') callback(null);
             }
         });
     }
@@ -1996,39 +2519,46 @@ $(document).ready(function() {
             // Neither open: show "Cc / Bcc" on To row
             $('#toRowToggles').show();
             $('#btnToggleCc').show();
-            $('#ccBccDivider').show();
             $('#btnToggleBcc').show();
             $('#ccRowToggles').hide();
             $('#bccRowToggles').hide();
+            $('#rowCc').addClass('hidden-row').hide();
+            $('#rowBcc').addClass('hidden-row').hide();
         } else if (isCcOpen && !isBccOpen) {
             // Cc open, Bcc closed: hide To toggles, show "Bcc" on Cc row
             $('#toRowToggles').hide();
             $('#ccRowToggles').show();
             $('#bccRowToggles').hide();
+            $('#rowCc').removeClass('hidden-row').css('display', 'flex');
+            $('#rowBcc').addClass('hidden-row').hide();
         } else if (!isCcOpen && isBccOpen) {
             // Bcc open, Cc closed: hide To toggles, show "Cc" on Bcc row
             $('#toRowToggles').hide();
             $('#ccRowToggles').hide();
             $('#bccRowToggles').show();
+            $('#rowCc').addClass('hidden-row').hide();
+            $('#rowBcc').removeClass('hidden-row').css('display', 'flex');
         } else {
             // Both open: hide all toggle buttons
             $('#toRowToggles').hide();
             $('#ccRowToggles').hide();
             $('#bccRowToggles').hide();
+            $('#rowCc').removeClass('hidden-row').css('display', 'flex');
+            $('#rowBcc').removeClass('hidden-row').css('display', 'flex');
         }
     }
 
     // Toggle button handlers (Cc and Bcc)
     $('#btnToggleCc, #btnToggleCcFromBcc').click(function(e) {
         e.preventDefault();
-        $('#rowCc').removeClass('hidden-row');
+        $('#rowCc').removeClass('hidden-row').css('display', 'flex');
         syncCcBccToggles();
         $('#emailCc').focus();
     });
 
     $('#btnToggleBcc, #btnToggleBccFromCc').click(function(e) {
         e.preventDefault();
-        $('#rowBcc').removeClass('hidden-row');
+        $('#rowBcc').removeClass('hidden-row').css('display', 'flex');
         syncCcBccToggles();
         $('#emailBcc').focus();
     });
@@ -2044,8 +2574,11 @@ $(document).ready(function() {
         // Dynamic From display matching logged-in user account
         var currName = $('.user-pill-name').text().trim() || '<?= h($currentUser['name'] ?? 'User') ?>';
         var currEmail = $('.user-popover-email').text().trim() || '<?= h($currentUser['email'] ?? 'user@helpdesk.local') ?>';
-        if (currName && currEmail) {
-            $('#composeFromText').text(currName + ' <' + currEmail + '>');
+        if (currName) {
+            $('#emailSenderName').text(currName);
+        }
+        if (currEmail) {
+            $('#emailSenderAddress').text(currEmail);
         }
 
         // Autofill To: Selected client's email address
@@ -2081,15 +2614,15 @@ $(document).ready(function() {
 
         if (otherEmails.length > 0) {
             $('#emailCc').val(otherEmails.join(', '));
-            $('#rowCc').removeClass('hidden-row');
+            $('#rowCc').removeClass('hidden-row').css('display', 'flex');
         } else {
             $('#emailCc').val('');
-            $('#rowCc').addClass('hidden-row');
+            $('#rowCc').addClass('hidden-row').hide();
         }
 
-        // Keep Bcc hidden by default
+        // Keep Bcc hidden by default until explicitly requested by clicking Bcc toggle
         $('#emailBcc').val('');
-        $('#rowBcc').addClass('hidden-row');
+        $('#rowBcc').addClass('hidden-row').hide();
 
         syncCcBccToggles();
 

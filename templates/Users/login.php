@@ -2,34 +2,188 @@
 /**
  * @var \App\View\AppView $this
  */
-$this->assign('title', 'Sign In to Helpdesk - Daily Work Notepad');
+$this->assign('title', 'Sign In - Helpdesk');
 $this->assign('meta_description', 'Sign in to access your daily development tasks, work logs, project notes, and client communication reports.');
 $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign in');
 ?>
 
 <style>
+    /* =========================================================
+       Glassmorphism & Sunrise Theme - Inspired by Rulse Design
+       ========================================================= */
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.76);
+        --glass-border: rgba(255, 255, 255, 0.88);
+        --glass-border-subtle: rgba(255, 255, 255, 0.6);
+        --glass-shadow: 0 24px 50px -12px rgba(15, 23, 42, 0.14), 0 8px 24px -4px rgba(0, 0, 0, 0.04);
+        --glass-inset: 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        --input-bg: rgba(255, 255, 255, 0.58);
+        --input-border: rgba(203, 213, 225, 0.82);
+        --input-text: #0f172a;
+        --text-headline: #0f172a;
+        --text-sub: #64748b;
+        --primary-gradient: linear-gradient(135deg, #5b52e8 0%, #4338ca 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+        --sun-accent: #fde047;
+    }
+
+    [data-theme="dark"] {
+        --glass-bg: rgba(22, 28, 45, 0.78);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-border-subtle: rgba(255, 255, 255, 0.06);
+        --glass-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.6);
+        --glass-inset: 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+        --input-bg: rgba(15, 23, 42, 0.6);
+        --input-border: rgba(255, 255, 255, 0.12);
+        --input-text: #f8fafc;
+        --text-headline: #f8fafc;
+        --text-sub: #94a3b8;
+    }
+
     body {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        background-color: var(--bg-main);
-        color: var(--text-main);
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         min-height: 100vh;
+        margin: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
+        padding: 24px 16px;
+        position: relative;
+        overflow-x: hidden;
+        background: #80bdfc;
+        background: radial-gradient(circle at 15% 15%, #93c5fd 0%, transparent 40%),
+                    radial-gradient(circle at 85% 20%, #c4b5fd 0%, transparent 45%),
+                    radial-gradient(circle at 80% 85%, #fef08a 0%, #fed7aa 25%, transparent 55%),
+                    radial-gradient(circle at 10% 85%, #a7f3d0 0%, transparent 40%),
+                    linear-gradient(135deg, #60a5fa 0%, #93c5fd 35%, #e0e7ff 70%, #fef3c7 100%);
+        background-attachment: fixed;
     }
 
+    [data-theme="dark"] body {
+        background: #090d16;
+        background: radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.25) 0%, transparent 45%),
+                    radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 55%),
+                    linear-gradient(135deg, #090d16 0%, #111827 50%, #0f172a 100%);
+        background-attachment: fixed;
+    }
+
+    /* Ambient Glowing Mesh Blobs for Rich Depth */
+    .ambient-glow-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(75px);
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.65;
+        animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+        width: 440px;
+        height: 440px;
+        top: -80px;
+        left: -80px;
+        background: radial-gradient(circle, #60a5fa, #818cf8);
+    }
+
+    .orb-2 {
+        width: 480px;
+        height: 480px;
+        bottom: -100px;
+        right: -80px;
+        background: radial-gradient(circle, #fde047, #fb923c);
+        animation-delay: -6s;
+    }
+
+    .orb-3 {
+        width: 360px;
+        height: 360px;
+        top: 35%;
+        right: 12%;
+        background: radial-gradient(circle, #c084fc, #e879f9);
+        animation-delay: -12s;
+    }
+
+    @keyframes floatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, -25px) scale(1.06); }
+        100% { transform: translate(-25px, 20px) scale(0.95); }
+    }
+
+    /* Glass Card Container */
     .auth-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
+        position: relative;
+        z-index: 1;
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(190%);
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border);
+        border-radius: 28px;
+        box-shadow: var(--glass-shadow), var(--glass-inset);
         width: 100%;
-        max-width: 420px;
-        padding: 36px 30px;
+        max-width: 430px;
+        padding: 38px 32px;
         display: flex;
         flex-direction: column;
         gap: 22px;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Top Pill Header (Sunrise Mode Badge) */
+    .top-pill-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 2px;
+    }
+
+    .pill-sunrise {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #1e293b;
+        letter-spacing: 0.2px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        backdrop-filter: blur(10px);
+    }
+
+    [data-theme="dark"] .pill-sunrise {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+    }
+
+    .pill-sunrise i {
+        color: #f59e0b;
+    }
+
+    .pill-sparkle {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        background: linear-gradient(135deg, rgba(235, 248, 74, 0.3) 0%, rgba(254, 240, 138, 0.4) 100%);
+        border: 1px solid rgba(235, 248, 74, 0.6);
+        border-radius: 999px;
+        font-size: 10.5px;
+        font-weight: 800;
+        color: #854d0e;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    [data-theme="dark"] .pill-sparkle {
+        background: rgba(235, 248, 74, 0.15);
+        border-color: rgba(235, 248, 74, 0.3);
+        color: #fef08a;
     }
 
     .auth-header {
@@ -41,142 +195,49 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
     }
 
     .auth-logo {
-        width: 48px;
-        height: 48px;
-        background: var(--bg-secondary);
-        color: var(--primary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
+        width: 54px;
+        height: 54px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(238, 242, 255, 0.8) 100%);
+        color: #4f46e5;
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-        margin-bottom: 4px;
+        font-size: 22px;
+        box-shadow: 0 10px 22px -4px rgba(79, 70, 229, 0.24), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+        margin-bottom: 2px;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    [data-theme="dark"] .auth-logo {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+        color: #818cf8;
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 10px 22px -4px rgba(0, 0, 0, 0.4);
+    }
+
+    .auth-logo:hover {
+        transform: translateY(-2px) scale(1.05);
     }
 
     .auth-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 22px;
+        font-size: 26px;
         font-weight: 800;
-        color: var(--text-main);
+        color: var(--text-headline);
+        letter-spacing: -0.6px;
+        margin: 0;
     }
 
     .auth-subtitle {
-        font-size: 13px;
-        color: var(--text-muted);
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .form-label {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--text-muted);
-    }
-
-    .input-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-
-    .input-icon {
-        position: absolute;
-        left: 12px;
-        color: var(--text-muted);
-        font-size: 13px;
-        pointer-events: none;
-    }
-
-    .form-input {
-        width: 100%;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 10px 12px 10px 36px;
-        font-size: 13px;
-        color: var(--text-main);
-        font-family: inherit;
-        outline: none;
-        transition: all 0.2s ease;
-    }
-
-    .form-input:focus {
-        background: var(--bg-card);
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        color: var(--text-main);
-    }
-
-    .form-input:-webkit-autofill,
-    .form-input:-webkit-autofill:hover, 
-    .form-input:-webkit-autofill:focus {
-        -webkit-text-fill-color: var(--text-main) !important;
-        -webkit-box-shadow: 0 0 0px 1000px var(--bg-secondary) inset !important;
-        transition: background-color 5000s ease-in-out 0s;
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-        color: #ffffff;
-        border: 1px solid #4f46e5;
-        border-radius: var(--radius-sm);
-        padding: 11px 16px;
         font-size: 13.5px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 6px;
-        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+        color: var(--text-sub);
+        font-weight: 500;
+        margin: 0;
     }
 
-    .btn-submit:hover {
-        background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
-    }
-
-    .auth-footer {
-        text-align: center;
-        font-size: 13px;
-        color: var(--text-muted);
-        border-top: 1px solid var(--border-color);
-        padding-top: 18px;
-    }
-
-    .oauth-divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        margin: 4px 0;
-    }
-
-    .oauth-divider::before,
-    .oauth-divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .oauth-divider span {
-        padding: 0 12px;
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--text-muted);
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-
+    /* Google Button Glassmorphism */
     .google-auth-container {
         display: flex;
         flex-direction: column;
@@ -191,54 +252,347 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        background: var(--bg-secondary);
-        color: var(--text-main);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 10px 16px;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.68);
+        color: var(--text-headline);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 11px 18px;
         font-size: 13.5px;
         font-weight: 600;
         text-decoration: none;
-        transition: all 0.2s ease;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         box-sizing: border-box;
         cursor: pointer;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.05);
+        backdrop-filter: blur(12px);
+    }
+
+    [data-theme="dark"] .btn-google-action {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
     }
 
     .btn-google-action:hover {
-        background: var(--bg-card);
-        border-color: var(--primary);
-        color: var(--text-main);
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-sm);
+        background: #ffffff;
+        border-color: rgba(99, 102, 241, 0.4);
+        color: var(--text-headline);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px -4px rgba(79, 70, 229, 0.16);
+    }
+
+    [data-theme="dark"] .btn-google-action:hover {
+        background: rgba(30, 41, 59, 0.95);
+        border-color: rgba(99, 102, 241, 0.5);
+    }
+
+    /* Divider */
+    .oauth-divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 2px 0;
+    }
+
+    .oauth-divider::before,
+    .oauth-divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid rgba(203, 213, 225, 0.7);
+    }
+
+    [data-theme="dark"] .oauth-divider::before,
+    [data-theme="dark"] .oauth-divider::after {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .oauth-divider span {
+        padding: 4px 14px;
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--text-sub);
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 999px;
+        margin: 0 8px;
+        backdrop-filter: blur(8px);
+    }
+
+    [data-theme="dark"] .oauth-divider span {
+        background: rgba(30, 41, 59, 0.65);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Form Fields */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .form-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: #475569;
+    }
+
+    [data-theme="dark"] .form-label {
+        color: #94a3b8;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: var(--input-bg);
+        border: 1.5px solid var(--input-border);
+        border-radius: 16px;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02) inset;
+    }
+
+    .input-wrapper:focus-within {
+        background: #ffffff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16), 0 4px 14px rgba(0, 0, 0, 0.03);
+    }
+
+    [data-theme="dark"] .input-wrapper:focus-within {
+        background: rgba(15, 23, 42, 0.95);
+        border-color: #818cf8;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 14px;
+        color: #94a3b8;
+        font-size: 13.5px;
+        pointer-events: none;
+        transition: color 0.2s;
+    }
+
+    .input-wrapper:focus-within .input-icon {
+        color: #4f46e5;
+    }
+
+    [data-theme="dark"] .input-wrapper:focus-within .input-icon {
+        color: #818cf8;
+    }
+
+    .form-input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        padding: 12px 14px 12px 42px;
+        font-size: 13.5px;
+        color: var(--input-text);
+        font-family: inherit;
+        font-weight: 500;
+        outline: none;
+    }
+
+    .form-input::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+    }
+
+    .form-input:-webkit-autofill,
+    .form-input:-webkit-autofill:hover, 
+    .form-input:-webkit-autofill:focus {
+        -webkit-text-fill-color: var(--input-text) !important;
+        -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.8) inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    [data-theme="dark"] .form-input:-webkit-autofill,
+    [data-theme="dark"] .form-input:-webkit-autofill:hover, 
+    [data-theme="dark"] .form-input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.9) inset !important;
+    }
+
+    .form-input.is-invalid {
+        color: #ef4444;
+    }
+
+    .field-error-msg {
+        display: none;
+        align-items: center;
+        gap: 5px;
+        font-size: 11.5px;
+        color: #ef4444;
+        font-weight: 600;
+        margin-top: 2px;
+    }
+
+    .field-error-msg.show {
+        display: flex;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        background: var(--primary-gradient);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 16px;
+        padding: 13px 20px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        margin-top: 6px;
+        box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        letter-spacing: 0.2px;
+    }
+
+    .btn-submit:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px -4px rgba(79, 70, 229, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+    }
+
+    .btn-submit:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    .auth-footer {
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-sub);
+        border-top: 1px solid rgba(203, 213, 225, 0.7);
+        padding-top: 18px;
+    }
+
+    [data-theme="dark"] .auth-footer {
+        border-top-color: rgba(255, 255, 255, 0.1);
     }
 
     .auth-link {
-        color: var(--primary);
+        color: #4f46e5;
         font-weight: 700;
         text-decoration: none;
+        transition: color 0.15s;
+    }
+
+    [data-theme="dark"] .auth-link {
+        color: #818cf8;
     }
 
     .auth-link:hover {
         text-decoration: underline;
+        color: #3730a3;
     }
+
+    /* Modal Backdrop & Card */
+    .modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        box-sizing: border-box;
+    }
+
+    .modal-card {
+        position: relative;
+        max-width: 420px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(32px) saturate(200%);
+        -webkit-backdrop-filter: blur(32px) saturate(200%);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 28px;
+        box-shadow: 0 30px 80px -15px rgba(15, 23, 42, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+        padding: 36px 30px;
+        animation: fadeInScale 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    [data-theme="dark"] .modal-card {
+        background: rgba(22, 28, 45, 0.92);
+        border-color: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.7);
+    }
+
+    .btn-close-modal {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        color: #64748b;
+        font-size: 15px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s ease;
+    }
+
+    [data-theme="dark"] .btn-close-modal {
+        background: rgba(30, 41, 59, 0.8);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #94a3b8;
+    }
+
+    .btn-close-modal:hover {
+        background: #ffffff;
+        color: #0f172a;
+        transform: rotate(90deg);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    @keyframes fadeInScale {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
 
     @media (max-width: 480px) {
         body {
-            padding: 12px;
+            padding: 14px;
         }
         .auth-card {
-            padding: 24px 18px;
-            gap: 16px;
-            border-radius: var(--radius-md);
+            padding: 28px 20px;
+            border-radius: 24px;
+            gap: 18px;
         }
         .auth-title {
-            font-size: 20px;
+            font-size: 22px;
         }
-        .btn-submit {
-            padding: 12px 16px;
-            font-size: 13.5px;
+        .modal-card {
+            padding: 26px 18px;
+            border-radius: 24px;
         }
     }
 </style>
@@ -246,7 +600,21 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
 <!-- Google Identity Services SDK -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+<!-- Ambient Glowing Orbs -->
+<div class="ambient-glow-orb orb-1"></div>
+<div class="ambient-glow-orb orb-2"></div>
+<div class="ambient-glow-orb orb-3"></div>
+
 <div class="auth-card">
+    <div class="top-pill-row">
+        <span class="pill-sunrise">
+            <i class="fa-solid fa-cloud-sun"></i> Mode: Sunrise
+        </span>
+        <span class="pill-sparkle">
+            <i class="fa-solid fa-bolt"></i> Helpdesk
+        </span>
+    </div>
+
     <div class="auth-header">
         <div class="auth-logo">
             <i class="fa-solid fa-lock"></i>
@@ -280,7 +648,7 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
     </div>
 
     <?= $this->Form->create(null, ['url' => ['controller' => 'Users', 'action' => 'login'], 'id' => 'loginForm', 'novalidate' => true]) ?>
-        <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; flex-direction:column; gap:16px;">
             <div class="form-group">
                 <label class="form-label" for="email">Email Address</label>
                 <div class="input-wrapper">
@@ -295,7 +663,7 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
             <div class="form-group">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <label class="form-label" for="password">Password</label>
-                    <a href="javascript:void(0);" id="btnOpenForgotPassword" style="font-size:11.5px; color:var(--primary); text-decoration:none; font-weight:600; cursor:pointer;" title="Reset your password">Forgot Password?</a>
+                    <a href="javascript:void(0);" id="btnOpenForgotPassword" style="font-size:12px; color:#4f46e5; text-decoration:none; font-weight:700; cursor:pointer;" title="Reset your password">Forgot Password?</a>
                 </div>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-key input-icon"></i>
@@ -307,8 +675,8 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
-                <label style="display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--text-muted); cursor:pointer; user-select:none;">
-                    <input type="checkbox" name="remember_me" value="1" id="rememberMe" style="accent-color:var(--primary); width:15px; height:15px; cursor:pointer;">
+                <label style="display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-sub); cursor:pointer; user-select:none;">
+                    <input type="checkbox" name="remember_me" value="1" id="rememberMe" style="accent-color:#4f46e5; width:16px; height:16px; cursor:pointer; border-radius:4px;">
                     Remember Me for 30 days
                 </label>
             </div>
@@ -327,23 +695,26 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
 <!-- ========================================== -->
 <!-- Forgot Password Multi-Step Modal -->
 <!-- ========================================== -->
-<div id="forgotPasswordModal" class="modal-backdrop" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px); z-index:9999; align-items:center; justify-content:center; padding:16px; box-sizing:border-box;">
-    <div class="auth-card" style="position:relative; max-width:400px; box-shadow:0 20px 40px rgba(0,0,0,0.4); animation:fadeInScale 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
-        <button type="button" id="btnCloseForgotModal" style="position:absolute; top:18px; right:18px; background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer; padding:4px; line-height:1;" title="Close">
+<div id="forgotPasswordModal" class="modal-backdrop">
+    <div class="modal-card">
+        <button type="button" id="btnCloseForgotModal" class="btn-close-modal" title="Close">
             <i class="fa-solid fa-xmark"></i>
         </button>
 
         <!-- Step 1: Request Email -->
         <div id="forgotStep1" class="forgot-step-block">
+            <div class="top-pill-row" style="margin-bottom:8px;">
+                <span class="pill-sunrise"><i class="fa-solid fa-key"></i> Step 1 of 3</span>
+            </div>
             <div class="auth-header">
                 <div class="auth-logo">
-                    <i class="fa-solid fa-key"></i>
+                    <i class="fa-solid fa-envelope-open-text"></i>
                 </div>
-                <h2 class="auth-title" style="font-size:20px;">Forgot Password</h2>
-                <p class="auth-subtitle">Enter your registered email to receive a 6-digit OTP verification code.</p>
+                <h2 class="auth-title" style="font-size:22px;">Forgot Password</h2>
+                <p class="auth-subtitle">Enter your registered email to receive a 6-digit OTP code.</p>
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:14px; margin-top:14px;">
+            <div style="display:flex; flex-direction:column; gap:16px; margin-top:16px;">
                 <div class="form-group">
                     <label class="form-label" for="forgotEmail">Email Address</label>
                     <div class="input-wrapper">
@@ -363,20 +734,23 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
 
         <!-- Step 2: Verify OTP -->
         <div id="forgotStep2" class="forgot-step-block" style="display:none;">
+            <div class="top-pill-row" style="margin-bottom:8px;">
+                <span class="pill-sunrise"><i class="fa-solid fa-shield-halved"></i> Step 2 of 3</span>
+            </div>
             <div class="auth-header">
                 <div class="auth-logo">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <h2 class="auth-title" style="font-size:20px;">Enter OTP Code</h2>
-                <p class="auth-subtitle">We sent a 6-digit code to <strong id="forgotTargetEmailDisplay" style="color:var(--text-main);"></strong></p>
+                <h2 class="auth-title" style="font-size:22px;">Enter OTP Code</h2>
+                <p class="auth-subtitle">We sent a 6-digit code to <strong id="forgotTargetEmailDisplay" style="color:var(--text-headline);"></strong></p>
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:14px; margin-top:14px;">
+            <div style="display:flex; flex-direction:column; gap:16px; margin-top:16px;">
                 <div class="form-group">
                     <label class="form-label" for="forgotOtpCode">6-Digit Verification Code</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-lock input-icon"></i>
-                        <input type="text" id="forgotOtpCode" class="form-input" placeholder="123456" maxlength="6" style="letter-spacing: 6px; font-weight:700; font-size:16px; text-align:center;">
+                        <input type="text" id="forgotOtpCode" class="form-input" placeholder="123456" maxlength="6" style="letter-spacing: 6px; font-weight:700; font-size:17px; text-align:center;">
                     </div>
                     <div class="field-error-msg" id="forgotOtpError">
                         <i class="fa-solid fa-circle-exclamation"></i> <span></span>
@@ -387,7 +761,7 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
                     <i class="fa-solid fa-check"></i> Verify & Continue
                 </button>
 
-                <div style="text-align:center; font-size:12px; color:var(--text-muted);">
+                <div style="text-align:center; font-size:12.5px; color:var(--text-sub);">
                     Didn't receive code? <a href="javascript:void(0);" id="btnResendForgotOtp" class="auth-link">Resend OTP</a>
                 </div>
             </div>
@@ -395,21 +769,24 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
 
         <!-- Step 3: Create New Password -->
         <div id="forgotStep3" class="forgot-step-block" style="display:none;">
+            <div class="top-pill-row" style="margin-bottom:8px;">
+                <span class="pill-sunrise"><i class="fa-solid fa-lock"></i> Step 3 of 3</span>
+            </div>
             <div class="auth-header">
                 <div class="auth-logo">
                     <i class="fa-solid fa-lock"></i>
                 </div>
-                <h2 class="auth-title" style="font-size:20px;">New Password</h2>
+                <h2 class="auth-title" style="font-size:22px;">New Password</h2>
                 <p class="auth-subtitle">Set your new password to regain access to your account.</p>
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:14px; margin-top:14px;">
+            <div style="display:flex; flex-direction:column; gap:16px; margin-top:16px;">
                 <div class="form-group">
                     <label class="form-label" for="forgotNewPass">New Password</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-key input-icon"></i>
-                        <input type="password" id="forgotNewPass" class="form-input" placeholder="Min. 6 characters" style="padding-right:36px;">
-                        <button type="button" class="btn-toggle-eye" data-target="#forgotNewPass" style="position:absolute; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
+                        <input type="password" id="forgotNewPass" class="form-input" placeholder="Min. 6 characters" style="padding-right:38px;">
+                        <button type="button" class="btn-toggle-eye" data-target="#forgotNewPass" style="position:absolute; right:12px; background:none; border:none; color:var(--text-sub); cursor:pointer; font-size:14px;">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </div>
@@ -422,8 +799,8 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
                     <label class="form-label" for="forgotConfirmPass">Confirm Password</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-shield-halved input-icon"></i>
-                        <input type="password" id="forgotConfirmPass" class="form-input" placeholder="Repeat new password" style="padding-right:36px;">
-                        <button type="button" class="btn-toggle-eye" data-target="#forgotConfirmPass" style="position:absolute; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
+                        <input type="password" id="forgotConfirmPass" class="form-input" placeholder="Repeat new password" style="padding-right:38px;">
+                        <button type="button" class="btn-toggle-eye" data-target="#forgotConfirmPass" style="position:absolute; right:12px; background:none; border:none; color:var(--text-sub); cursor:pointer; font-size:14px;">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </div>
@@ -440,13 +817,6 @@ $this->assign('meta_keywords', 'helpdesk login, daily task login, developer sign
     </div>
 </div>
 
-<style>
-@keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-</style>
-
 <!-- Floating Toast Element -->
 <div id="toastNotification" class="toast">
     <i id="toastIcon" class="fa-solid fa-circle-check"></i>
@@ -461,6 +831,32 @@ $renderedFlash = $this->Flash->render();
 <?php endif; ?>
 
 <script>
+    // Toast Notification Utility - Delegates to global window.showToast
+    function showToast(message, isError) {
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, isError);
+            return;
+        }
+        var $toast = $('#toastNotification');
+        var $icon = $('#toastIcon');
+        var $msg = $('#toastMessage');
+
+        $msg.text(message);
+        if (isError) {
+            $toast.addClass('toast-error error');
+            $icon.attr('class', 'fa-solid fa-circle-xmark');
+        } else {
+            $toast.addClass('toast-success success');
+            $icon.attr('class', 'fa-solid fa-circle-check');
+        }
+
+        $toast.addClass('show');
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(function() {
+            $toast.removeClass('show');
+        }, 3200);
+    }
+
     // Handle Google GIS Authentication Callback
     function onGoogleAuthCallback(response) {
         if (response && response.credential) {
@@ -481,6 +877,15 @@ $renderedFlash = $this->Flash->render();
     }
 
     $(document).ready(function() {
+        // Initial flash messages if present
+        var $flashHolder = $('#initialFlashHolder');
+        if ($flashHolder.length) {
+            var flashText = $flashHolder.text().trim();
+            if (flashText) {
+                var isErr = $flashHolder.find('.message.error').length > 0;
+                showToast(flashText, isErr);
+            }
+        }
 
         // Clear error on input
         $('#email, #password').on('input', function() {

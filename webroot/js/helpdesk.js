@@ -6,15 +6,20 @@
 (function (window, $) {
     'use strict';
 
-    // 1. Toast Notification System
+    // 1. Toast Notification System - Always Bottom-Right with Accurate Type Colors
     var toastTimeout = null;
 
     window.showToast = function (msg, typeOrIsError) {
         var $toast = $('#toastNotification').length ? $('#toastNotification') : $('#toast');
-        var $icon = $('#toastIcon');
-        var $msg = $('#toastMessage');
 
-        if (!$toast.length) return;
+        // Dynamically create toast container in body if not already present
+        if (!$toast.length) {
+            $toast = $('<div id="toastNotification" class="toast"><i class="fa-solid fa-circle-check" id="toastIcon"></i><span id="toastMessage"></span></div>');
+            $('body').append($toast);
+        }
+
+        var $icon = $toast.find('#toastIcon').length ? $toast.find('#toastIcon') : $('#toastIcon');
+        var $msg = $toast.find('#toastMessage').length ? $toast.find('#toastMessage') : $('#toastMessage');
 
         if (toastTimeout) {
             clearTimeout(toastTimeout);
@@ -25,21 +30,21 @@
 
         $toast.removeClass('success error warning info toast-success toast-error toast-warning toast-info');
 
-        var isErr = (typeOrIsError === 'error' || typeOrIsError === true || /^(error|failed|invalid|could not|network error|cannot)/i.test(cleanMsg) || /^(❌)/.test(msg));
-        var isWarn = (typeOrIsError === 'warning' || /^(warning|caution|please enter|required|too long|empty|no tasks|no subject)/i.test(cleanMsg) || /^(⚠️)/.test(msg));
-        var isSuccess = (typeOrIsError === 'success' || typeOrIsError === false || /^(saved|success|synced|copied|renamed|deleted|cleared|applied|auto-structured|validated|complete|sent|created|signed up|logged in)/i.test(cleanMsg) || /^(✅|🎉|✨)/.test(msg));
+        var isErr = (typeOrIsError === 'error' || typeOrIsError === 'danger' || typeOrIsError === true || /^(error|failed|invalid|could not|network error|cannot|incorrect|server error)/i.test(cleanMsg) || /^(❌)/.test(msg));
+        var isWarn = (typeOrIsError === 'warning' || typeOrIsError === 'warn' || /^(warning|caution|please enter|required|too long|empty|no tasks|no subject|nothing to copy)/i.test(cleanMsg) || /^(⚠️)/.test(msg));
+        var isSuccess = (typeOrIsError === 'success' || typeOrIsError === false || /^(saved|success|synced|copied|renamed|deleted|cleared|applied|auto-structured|validated|complete|sent|created|signed up|logged in|active|template|updated|added|welcome)/i.test(cleanMsg) || /^(✅|🎉|✨)/.test(msg));
 
         if (isErr) {
-            $toast.addClass('toast-error');
+            $toast.addClass('toast-error error');
             if ($icon.length) $icon.attr('class', 'fa-solid fa-circle-xmark');
         } else if (isWarn) {
-            $toast.addClass('toast-warning');
+            $toast.addClass('toast-warning warning');
             if ($icon.length) $icon.attr('class', 'fa-solid fa-triangle-exclamation');
         } else if (isSuccess) {
-            $toast.addClass('toast-success');
+            $toast.addClass('toast-success success');
             if ($icon.length) $icon.attr('class', 'fa-solid fa-circle-check');
         } else {
-            $toast.addClass('toast-info');
+            $toast.addClass('toast-info info');
             if ($icon.length) $icon.attr('class', 'fa-solid fa-circle-info');
         }
 
@@ -52,7 +57,7 @@
         $toast.addClass('show');
         toastTimeout = setTimeout(function () {
             $toast.removeClass('show');
-        }, 2800);
+        }, 3200);
     };
 
     // 2. Safe HTML Escaping
@@ -127,10 +132,27 @@
 
             // 1. Check if Category Header (e.g. "Backend:", "Frontend:", "Design:", "API Integration:")
             if (/^[A-Za-z0-9\s_\-\/&]{2,60}:$/.test(headerCandidate) && !/^\d+[\.\)]/.test(trimmed) && !/^[•▪▫◦*\-–—]/.test(trimmed)) {
+                // Lookahead: verify if this category actually has tasks under it
+                var hasTasksUnderCategory = false;
+                for (var j = i + 1; j < rawLines.length; j++) {
+                    var nextTrimmed = rawLines[j].trim();
+                    if (!nextTrimmed) continue;
+                    var nextCandidate = nextTrimmed.replace(/^\*\*|\*\*$/g, '').trim();
+                    if (/^[A-Za-z0-9\s_\-\/&]{2,60}:$/.test(nextCandidate) && !/^\d+[\.\)]/.test(nextTrimmed) && !/^[•▪▫◦*\-–—]/.test(nextTrimmed)) {
+                        break; // Next category header reached without any task items
+                    }
+                    hasTasksUnderCategory = true;
+                    break;
+                }
+
+                if (!hasTasksUnderCategory) {
+                    continue; // Skip orphan category header with no tasks
+                }
+
                 if (inUl) { taskDetail += "</ul>"; inUl = false; }
                 if (inLi) { taskDetail += "</li>"; inLi = false; }
                 if (inOl) { taskDetail += "</ol>"; inOl = false; }
-                taskDetail += "<b style='color:#1e293b; display:inline-block; margin-top:6px; margin-bottom:2px;'>" + window.escapeHtml(headerCandidate) + "</b><br>";
+                taskDetail += "<b class='task-category-header' style='font-weight:bold; display:inline-block; margin-top:8px; margin-bottom:3px;'>" + window.escapeHtml(headerCandidate) + "</b><br>";
                 continue;
             }
 
@@ -179,9 +201,9 @@
             var formattedTask = window.formatInlineMarkdown(taskBody);
 
             if (isDoneList && !trimmed.endsWith(':')) {
-                taskDetail += "<li style='margin-bottom:4px; line-height:1.5;'>" + formattedTask + " <b>[Done]</b>";
+                taskDetail += "<li style='margin-bottom:4px; line-height:1.5;'>" + formattedTask + " <b class='task-done-badge'>[Done]</b>";
             } else {
-                taskDetail += "<li style='margin-bottom:4px; line-height:1.5;'>" + formattedTask + (hasDoneTag ? " <b>[Done]</b>" : "");
+                taskDetail += "<li style='margin-bottom:4px; line-height:1.5;'>" + formattedTask + (hasDoneTag ? " <b class='task-done-badge'>[Done]</b>" : "");
             }
             inLi = true;
         }
@@ -246,7 +268,110 @@
         return n + (s[(v - 20) % 10] || s[v] || s[0]);
     };
 
-    // 7. Fallback Clipboard Writer
+    // 7. Universal Black Text Clipboard Engine & Fallback Copy
+    window.copyElementAsBlackText = function (sourceContainer, successMsg, customHtmlModifier) {
+        if (!sourceContainer) {
+            window.showToast('Nothing to copy!', 'warning');
+            return;
+        }
+
+        // Clone the container to isolate DOM manipulation
+        var clone = sourceContainer.cloneNode(true);
+
+        if (typeof customHtmlModifier === 'function') {
+            customHtmlModifier(clone);
+        }
+
+        // Strip any buttons or non-content controls
+        var removeEls = clone.querySelectorAll('button, .btn, .btn-copy-subject, .btn-copy-content, .btn-copy-preview-modal, script, style');
+        for (var b = 0; b < removeEls.length; b++) {
+            removeEls[b].remove();
+        }
+
+        // Deep-walk every child node to enforce pure black #000000 text
+        var allEls = clone.querySelectorAll('*');
+        for (var i = 0; i < allEls.length; i++) {
+            var el = allEls[i];
+            el.style.setProperty('color', '#000000', 'important');
+            el.style.setProperty('background-color', 'transparent', 'important');
+            var tag = el.tagName.toLowerCase();
+            if (tag === 'b' || tag === 'strong') {
+                el.style.setProperty('font-weight', 'bold', 'important');
+                el.style.setProperty('color', '#000000', 'important');
+            } else if (tag === 'a') {
+                el.style.setProperty('color', '#1a56db', 'important');
+            } else if (tag === 'li') {
+                el.style.setProperty('color', '#000000', 'important');
+                el.style.setProperty('margin-bottom', '4px', 'important');
+                el.style.setProperty('line-height', '1.6', 'important');
+            }
+        }
+
+        clone.style.setProperty('color', '#000000', 'important');
+        clone.style.setProperty('background-color', '#ffffff', 'important');
+        clone.style.setProperty('font-family', 'Arial, Helvetica, sans-serif', 'important');
+
+        var cleanOuterHtml = '<div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.65; color: #000000 !important; background-color: #ffffff;">' + clone.innerHTML + '</div>';
+        var plainText = (clone.innerText || clone.textContent || '').trim();
+
+        function execCommandFallback() {
+            var tempDiv = document.createElement('div');
+            tempDiv.className = 'force-black-copy-container';
+            tempDiv.setAttribute('data-theme', 'light');
+            tempDiv.style.position = 'fixed';
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.top = '0';
+            tempDiv.style.opacity = '0';
+            tempDiv.style.color = '#000000';
+            tempDiv.style.backgroundColor = '#ffffff';
+            tempDiv.style.fontFamily = 'Arial, Helvetica, sans-serif';
+            tempDiv.innerHTML = cleanOuterHtml;
+            document.body.appendChild(tempDiv);
+
+            var range = document.createRange();
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            range.selectNodeContents(tempDiv);
+            sel.addRange(range);
+
+            try {
+                document.execCommand('copy');
+                sel.removeAllRanges();
+                window.showToast(successMsg || 'Content copied to clipboard (Black Text)!', 'success');
+            } catch (err) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(plainText).then(function () {
+                        window.showToast(successMsg || 'Content copied as text!', 'success');
+                    });
+                } else {
+                    window.showToast('Could not copy content', 'error');
+                }
+            } finally {
+                document.body.removeChild(tempDiv);
+            }
+        }
+
+        if (navigator.clipboard && window.ClipboardItem) {
+            try {
+                var blobHtml = new Blob([cleanOuterHtml], { type: 'text/html' });
+                var blobText = new Blob([plainText], { type: 'text/plain' });
+                var item = new ClipboardItem({
+                    'text/html': blobHtml,
+                    'text/plain': blobText
+                });
+                navigator.clipboard.write([item]).then(function () {
+                    window.showToast(successMsg || 'Content copied to clipboard (Black Text)!', 'success');
+                }).catch(function () {
+                    execCommandFallback();
+                });
+            } catch (e) {
+                execCommandFallback();
+            }
+        } else {
+            execCommandFallback();
+        }
+    };
+
     window.fallbackCopy = function (text, msg) {
         var $temp = $('<textarea>');
         $temp.css({ position: 'fixed', left: '-9999px', top: '0', opacity: '0' });
@@ -260,6 +385,58 @@
         }
         $temp.remove();
     };
+
+    // Global copy event listener: Guarantees that ANY manual selection copy in Dark Mode pastes as black text
+    document.addEventListener('copy', function (e) {
+        var sel = window.getSelection();
+        if (!sel || !sel.rangeCount || sel.isCollapsed) return;
+
+        var range = sel.getRangeAt(0);
+        var container = range.commonAncestorContainer;
+        if (container.nodeType === Node.TEXT_NODE) {
+            container = container.parentElement;
+        }
+        if (!container) return;
+
+        var isDarkTheme = (document.documentElement.getAttribute('data-theme') === 'dark' || document.body.getAttribute('data-theme') === 'dark');
+        var isPreviewOrTask = container.closest('.mail_body, #emailHtmlPreviewContainer, .email-preview-box, .preview-card, .editor-preview-box, #workNotesEditor, .task-list-panel');
+
+        // Only intercept if dark theme is active or selection is inside preview/task sections
+        if (isDarkTheme || isPreviewOrTask) {
+            var cloned = range.cloneContents();
+            var tempDiv = document.createElement('div');
+            tempDiv.appendChild(cloned);
+
+            var els = tempDiv.querySelectorAll('*');
+            for (var i = 0; i < els.length; i++) {
+                var el = els[i];
+                el.style.setProperty('color', '#000000', 'important');
+                if (el.style.backgroundColor && el.style.backgroundColor !== 'transparent') {
+                    el.style.backgroundColor = 'transparent';
+                }
+                var t = el.tagName.toLowerCase();
+                if (t === 'b' || t === 'strong') {
+                    el.style.setProperty('font-weight', 'bold', 'important');
+                    el.style.setProperty('color', '#000000', 'important');
+                } else if (t === 'a') {
+                    el.style.setProperty('color', '#1a56db', 'important');
+                }
+            }
+
+            tempDiv.style.setProperty('color', '#000000', 'important');
+            tempDiv.style.setProperty('background-color', '#ffffff', 'important');
+            tempDiv.style.setProperty('font-family', 'Arial, Helvetica, sans-serif', 'important');
+
+            var cleanHtml = '<div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.65; color: #000000 !important; background-color: #ffffff;">' + tempDiv.innerHTML + '</div>';
+            var plainText = sel.toString();
+
+            if (e.clipboardData) {
+                e.clipboardData.setData('text/html', cleanHtml);
+                e.clipboardData.setData('text/plain', plainText);
+                e.preventDefault();
+            }
+        }
+    });
 
     // 8. Global UI Controller on Document Ready
     $(document).ready(function () {

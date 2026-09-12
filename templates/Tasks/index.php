@@ -13,6 +13,46 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 ?>
 
 <style>
+    /* =========================================================
+       Glassmorphism & Sunrise Theme - Inspired by Rulse Design
+       ========================================================= */
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.74);
+        --glass-bg-hover: rgba(255, 255, 255, 0.88);
+        --glass-bg-subtle: rgba(255, 255, 255, 0.52);
+        --glass-border: rgba(255, 255, 255, 0.90);
+        --glass-border-subtle: rgba(226, 232, 240, 0.80);
+        --glass-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.10), 0 4px 16px rgba(0, 0, 0, 0.04);
+        --text-headline: #0f172a;
+        --text-body: #1e293b;
+        --text-muted: #64748b;
+        --text-light: #94a3b8;
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --sun-yellow: #ebf84a;
+        --sun-yellow-hover: #e2f038;
+        --radius-xl: 24px;
+        --radius-lg: 18px;
+        --radius-md: 14px;
+        --radius-sm: 10px;
+        --radius-pill: 999px;
+    }
+
+    [data-theme="dark"] {
+        --glass-bg: rgba(15, 23, 42, 0.76);
+        --glass-bg-hover: rgba(30, 41, 59, 0.85);
+        --glass-bg-subtle: rgba(15, 23, 42, 0.55);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-border-subtle: rgba(255, 255, 255, 0.08);
+        --glass-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.6);
+        --text-headline: #f8fafc;
+        --text-body: #e2e8f0;
+        --text-muted: #94a3b8;
+        --text-light: #64748b;
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+    }
+
     * {
         box-sizing: border-box;
         margin: 0;
@@ -20,37 +60,120 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     body {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        background-color: var(--bg-main);
-        color: var(--text-main);
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #80bdfc;
+        background: radial-gradient(circle at 15% 12%, #93c5fd 0%, transparent 40%),
+                    radial-gradient(circle at 85% 18%, #c4b5fd 0%, transparent 45%),
+                    radial-gradient(circle at 80% 85%, #fef08a 0%, #fed7aa 25%, transparent 55%),
+                    radial-gradient(circle at 10% 85%, #a7f3d0 0%, transparent 40%),
+                    linear-gradient(135deg, #60a5fa 0%, #93c5fd 35%, #e0e7ff 70%, #fef3c7 100%);
+        background-attachment: fixed;
+        color: var(--text-body);
         line-height: 1.5;
         padding: 16px 20px;
         min-height: 100vh;
         overflow-x: hidden;
+        position: relative;
+    }
+
+    [data-theme="dark"] body {
+        background: #090d16;
+        background: radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.22) 0%, transparent 45%),
+                    radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.12) 0%, transparent 55%),
+                    linear-gradient(135deg, #090d16 0%, #111827 50%, #0f172a 100%);
+        background-attachment: fixed;
+        color: var(--text-body);
+    }
+
+    /* Ambient Glowing Floating Orbs */
+    .ambient-glow-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(80px);
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.65;
+        animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+
+    [data-theme="dark"] .ambient-glow-orb {
+        opacity: 0.28;
+    }
+
+    .orb-1 {
+        width: 480px;
+        height: 480px;
+        top: -80px;
+        left: -80px;
+        background: radial-gradient(circle, #60a5fa, #818cf8);
+    }
+
+    [data-theme="dark"] .orb-1 {
+        background: radial-gradient(circle, #3b82f6, #6366f1);
+    }
+
+    .orb-2 {
+        width: 520px;
+        height: 520px;
+        bottom: -100px;
+        right: -80px;
+        background: radial-gradient(circle, #fde047, #fb923c);
+        animation-delay: -6s;
+    }
+
+    [data-theme="dark"] .orb-2 {
+        background: radial-gradient(circle, #6366f1, #8b5cf6);
+    }
+
+    .orb-3 {
+        width: 380px;
+        height: 380px;
+        top: 30%;
+        right: 15%;
+        background: radial-gradient(circle, #c084fc, #e879f9);
+        animation-delay: -12s;
+    }
+
+    [data-theme="dark"] .orb-3 {
+        background: radial-gradient(circle, #8b5cf6, #ec4899);
+    }
+
+    @keyframes floatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, -25px) scale(1.06); }
+        100% { transform: translate(-20px, 20px) scale(0.96); }
     }
 
     .app-container {
-        max-width: 1400px;
+        max-width: 1440px;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
         gap: 14px;
         height: calc(100vh - 36px);
+        position: relative;
+        z-index: 1;
     }
 
-    /* Top Header */
+    /* Top Header: Frosted Floating Glass Bar */
     header {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        padding: 12px 20px;
-        box-shadow: var(--shadow-sm);
+        position: relative;
+        z-index: 1000;
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(190%);
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: 12px 22px;
+        box-shadow: var(--glass-shadow);
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
         flex-wrap: wrap;
         flex-shrink: 0;
+        transition: all 0.25s ease;
     }
 
     .brand {
@@ -60,40 +183,55 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     .brand-icon {
-        width: 40px;
-        height: 40px;
-        background: #1c201e;
-        color: #f7f6f0;
-        border-radius: var(--radius-sm);
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fde047;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 19px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+    }
+
+    [data-theme="dark"] .brand-icon {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #fde047;
     }
 
     .brand-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 18px;
+        font-size: 19px;
         font-weight: 800;
-        color: var(--text-main);
+        color: var(--text-headline);
         line-height: 1.2;
+        letter-spacing: -0.02em;
     }
 
     .brand-subtitle {
-        font-size: 11px;
+        font-size: 11.5px;
         color: var(--text-muted);
         font-weight: 500;
     }
 
-    /* Header Date Selector */
+    /* Header Date Selector Capsule */
     .date-controls {
         display: flex;
         align-items: center;
-        gap: 8px;
-        background: var(--bg-secondary);
-        padding: 4px 6px;
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border-color);
+        gap: 6px;
+        background: var(--glass-bg-subtle);
+        padding: 4px 8px;
+        border-radius: var(--radius-pill);
+        border: 1.5px solid var(--glass-border);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    [data-theme="dark"] .date-controls {
+        background: rgba(15, 23, 42, 0.75) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.14) !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
     }
 
     .btn-nav {
@@ -101,120 +239,406 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         border: none;
         color: var(--text-muted);
         padding: 6px 12px;
-        border-radius: var(--radius-sm);
+        border-radius: var(--radius-pill);
         cursor: pointer;
-        font-size: 13px;
-        font-weight: 600;
-        transition: all 0.2s ease;
+        font-size: 12.5px;
+        font-weight: 700;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .btn-nav:hover {
-        color: var(--text-main);
+        color: var(--text-headline);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] .btn-nav:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-nav#btnToday {
         background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.8);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        color: var(--text-headline);
+        padding: 5px 14px;
+    }
+
+    [data-theme="dark"] .btn-nav#btnToday {
+        background: #4f46e5 !important;
+        border: 1px solid #6366f1 !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35) !important;
+    }
+
+    [data-theme="dark"] .btn-nav#btnToday:hover {
+        background: #4338ca !important;
+        border-color: #818cf8 !important;
+        color: #ffffff !important;
     }
 
     .date-picker {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        color: var(--text-main);
-        font-family: inherit;
+        background: transparent;
+        border: none;
+        color: var(--text-headline);
+        font-family: 'Fira Code', monospace;
         font-size: 13px;
         font-weight: 700;
-        padding: 5px 10px;
-        border-radius: var(--radius-sm);
+        padding: 4px 8px;
         outline: none;
         cursor: pointer;
+    }
+
+    [data-theme="dark"] .date-controls .date-picker,
+    [data-theme="dark"] #datePicker {
+        background: #1e293b !important;
+        background-color: #1e293b !important;
+        border: 1.5px solid #334155 !important;
+        border-radius: var(--radius-pill) !important;
+        color: #f8fafc !important;
+        color-scheme: dark !important;
+        font-family: 'Fira Code', monospace !important;
+        font-size: 12.5px !important;
+        font-weight: 700 !important;
+        padding: 5px 12px !important;
+        outline: none !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+        transition: all 0.2s ease;
+    }
+
+    [data-theme="dark"] .date-controls .date-picker:focus,
+    [data-theme="dark"] #datePicker:focus {
+        background-color: #334155 !important;
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+    }
+
+    [data-theme="dark"] .date-picker::-webkit-calendar-picker-indicator,
+    [data-theme="dark"] #datePicker::-webkit-calendar-picker-indicator {
+        filter: invert(0.9) brightness(1.2) !important;
+        cursor: pointer !important;
+        opacity: 0.85;
     }
 
     .action-btns {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }
 
     .btn {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        color: var(--text-main);
-        padding: 7px 14px;
-        border-radius: var(--radius-sm);
+        background: var(--glass-bg);
+        border: 1.5px solid var(--glass-border);
+        color: var(--text-headline);
+        padding: 8px 16px;
+        border-radius: var(--radius-pill);
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        transition: all 0.2s ease;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     }
 
     .btn:hover {
-        background: var(--bg-secondary);
-        border-color: var(--border-hover);
-        color: var(--text-main);
+        background: var(--glass-bg-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+        color: var(--text-headline);
     }
 
     .btn-primary {
-        background: #1c201e;
-        color: #ffffff;
-        border-color: #1c201e;
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+        border: none !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4) !important;
+        font-weight: 800 !important;
     }
 
     .btn-primary:hover {
-        background: #343a37;
-        color: #ffffff;
+        background: linear-gradient(135deg, #4338ca 0%, #2563eb 100%) !important;
+        transform: translateY(-1.5px) scale(1.02) !important;
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.6) !important;
+        color: #ffffff !important;
     }
 
-    .btn-logout-pill:hover {
-        background: #fee2e2 !important;
-        border-color: #fca5a5 !important;
+    #btnOpenGlobalSearch {
+        background: var(--glass-bg);
+        border: 1.5px solid var(--glass-border);
+        color: var(--text-headline);
+        padding: 8px 18px;
+        border-radius: var(--radius-pill);
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    #btnOpenGlobalSearch:hover {
+        background: #ffffff;
+        transform: translateY(-1.5px);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    [data-theme="dark"] #btnOpenGlobalSearch {
+        background: #1e293b !important;
+        border: 1.5px solid #334155 !important;
+        color: #f8fafc !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    [data-theme="dark"] #btnOpenGlobalSearch:hover {
+        background: #334155 !important;
+        border-color: #6366f1 !important;
+        color: #ffffff !important;
+    }
+
+    /* Rulse Signature Sunshine Yellow CTA Pill (Matches "+ Add Task") */
+    /* Rulse Signature Sunshine Yellow CTA Pill (Matches "+ Add Task") */
+    #btnInsertTemplate {
+        background: var(--sun-yellow) !important;
+        color: #0f172a !important;
+        border: 1.5px solid #d9e638 !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 8px 20px !important;
+        font-size: 12.5px !important;
+        font-weight: 800 !important;
+        box-shadow: 0 4px 12px rgba(161, 98, 7, 0.15) !important;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #btnInsertTemplate:hover {
+        background: var(--sun-yellow-hover) !important;
+        transform: translateY(-1.5px) scale(1.02) !important;
+        box-shadow: 0 6px 18px rgba(161, 98, 7, 0.25) !important;
+    }
+
+    [data-theme="dark"] #btnInsertTemplate {
+        background: #facc15 !important;
+        color: #090d16 !important;
+        border: 1.5px solid #fde047 !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    [data-theme="dark"] #btnInsertTemplate:hover {
+        background: #fde047 !important;
+        border-color: #fef08a !important;
+        color: #000000 !important;
+        transform: translateY(-1.5px) scale(1.02) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* User Profile Pill */
+    .user-menu-wrapper {
+        position: relative;
+    }
+
+    .user-pill-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 9px !important;
+        background: var(--glass-bg) !important;
+        border: 1.5px solid var(--glass-border) !important;
+        padding: 5px 14px !important;
+        border-radius: var(--radius-pill) !important;
+        font-size: 12.5px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        color: var(--text-headline) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+        font-family: inherit;
+    }
+
+    .user-pill-btn:hover {
+        background: #ffffff !important;
         transform: translateY(-1px);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    [data-theme="dark"] .user-pill-btn:hover {
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .user-popover-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 10px);
+        min-width: 250px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(32px) saturate(190%);
+        -webkit-backdrop-filter: blur(32px) saturate(190%);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.2), 0 6px 16px rgba(0, 0, 0, 0.06);
+        padding: 12px;
+        z-index: 2500;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        animation: fadeIn 0.18s ease-out;
+    }
+
+    .user-popover-menu.active {
+        display: flex;
+    }
+
+    .user-popover-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+    }
+
+    .user-popover-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(99, 102, 241, 0.35);
+    }
+
+    .user-popover-meta {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-popover-name {
+        font-family: 'Outfit', sans-serif;
+        font-size: 13.5px;
+        font-weight: 800;
+        color: var(--text-headline);
+    }
+
+    .user-popover-email {
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+
+    .user-popover-divider {
+        height: 1px;
+        background: var(--glass-border-subtle);
+        margin: 4px 6px;
+    }
+
+    .user-popover-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        color: var(--text-body);
+        font-size: 12.5px;
+        font-weight: 600;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        transition: all 0.15s ease;
+        text-decoration: none;
+    }
+
+    .user-popover-item:hover {
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--primary);
+    }
+
+    [data-theme="dark"] .user-popover-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-popover-item.item-logout {
+        color: #ef4444;
+    }
+
+    .user-popover-item.item-logout:hover {
+        background: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
     }
 
     /* Main Workspace Layout */
     .workspace {
         display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 14px;
+        grid-template-columns: 310px 1fr;
+        gap: 16px;
         flex: 1;
         min-height: 0;
     }
 
-    /* Sidebar: Past Journal Logs */
+    /* Left Sidebar: Past Journal Logs */
     .sidebar {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        padding: 14px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(190%);
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: 18px 16px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        box-shadow: var(--shadow-sm);
+        gap: 12px;
+        box-shadow: var(--glass-shadow);
         min-height: 0;
     }
 
     .sidebar-header {
         font-family: 'Outfit', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--text-main);
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--text-headline);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-bottom: 6px;
-        border-bottom: 1px solid var(--bg-secondary);
+        padding-bottom: 8px;
+        border-bottom: 1.5px solid var(--glass-border-subtle);
     }
 
-    /* Month Filter Bar */
+    #logCountBadge {
+        font-size: 11.5px !important;
+        font-weight: 800 !important;
+        color: #4f46e5 !important;
+        background: rgba(99, 102, 241, 0.12) !important;
+        border: 1px solid rgba(99, 102, 241, 0.25) !important;
+        padding: 2px 10px !important;
+        border-radius: var(--radius-pill) !important;
+    }
+
+    [data-theme="dark"] #logCountBadge {
+        color: #818cf8 !important;
+        background: rgba(99, 102, 241, 0.2) !important;
+    }
+
     .month-filter-bar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 4px 8px;
+        background: var(--glass-bg-subtle);
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-pill);
+        padding: 5px 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     }
 
     .btn-month-nav {
@@ -222,21 +646,30 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         border: none;
         color: var(--text-muted);
         cursor: pointer;
-        padding: 2px 6px;
-        border-radius: 4px;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         transition: all 0.15s ease;
     }
 
     .btn-month-nav:hover {
         background: #ffffff;
-        color: var(--text-main);
+        color: var(--text-headline);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    [data-theme="dark"] .btn-month-nav:hover {
+        background: rgba(255, 255, 255, 0.12);
     }
 
     .month-label {
         font-family: 'Outfit', sans-serif;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-main);
+        font-size: 12.5px;
+        font-weight: 800;
+        color: var(--text-headline);
     }
 
     .search-box {
@@ -245,22 +678,34 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     .search-input {
         width: 100%;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 6px 10px 6px 28px;
+        background: var(--glass-bg-subtle);
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-pill);
+        padding: 8px 14px 8px 36px;
         font-size: 12px;
-        color: var(--text-main);
+        font-weight: 500;
+        color: var(--text-headline);
         outline: none;
+        transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+        background: #ffffff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    [data-theme="dark"] .search-input:focus {
+        background: rgba(15, 23, 42, 0.85);
     }
 
     .search-icon {
         position: absolute;
-        left: 9px;
+        left: 13px;
         top: 50%;
         transform: translateY(-50%);
-        color: var(--text-light);
-        font-size: 11px;
+        color: var(--text-muted);
+        font-size: 12px;
     }
 
     .log-list {
@@ -268,15 +713,14 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        gap: 1px;
+        gap: 6px;
         scrollbar-width: thin;
         scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
-        padding-right: 3px;
+        padding-right: 4px;
     }
 
-    /* Ultra-Slim Minimal Scrollbar */
     .log-list::-webkit-scrollbar {
-        width: 3.5px;
+        width: 4px;
     }
 
     .log-list::-webkit-scrollbar-track {
@@ -286,93 +730,76 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     .log-list::-webkit-scrollbar-thumb {
         background: rgba(148, 163, 184, 0.4);
         border-radius: 4px;
-        transition: background 0.2s ease;
-    }
-
-    .log-list::-webkit-scrollbar-thumb:hover {
-        background: rgba(100, 116, 139, 0.75);
     }
 
     .log-item {
         position: relative;
-        padding: 9px 10px;
-        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
         cursor: pointer;
-        transition: all 0.15s ease;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border: 1px solid transparent;
+        background: rgba(255, 255, 255, 0.45);
+        border: 1.5px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
     }
 
-    /* Beautiful hairline divider: dark in the center, gracefully fading to transparent on left and right */
-    .log-item::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 4%;
-        right: 4%;
-        height: 1px;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(203, 213, 225, 0.2) 12%, 
-            rgba(71, 85, 105, 0.65) 50%, 
-            rgba(203, 213, 225, 0.2) 88%, 
-            transparent 100%
-        );
-        pointer-events: none;
-        transition: opacity 0.15s ease;
-    }
-
-    .log-item:last-child::after {
-        display: none;
+    [data-theme="dark"] .log-item {
+        background: rgba(15, 23, 42, 0.45);
+        border: 1.5px solid rgba(255, 255, 255, 0.08);
     }
 
     .log-item:hover {
-        background: var(--bg-secondary);
+        background: rgba(255, 255, 255, 0.88);
+        border-color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-1.5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
     }
 
-    .log-item:hover::after {
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(99, 102, 241, 0.25) 12%, 
-            rgba(79, 70, 229, 0.75) 50%, 
-            rgba(99, 102, 241, 0.25) 88%, 
-            transparent 100%
-        );
+    [data-theme="dark"] .log-item:hover {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(255, 255, 255, 0.18);
     }
 
+    /* Rulse Active Item Style */
     .log-item.active {
-        background: var(--bg-secondary);
-        border-color: var(--border-color);
-        font-weight: 700;
+        background: linear-gradient(135deg, rgba(235, 248, 74, 0.35) 0%, rgba(254, 240, 138, 0.55) 100%) !important;
+        border: 1.5px solid rgba(235, 248, 74, 0.95) !important;
+        box-shadow: 0 6px 20px rgba(235, 248, 74, 0.4) !important;
+        font-weight: 800;
     }
 
-    .log-item.active::after {
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(99, 102, 241, 0.3) 12%, 
-            rgba(79, 70, 229, 0.85) 50%, 
-            rgba(99, 102, 241, 0.3) 88%, 
-            transparent 100%
-        );
+    [data-theme="dark"] .log-item.active {
+        background: linear-gradient(135deg, rgba(235, 248, 74, 0.15) 0%, rgba(245, 158, 11, 0.22) 100%) !important;
+        border: 1.5px solid rgba(235, 248, 74, 0.6) !important;
+        box-shadow: 0 6px 20px rgba(235, 248, 74, 0.2) !important;
     }
 
     .log-date {
-        font-size: 12px;
-        color: var(--text-main);
+        font-size: 12.5px;
+        color: var(--text-headline);
         font-family: 'Fira Code', monospace;
+        font-weight: 700;
         white-space: nowrap;
     }
 
     .log-badge {
-        font-size: 10px;
+        font-size: 11px;
         color: var(--text-muted);
-        background: var(--bg-card);
-        padding: 1px 6px;
-        border-radius: 10px;
-        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.85);
+        padding: 2px 9px;
+        border-radius: var(--radius-pill);
+        border: 1px solid rgba(203, 213, 225, 0.8);
         white-space: nowrap;
+        font-weight: 700;
+    }
+
+    .log-item.active .log-badge {
+        background: #0f172a !important;
+        color: #fde047 !important;
+        border-color: #0f172a !important;
     }
 
     .empty-state {
@@ -382,98 +809,114 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         justify-content: center;
         text-align: center;
         padding: 26px 12px;
-        background: var(--bg-secondary);
-        border: 1px dashed var(--border-color);
-        border-radius: var(--radius-sm);
+        background: var(--glass-bg-subtle);
+        border: 1.5px dashed var(--glass-border);
+        border-radius: var(--radius-lg);
         margin: 6px 0;
         gap: 6px;
     }
 
     .empty-state .empty-icon {
-        width: 38px;
-        height: 38px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
-        background: var(--bg-card);
+        background: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
-        color: var(--text-light);
-        border: 1px solid var(--border-color);
-        box-shadow: var(--shadow-sm);
-        margin-bottom: 2px;
+        font-size: 17px;
+        color: var(--text-muted);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        margin-bottom: 4px;
     }
 
     .empty-state .empty-text {
         font-family: 'Outfit', sans-serif;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-main);
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--text-headline);
     }
 
     .empty-state .empty-subtext {
-        font-size: 11px;
+        font-size: 11.5px;
         color: var(--text-muted);
-        line-height: 1.35;
     }
 
-    /* Editor Container */
+    /* Right Main Panel: Clean Text Editor */
     .editor-container {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
+        background: var(--glass-bg);
+        backdrop-filter: blur(28px) saturate(190%);
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border);
+        border-radius: var(--radius-xl);
         display: flex;
         flex-direction: column;
-        box-shadow: var(--shadow-sm);
+        box-shadow: var(--glass-shadow);
         min-height: 0;
         overflow: hidden;
     }
 
     .editor-toolbar {
-        padding: 10px 16px;
-        background: var(--bg-secondary);
-        border-bottom: 1px solid var(--border-color);
+        padding: 10px 18px;
+        background: var(--glass-bg-subtle);
+        border-bottom: 1.5px solid var(--glass-border-subtle);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
+        gap: 10px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
     }
 
     .editor-title-group {
         display: flex;
         align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
+        gap: 8px;
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+    }
+
+    .editor-toolbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+        margin-left: auto;
     }
 
     .editor-title {
         font-family: 'Fira Code', monospace;
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-main);
+        font-size: 13.5px;
+        font-weight: 800;
+        color: var(--text-headline);
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
     }
 
-    /* Custom Project Dropdown & Management Styling */
+    /* Custom Project & Client Selection Pill Dropdown */
     .custom-project-wrapper {
         position: relative;
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: var(--bg-card);
-        padding: 3px 6px 3px 10px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        background: var(--glass-bg);
+        padding: 4px 6px 4px 14px;
+        border-radius: var(--radius-pill);
+        border: 1.5px solid var(--glass-border);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
         transition: all 0.2s ease;
     }
 
     .custom-project-wrapper:hover {
-        border-color: var(--border-hover);
-        box-shadow: var(--shadow-sm);
+        background: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+
+    [data-theme="dark"] .custom-project-wrapper:hover {
+        background: rgba(30, 41, 59, 0.85);
     }
 
     .custom-project-trigger {
@@ -481,30 +924,33 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         border: none;
         outline: none;
         font-family: 'Fira Code', monospace;
-        font-size: 12px;
-        font-weight: 700;
-        color: #1c201e;
+        font-size: 12.5px;
+        font-weight: 800;
+        color: var(--text-headline);
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 7px;
         padding: 2px 4px;
     }
 
     .custom-project-menu {
         position: absolute;
-        top: calc(100% + 6px);
+        top: calc(100% + 8px);
         left: 0;
-        min-width: 220px;
-        background: #ffffff;
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-        padding: 6px;
-        z-index: 1500;
+        min-width: 240px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(32px) saturate(190%);
+        -webkit-backdrop-filter: blur(32px) saturate(190%);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 18px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+        padding: 8px;
+        z-index: 2500;
         display: none;
         flex-direction: column;
         gap: 4px;
+        animation: fadeIn 0.15s ease-out;
     }
 
     .custom-project-menu.active {
@@ -512,29 +958,30 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     .custom-menu-header {
-        font-size: 10px;
-        font-weight: 700;
+        font-size: 10.5px;
+        font-weight: 800;
         text-transform: uppercase;
         color: var(--text-muted);
-        padding: 6px 8px 4px 8px;
-        border-bottom: 1px solid var(--bg-secondary);
+        padding: 6px 10px 6px 10px;
+        border-bottom: 1px solid var(--glass-border-subtle);
+        letter-spacing: 0.05em;
     }
 
     .custom-menu-list {
         display: flex;
         flex-direction: column;
-        gap: 2px;
-        max-height: 200px;
+        gap: 3px;
+        max-height: 220px;
         overflow-y: auto;
     }
 
     .custom-menu-item {
-        padding: 8px 10px;
-        border-radius: 6px;
+        padding: 8px 12px;
+        border-radius: 10px;
         font-family: 'Fira Code', monospace;
-        font-size: 12px;
+        font-size: 12.5px;
         font-weight: 600;
-        color: var(--text-main);
+        color: var(--text-headline);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -543,23 +990,28 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     .custom-menu-item:hover {
-        background: var(--bg-secondary);
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--primary);
+    }
+
+    [data-theme="dark"] .custom-menu-item:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .custom-menu-item.active {
-        background: #f0fdf4;
-        color: #15803d;
-        font-weight: 700;
+        background: rgba(235, 248, 74, 0.3);
+        color: #0f172a;
+        font-weight: 800;
     }
 
     .btn-add-project {
-        background: var(--bg-secondary);
+        background: rgba(99, 102, 241, 0.12);
         color: #4f46e5;
-        border: 1px solid var(--border-color);
-        padding: 3px 8px;
-        border-radius: 6px;
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        padding: 4px 11px;
+        border-radius: var(--radius-pill);
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 800;
         cursor: pointer;
         transition: all 0.2s ease;
         display: inline-flex;
@@ -570,16 +1022,16 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     .btn-add-project:hover {
         background: #4f46e5;
         color: #ffffff;
-        border-color: #4f46e5;
     }
+
     .btn-add-client {
-        background: var(--bg-secondary);
+        background: rgba(2, 132, 199, 0.12);
         color: #0284c7;
-        border: 1px solid var(--border-color);
-        padding: 3px 8px;
-        border-radius: 6px;
+        border: 1px solid rgba(2, 132, 199, 0.25);
+        padding: 4px 11px;
+        border-radius: var(--radius-pill);
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 800;
         cursor: pointer;
         transition: all 0.2s ease;
         display: inline-flex;
@@ -590,20 +1042,140 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     .btn-add-client:hover {
         background: #0284c7;
         color: #ffffff;
-        border-color: #0284c7;
     }
 
+    /* Toolbar Action Buttons */
+    #btnTogglePreview {
+        background: var(--glass-bg) !important;
+        border: 1.5px solid var(--glass-border) !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 6px 14px !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        color: var(--text-headline) !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    #btnTogglePreview:hover {
+        background: #ffffff !important;
+        transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] #btnTogglePreview {
+        background: #1e293b !important;
+        border: 1.5px solid #334155 !important;
+        color: #f8fafc !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    [data-theme="dark"] #btnTogglePreview:hover {
+        background: #334155 !important;
+        border-color: #6366f1 !important;
+        color: #ffffff !important;
+    }
+
+    /* AI Polish Gradient Pill */
+    #btnAiPolish {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-weight: 800 !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 6px 14px !important;
+        font-size: 11.5px !important;
+        box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4) !important;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        white-space: nowrap;
+        min-width: 96px;
+    }
+
+    #btnAiPolish:hover {
+        transform: translateY(-1.5px) scale(1.02);
+        box-shadow: 0 6px 22px rgba(139, 92, 246, 0.6) !important;
+    }
+
+    [data-theme="dark"] #btnAiPolish {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        font-weight: 800 !important;
+        box-shadow: 0 4px 18px rgba(124, 58, 237, 0.5) !important;
+    }
+
+    [data-theme="dark"] #btnAiPolish:hover {
+        background: linear-gradient(135deg, #4338ca 0%, #6d28d9 50%, #db2777 100%) !important;
+        box-shadow: 0 6px 24px rgba(124, 58, 237, 0.75) !important;
+        transform: translateY(-1.5px) scale(1.03) !important;
+        color: #ffffff !important;
+    }
+
+    #btnCopyOnlyTasks {
+        background: var(--glass-bg) !important;
+        border: 1.5px solid var(--glass-border) !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 6px 14px !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        color: var(--text-headline) !important;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    #btnCopyOnlyTasks:hover {
+        background: #ffffff !important;
+        transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] #btnCopyOnlyTasks {
+        background: #1e293b !important;
+        border: 1.5px solid #334155 !important;
+        color: #f8fafc !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    [data-theme="dark"] #btnCopyOnlyTasks:hover {
+        background: #334155 !important;
+        border-color: #6366f1 !important;
+        color: #ffffff !important;
+    }
+
+    #btnClearCurrent {
+        background: rgba(254, 242, 242, 0.85) !important;
+        border: 1.5px solid rgba(254, 202, 202, 0.85) !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 6px 12px !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        color: #e11d48 !important;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    #btnClearCurrent:hover {
+        background: #fee2e2 !important;
+        transform: translateY(-1px);
+    }
+
+    /* Editor Textarea */
     .editor-textarea {
         flex: 1;
         width: 100%;
-        padding: 20px;
-        background: var(--bg-editor);
+        padding: 24px 28px;
+        background: rgba(255, 255, 255, 0.58);
         border: none;
         outline: none;
         font-family: 'Fira Code', monospace;
-        font-size: 13px;
-        line-height: 1.7;
-        color: #1a1e1c;
+        font-size: 13.5px;
+        line-height: 1.75;
+        color: var(--text-headline);
         resize: none;
         tab-size: 2;
         white-space: pre-wrap;
@@ -612,88 +1184,115 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         overflow-y: auto;
     }
 
+    [data-theme="dark"] .editor-textarea {
+        background: rgba(15, 23, 42, 0.6);
+        color: #f1f5f9;
+    }
+
     .editor-preview-box {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-        font-size: 13.5px !important;
-        line-height: 1.65 !important;
-        color: var(--text-main) !important;
+        font-size: 14px !important;
+        line-height: 1.75 !important;
+        color: var(--text-headline) !important;
+        padding: 24px 28px !important;
     }
 
     .editor-preview-box a {
-        color: rgb(59, 130, 246) !important;
+        color: #2563eb !important;
         text-decoration: underline !important;
         cursor: pointer !important;
-        transition: color 0.15s ease;
-    }
-
-    .editor-preview-box a:hover {
-        color: rgb(30, 58, 138) !important;
-        text-decoration: none !important;
     }
 
     .link-chip {
-        background: #ffffff;
+        background: rgba(255, 255, 255, 0.85);
         border: 1px solid #7dd3fc;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: var(--radius-pill);
+        font-size: 11.5px;
+        font-weight: 700;
+        color: #0369a1 !important;
         text-decoration: none !important;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
         transition: all 0.15s ease;
     }
 
     .link-chip:hover {
         background: #f0f9ff !important;
         border-color: #0284c7 !important;
-        color: #0369a1 !important;
     }
 
+    /* Editor Footer Bar */
     .editor-footer {
-        padding: 8px 16px;
-        background: var(--bg-secondary);
-        border-top: 1px solid var(--border-color);
+        padding: 12px 22px;
+        background: var(--glass-bg-subtle);
+        border-top: 1.5px solid var(--glass-border-subtle);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font-size: 11px;
+        font-size: 12px;
         color: var(--text-muted);
         flex-shrink: 0;
     }
 
     .status-dot {
-        width: 7px;
-        height: 7px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         background: #10b981;
         display: inline-block;
-        margin-right: 4px;
+        margin-right: 6px;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.7);
     }
 
     .status-dot.saving {
         background: #f59e0b;
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
         animation: pulse 1s infinite;
     }
 
     @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.3; }
-        100% { opacity: 1; }
+        0% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(1.2); }
+        100% { opacity: 1; transform: scale(1); }
     }
 
-    /* Global Search Modal */
+    /* Continue to Email Gradient Pill CTA */
+    #btnContinueToEmail {
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+        color: #ffffff !important;
+        border-radius: var(--radius-pill) !important;
+        padding: 9px 24px !important;
+        font-weight: 800 !important;
+        font-size: 13px !important;
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.42) !important;
+        border: none !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #btnContinueToEmail:hover {
+        transform: translateY(-1.5px) scale(1.02);
+        box-shadow: 0 8px 26px rgba(79, 70, 229, 0.6) !important;
+    }
+
+    /* Modals: Frosted Floating Dialogs */
     .modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(28, 32, 30, 0.45);
-        backdrop-filter: blur(4px);
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 20px;
-        z-index: 2000;
+        z-index: 99999 !important;
         opacity: 0;
         pointer-events: none;
         transition: all 0.2s ease;
@@ -705,54 +1304,71 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     .modal-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(32px) saturate(190%);
+        -webkit-backdrop-filter: blur(32px) saturate(190%);
+        border: 1.5px solid rgba(255, 255, 255, 0.95);
+        border-radius: 28px;
         width: 100%;
         max-width: 680px;
-        max-height: 80vh;
+        max-height: 85vh;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.25);
         overflow: hidden;
     }
 
+    [data-theme="dark"] .modal-card {
+        background: rgba(22, 28, 45, 0.88);
+        border: 1.5px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+    }
+
     .modal-header {
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--border-color);
+        padding: 18px 24px;
+        border-bottom: 1.5px solid var(--glass-border-subtle);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: var(--bg-secondary);
+        background: var(--glass-bg-subtle);
     }
 
     .modal-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 16px;
+        font-size: 17px;
         font-weight: 800;
-        color: var(--text-main);
+        color: var(--text-headline);
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }
 
     .btn-close-modal {
         background: transparent;
         border: none;
-        font-size: 20px;
+        font-size: 22px;
         color: var(--text-muted);
         cursor: pointer;
-        padding: 2px 8px;
-        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
     }
 
     .btn-close-modal:hover {
-        background: var(--bg-secondary);
-        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text-headline);
+    }
+
+    [data-theme="dark"] .btn-close-modal:hover {
+        background: rgba(255, 255, 255, 0.12);
     }
 
     .modal-body {
-        padding: 20px;
+        padding: 24px;
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -766,21 +1382,27 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     .global-search-input {
         width: 100%;
-        padding: 12px 16px 12px 38px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
+        padding: 12px 18px 12px 42px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1.5px solid rgba(203, 213, 225, 0.85);
+        border-radius: var(--radius-lg);
         font-family: 'Fira Code', monospace;
         font-size: 13px;
-        color: var(--text-main);
+        color: var(--text-headline);
         outline: none;
         transition: all 0.2s ease;
     }
 
+    [data-theme="dark"] .global-search-input {
+        background: rgba(15, 23, 42, 0.6);
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+    }
+
     .global-search-input:focus {
-        background: var(--bg-card);
+        background: #ffffff;
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
     }
 
     .search-results-list {
@@ -792,19 +1414,27 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     .result-card {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.6);
+        border: 1.5px solid var(--glass-border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 14px 18px;
         cursor: pointer;
-        transition: all 0.15s ease;
+        transition: all 0.2s ease;
     }
 
     .result-card:hover {
-        background: var(--bg-card);
+        background: #ffffff;
         border-color: var(--primary);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
         transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] .result-card {
+        background: rgba(15, 23, 42, 0.5);
+    }
+
+    [data-theme="dark"] .result-card:hover {
+        background: rgba(30, 41, 59, 0.8);
     }
 
     .result-header {
@@ -816,88 +1446,122 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     .result-date {
         font-family: 'Fira Code', monospace;
-        font-size: 12px;
-        font-weight: 700;
+        font-size: 12.5px;
+        font-weight: 800;
         color: var(--primary);
     }
 
     .result-project {
         font-size: 11px;
-        font-weight: 600;
-        background: #e0e7ff;
-        color: #3730a3;
-        padding: 2px 8px;
-        border-radius: 12px;
+        font-weight: 700;
+        background: rgba(99, 102, 241, 0.12);
+        color: #4f46e5;
+        padding: 3px 10px;
+        border-radius: var(--radius-pill);
     }
 
     .result-snippet {
         font-family: 'Fira Code', monospace;
         font-size: 12px;
-        color: var(--text-main);
-        line-height: 1.5;
+        color: var(--text-headline);
+        line-height: 1.55;
         white-space: pre-wrap;
-        background: var(--bg-card);
-        padding: 8px 12px;
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.7);
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border-subtle);
+    }
+
+    [data-theme="dark"] .result-snippet {
+        background: rgba(15, 23, 42, 0.6);
     }
 
     mark.highlight {
         background: #fef08a;
         color: #1e1b4b;
-        font-weight: 700;
-        padding: 0 2px;
-        border-radius: 2px;
+        font-weight: 800;
+        padding: 1px 4px;
+        border-radius: 4px;
     }
 
     /* Modal Project Item List */
     .modal-project-list {
         display: flex;
         flex-direction: column;
-        gap: 8px;
-        max-height: 220px;
+        gap: 10px;
+        max-height: 280px;
         overflow-y: auto;
+        padding-right: 4px;
     }
 
     .modal-project-item {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1.5px solid rgba(226, 232, 240, 0.95);
+        border-radius: 14px;
+        padding: 12px 16px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
+        gap: 12px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-project-item:hover {
+        background: #ffffff;
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.12);
+        transform: translateY(-1.5px);
+    }
+
+    [data-theme="dark"] .modal-project-item {
+        background: rgba(15, 23, 42, 0.65);
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="dark"] .modal-project-item:hover {
+        background: rgba(30, 41, 59, 0.85);
+        border-color: rgba(99, 102, 241, 0.5);
     }
 
     .modal-project-name {
-        font-family: 'Fira Code', monospace;
-        font-size: 12px;
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 13.5px;
         font-weight: 700;
-        color: var(--text-main);
+        color: var(--text-headline);
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 10px;
     }
 
     .btn-action-icon {
-        background: transparent;
-        border: none;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1.5px solid rgba(203, 213, 225, 0.85);
         color: var(--text-muted);
         cursor: pointer;
-        padding: 4px 8px;
-        border-radius: 6px;
+        padding: 7px 11px;
+        border-radius: 10px;
         font-size: 12px;
-        transition: all 0.15s ease;
+        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .btn-action-icon:hover {
         background: #ffffff;
         color: var(--primary);
+        border-color: var(--primary);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.22);
     }
 
     .btn-action-icon.delete:hover {
-        color: #e11d48;
+        background: #fee2e2;
+        color: #ef4444;
+        border-color: #fca5a5;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.22);
     }
 
     /* Mobile Sidebar Toggle Button */
@@ -905,16 +1569,17 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         display: none;
         align-items: center;
         gap: 6px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        padding: 5px 10px;
-        border-radius: var(--radius-sm);
+        background: var(--glass-bg);
+        border: 1.5px solid var(--glass-border);
+        padding: 6px 12px;
+        border-radius: var(--radius-pill);
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 800;
         cursor: pointer;
-        color: var(--text-main);
+        color: var(--text-headline);
         transition: all 0.15s ease;
     }
+
     .btn-toggle-sidebar-mobile:hover {
         background: #ffffff;
         border-color: var(--primary);
@@ -923,6 +1588,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     .brand-row {
         display: contents;
     }
+
     .header-mobile-tools {
         display: none;
     }
@@ -945,7 +1611,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             gap: 12px;
         }
         .workspace {
-            grid-template-columns: 240px 1fr;
+            grid-template-columns: 260px 1fr;
             gap: 12px;
         }
         header {
@@ -953,7 +1619,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             gap: 12px;
         }
         .sidebar {
-            padding: 12px;
+            padding: 14px;
         }
     }
 
@@ -971,8 +1637,8 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             gap: 12px;
         }
         header {
-            padding: 12px 14px;
-            gap: 10px;
+            padding: 14px 16px;
+            gap: 12px;
             flex-direction: column;
             align-items: stretch;
         }
@@ -993,7 +1659,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         .date-controls {
             width: 100%;
             justify-content: center;
-            padding: 4px 8px;
+            padding: 6px 12px;
         }
         .date-picker {
             flex: 1;
@@ -1007,10 +1673,10 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             gap: 8px;
             flex-wrap: wrap;
         }
-        .action-btns .btn {
+        .action-btns .btn, #btnOpenGlobalSearch, #btnInsertTemplate {
             flex: 1 1 auto;
             justify-content: center;
-            padding: 8px 12px;
+            padding: 9px 14px;
         }
         .workspace {
             display: flex;
@@ -1021,9 +1687,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         .sidebar {
             order: 2;
             max-height: 380px;
-            display: none; /* Collapsed by default on tablet/mobile, toggled by Logs button */
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
+            display: none;
         }
         .sidebar.open-mobile {
             display: flex !important;
@@ -1037,7 +1701,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             flex-direction: column;
             align-items: stretch;
             gap: 10px;
-            padding: 10px 12px;
+            padding: 12px 14px;
         }
         .editor-title-group {
             display: flex;
@@ -1066,7 +1730,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             flex-direction: column;
             align-items: stretch;
             gap: 10px;
-            padding: 10px 14px;
+            padding: 12px 16px;
         }
         .editor-footer-right {
             display: flex;
@@ -1079,83 +1743,29 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         #btnContinueToEmail {
             width: 100%;
             justify-content: center;
-            padding: 9px 16px;
+            padding: 10px 18px;
         }
     }
 
-    /* Mobile landscape & portrait (< 768px) */
+    /* Mobile screens (< 768px) */
     @media (max-width: 767px) {
         body {
-            padding: 6px;
+            padding: 8px;
         }
         .brand-title {
-            font-size: 16px;
+            font-size: 17px;
         }
         .brand-subtitle {
             display: none;
         }
         .brand-icon {
-            width: 34px;
-            height: 34px;
-            font-size: 15px;
-        }
-        .date-picker {
-            max-width: 100%;
-            font-size: 12px;
-        }
-        .btn-nav {
-            padding: 6px 9px;
-            font-size: 12px;
-        }
-        .action-btns .btn {
-            font-size: 11.5px;
-            padding: 7px 8px;
-        }
-        .editor-title {
-            font-size: 13px;
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
         }
         .modal-card {
             width: 95% !important;
-            max-width: 95% !important;
-            margin: 10px auto !important;
-            max-height: 92vh !important;
-            border-radius: var(--radius-md) !important;
-        }
-        .modal-header {
-            padding: 12px 14px !important;
-        }
-        .modal-body {
-            padding: 14px !important;
-        }
-        .modal-title {
-            font-size: 14px !important;
-        }
-        .profile-modal-card {
-            width: 95% !important;
-            max-width: 95% !important;
-            max-height: 92vh !important;
-        }
-        .profile-modal-body {
-            padding: 12px 14px !important;
-            gap: 12px !important;
-        }
-        .profile-modal-body div[style*="grid-template-columns: 1fr 1fr"] {
-            grid-template-columns: 1fr !important;
-            gap: 10px !important;
-        }
-        .profile-banner-card {
-            padding: 10px 12px !important;
-            gap: 10px !important;
-        }
-        .profile-banner-sub {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 3px !important;
-        }
-        .profile-avatar-circle {
-            width: 40px !important;
-            height: 40px !important;
-            font-size: 17px !important;
+            border-radius: var(--radius-xl) !important;
         }
         .user-menu-wrapper {
             width: 100% !important;
@@ -1167,64 +1777,8 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         .user-popover-menu {
             width: 100% !important;
             min-width: 240px !important;
-            max-width: 100% !important;
             left: 0 !important;
             right: 0 !important;
-        }
-    }
-
-    /* Small Mobile Phones (< 480px) */
-    @media (max-width: 480px) {
-        .header {
-            padding: 8px 10px;
-        }
-        .custom-project-wrapper {
-            flex: 1 1 100%;
-        }
-        .action-btns {
-            gap: 6px;
-        }
-        .action-btns .btn {
-            font-size: 11px;
-            padding: 6px 6px;
-            gap: 4px;
-        }
-        .btn-nav#btnToday {
-            padding: 5px 6px;
-            font-size: 11px;
-        }
-        .editor-textarea {
-            font-size: 13px !important;
-            padding: 12px !important;
-            line-height: 1.6;
-        }
-        #btnAiPolish {
-            font-size: 10.5px !important;
-            padding: 5px 8px !important;
-        }
-        #btnClearCurrent {
-            font-size: 10.5px !important;
-            padding: 5px 8px !important;
-        }
-        .profile-modal-footer, .modal-footer {
-            padding: 10px 14px !important;
-        }
-        .add-client-inputs-row {
-            flex-direction: column !important;
-            gap: 8px !important;
-        }
-        .btn-add-client-submit {
-            width: 100% !important;
-            justify-content: center !important;
-            padding: 9px !important;
-        }
-        .toast {
-            left: 14px !important;
-            right: 14px !important;
-            bottom: 14px !important;
-            justify-content: center !important;
-            text-align: center !important;
-            max-width: calc(100% - 28px) !important;
         }
     }
 
@@ -1233,6 +1787,11 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         to { opacity: 1; transform: translateY(0); }
     }
 </style>
+
+<!-- Radiant Ambient Glowing Mesh Orbs -->
+<div class="ambient-glow-orb orb-1"></div>
+<div class="ambient-glow-orb orb-2"></div>
+<div class="ambient-glow-orb orb-3"></div>
 
 <div class="app-container">
     <!-- Header -->
@@ -1281,9 +1840,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             <?php if (!empty($currentUser)): ?>
                 <!-- User Menu Dropdown -->
                 <div class="user-menu-wrapper">
-                    <button type="button" class="user-pill-btn" id="btnUserMenuToggle" title="Click for Profile & Logout" style="display:inline-flex; align-items:center; gap:8px; background:var(--bg-secondary); border:1px solid var(--border-color); padding:5px 12px; border-radius:var(--radius-sm); font-size:12.5px; font-weight:600; cursor:pointer; transition:all 0.15s ease; color:var(--text-main); font-family:inherit;">
-                        <span style="width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg, #6366f1, #4f46e5); color:#ffffff; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center;"><?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?></span>
-                        <span class="user-pill-name" style="font-size:12px; font-weight:700;"><?= h($currentUser['name']) ?></span>
+                    <button type="button" class="user-pill-btn" id="btnUserMenuToggle" title="Click for Profile & Logout">
+                        <span style="width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg, #6366f1, #4f46e5); color:#ffffff; font-size:11px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(99,102,241,0.4);"><?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?></span>
+                        <span class="user-pill-name" style="font-size:12.5px; font-weight:700;"><?= h($currentUser['name']) ?></span>
                         <i class="fa-solid fa-chevron-down" style="font-size: 10px; opacity: 0.7;"></i>
                     </button>
                     <div class="user-popover-menu" id="userPopoverMenu">
@@ -1402,24 +1961,24 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                     </div>
                 </div>
 
-                <div class="editor-toolbar-actions" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                    <button type="button" class="btn" id="btnTogglePreview" style="font-size: 11px; padding: 5px 10px; display: inline-flex; align-items: center; gap: 5px; border-radius: 6px;" title="Preview notes with clickable links">
+                <div class="editor-toolbar-actions" style="display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; flex-shrink: 0;">
+                    <button type="button" class="btn" id="btnTogglePreview" title="Preview notes with clickable links">
                         <i class="fa-regular fa-eye" id="iconTogglePreview"></i> <span id="textTogglePreview">Preview</span>
                     </button>
-                    <button type="button" class="btn" id="btnAiPolish" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; border: none; font-weight: 600; padding: 5px 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; box-shadow: 0 2px 5px rgba(99, 102, 241, 0.25); cursor: pointer;" title="Fix grammar and make sentences professional with Gemini AI">
+                    <button type="button" class="btn" id="btnAiPolish" title="Fix grammar and make sentences professional with Gemini AI">
                         <i class="fa-solid fa-pen-to-square"></i> AI Polish
                     </button>
-                    <button type="button" class="btn" id="btnCopyOnlyTasks" style="font-size: 11px; padding: 5px 10px; display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; background: #ffffff; color: var(--text-main); border: 1px solid var(--border-color); font-weight: 600;" title="Copy only tasks (without headers, dates, or bullets)">
+                    <button type="button" class="btn" id="btnCopyOnlyTasks" title="Copy only tasks (without headers, dates, or bullets)">
                         <i class="fa-regular fa-copy" style="color: #4f46e5;"></i> Copy Content
                     </button>
-                    <button type="button" class="btn" id="btnClearCurrent" style="font-size: 11px; padding: 4px 8px;">
+                    <button type="button" class="btn" id="btnClearCurrent" title="Clear current editor note">
                         <i class="fa-solid fa-trash text-rose-500"></i> Clear Note
                     </button>
                 </div>
             </div>
 
             <!-- No Projects Alert Banner -->
-            <div id="noProjectWarningBanner" style="display: <?= empty($projects) || count($projects) === 0 ? 'flex' : 'none' ?>; align-items:center; justify-content:space-between; background:#fef3c7; border-bottom:1px solid #fde68a; padding:10px 16px; color:#92400e; font-size:12px; font-weight:500;">
+            <div id="noProjectWarningBanner" style="display: <?= empty($projects) || count($projects) === 0 ? 'flex' : 'none' ?>; align-items:center; justify-content:space-between; background:rgba(254, 243, 199, 0.85); border-bottom:1.5px solid rgba(253, 230, 138, 0.9); padding:10px 18px; color:#92400e; font-size:12px; font-weight:600;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <i class="fa-solid fa-triangle-exclamation" style="font-size:14px; color:#d97706;"></i>
                     <span>No projects created yet. Please create a project first before writing tasks.</span>
@@ -1442,7 +2001,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                 </div>
                 <div class="editor-footer-right" style="display: flex; align-items: center; gap: 14px;">
                     <span id="charCount">0 characters | 0 tasks</span>
-                    <a href="#" id="btnContinueToEmail" class="btn btn-primary btn-continue-to-email" style="font-weight:600; text-decoration:none; padding: 6px 14px; border-radius: 6px; display:inline-flex; align-items:center; gap:6px; font-size:12px;" title="Continue to Daily Update Generator">
+                    <a href="#" id="btnContinueToEmail" class="btn btn-primary btn-continue-to-email" title="Continue to Daily Update Generator">
                         Continue to Email <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
@@ -1480,30 +2039,37 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
 <!-- Manage Projects Modal -->
 <div id="manageProjectModal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 480px;">
+    <div class="modal-card" style="max-width: 520px;">
         <div class="modal-header">
             <div class="modal-title">
-                <i class="fa-solid fa-folder-tree text-indigo-600"></i>
-                <span>Database Project Manager</span>
-            </div>
-            <button type="button" id="btnCloseProjectModal" class="btn-close-modal">&times;</button>
-        </div>
-        <div class="modal-body" style="gap: 16px; padding: 20px;">
-            <!-- Add New Project Form -->
-            <div>
-                <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Add New Project to Database</label>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="newProjectInput" class="global-search-input" placeholder="project_name (e.g. 8.bloqs, internal-crm)" style="padding-left: 14px; flex: 1;">
-                    <button type="button" id="btnSaveNewProject" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add</button>
+                <div style="width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35); flex-shrink: 0;">
+                    <i class="fa-solid fa-folder-tree"></i>
                 </div>
-                <div id="newProjectNameError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:4px; margin-left:4px;">
+                <div>
+                    <span style="display: block; font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 800; color: var(--text-headline); line-height: 1.2;">Database Project Manager</span>
+                    <span style="display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 2px;">Manage and switch active projects in database</span>
+                </div>
+            </div>
+            <button type="button" id="btnCloseProjectModal" class="btn-close-modal" title="Close">&times;</button>
+        </div>
+        <div class="modal-body" style="gap: 18px; padding: 22px 24px;">
+            <!-- Add New Project Form -->
+            <div style="background: rgba(255, 255, 255, 0.55); border: 1.5px solid rgba(226, 232, 240, 0.85); border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+                <label style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: block;">Add New Project to Database</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="newProjectInput" class="global-search-input" placeholder="project_name (e.g. 8.bloqs, internal-crm)" style="padding: 11px 16px; flex: 1; border-radius: 12px; font-family: 'Inter', system-ui, sans-serif; font-size: 13.5px; border: 1.5px solid rgba(203, 213, 225, 0.85); background: #ffffff;">
+                    <button type="button" id="btnSaveNewProject" class="btn btn-primary" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important; color: #ffffff !important; border: none !important; border-radius: 999px !important; font-weight: 800 !important; font-size: 13px !important; padding: 10px 22px !important; box-shadow: 0 6px 18px rgba(79, 70, 229, 0.42) !important; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap;">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+                <div id="newProjectNameError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:2px;">
                     <i class="fa-solid fa-circle-exclamation"></i> <span></span>
                 </div>
             </div>
 
             <!-- Existing Projects List -->
             <div>
-                <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 8px;">All Projects in Database</label>
+                <label style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: block; margin-bottom: 10px;">All Projects in Database</label>
                 <div id="modalProjectList" class="modal-project-list">
                     <!-- Populated via AJAX -->
                 </div>
@@ -1514,31 +2080,38 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
 <!-- Manage Clients Modal -->
 <div id="manageClientModal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 480px;">
+    <div class="modal-card" style="max-width: 520px;">
         <div class="modal-header">
             <div class="modal-title">
-                <i class="fa-solid fa-user-tie" style="color:#0284c7;"></i>
-                <span>Database Client Manager</span>
+                <div style="width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35); flex-shrink: 0;">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div>
+                    <span style="display: block; font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 800; color: var(--text-headline); line-height: 1.2;">Database Client Manager</span>
+                    <span style="display: block; font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 2px;">Manage client assignments and email contacts</span>
+                </div>
             </div>
-            <button type="button" id="btnCloseClientModal" class="btn-close-modal">&times;</button>
+            <button type="button" id="btnCloseClientModal" class="btn-close-modal" title="Close">&times;</button>
         </div>
-        <div class="modal-body" style="gap: 16px; padding: 20px;">
+        <div class="modal-body" style="gap: 18px; padding: 22px 24px;">
             <!-- Add New Client Form -->
-            <div>
-                <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Add New Client to Database</label>
+            <div style="background: rgba(255, 255, 255, 0.55); border: 1.5px solid rgba(226, 232, 240, 0.85); border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+                <label style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: block;">Add New Client to Database</label>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                     <div>
-                        <input type="text" id="newClientInput" class="global-search-input" placeholder="Client Name (e.g. John Doe, Example Company)" style="padding-left: 14px; width: 100%; box-sizing: border-box;">
-                        <div id="newClientNameError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:4px; margin-left:4px;">
+                        <input type="text" id="newClientInput" class="global-search-input" placeholder="Client Name (e.g. John Doe, Example Company)" style="padding: 10px 16px; width: 100%; box-sizing: border-box; border-radius: 12px; font-family: 'Inter', system-ui, sans-serif; font-size: 13.5px; border: 1.5px solid rgba(203, 213, 225, 0.85); background: #ffffff;">
+                        <div id="newClientNameError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:2px;">
                             <i class="fa-solid fa-circle-exclamation"></i> <span></span>
                         </div>
                     </div>
                     <div>
-                        <div class="add-client-inputs-row" style="display: flex; gap: 8px;">
-                            <input type="email" id="newClientEmailInput" class="global-search-input" placeholder="Client Email (e.g. client@company.com)" style="padding-left: 14px; flex: 1; min-width: 0; box-sizing: border-box;">
-                            <button type="button" id="btnSaveNewClient" class="btn btn-primary btn-add-client-submit" style="background:#0284c7; color:#fff; border:none; font-weight:600; white-space: nowrap; padding: 8px 14px;"><i class="fa-solid fa-plus"></i> Add Client</button>
+                        <div class="add-client-inputs-row" style="display: flex; gap: 10px; align-items: center;">
+                            <input type="email" id="newClientEmailInput" class="global-search-input" placeholder="Client Email (e.g. client@company.com)" style="padding: 10px 16px; flex: 1; min-width: 0; box-sizing: border-box; border-radius: 12px; font-family: 'Inter', system-ui, sans-serif; font-size: 13.5px; border: 1.5px solid rgba(203, 213, 225, 0.85); background: #ffffff;">
+                            <button type="button" id="btnSaveNewClient" class="btn btn-primary btn-add-client-submit" style="background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important; color: #ffffff !important; border: none !important; border-radius: 999px !important; font-weight: 800 !important; font-size: 13px !important; white-space: nowrap; padding: 10px 20px !important; box-shadow: 0 6px 18px rgba(2, 132, 199, 0.42) !important; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);">
+                                <i class="fa-solid fa-plus"></i> Add Client
+                            </button>
                         </div>
-                        <div id="newClientEmailError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:4px; margin-left:4px;">
+                        <div id="newClientEmailError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:2px;">
                             <i class="fa-solid fa-circle-exclamation"></i> <span></span>
                         </div>
                     </div>
@@ -1547,7 +2120,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
             <!-- Existing Clients List -->
             <div>
-                <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 8px;">All Clients in Database</label>
+                <label style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: block; margin-bottom: 10px;">All Clients in Database</label>
                 <div id="modalClientList" class="modal-project-list">
                     <!-- Populated via AJAX -->
                 </div>
@@ -2408,24 +2981,24 @@ $(document).ready(function() {
     function renderModalProjectsList() {
         var html = '';
         if (projectsCache.length === 0) {
-            html = '<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:16px;">No projects in database. Create one above!</div>';
+            html = '<div style="font-size:12.5px; color:var(--text-muted); text-align:center; padding:24px; background:rgba(255,255,255,0.5); border-radius:14px; border:1px dashed rgba(203,213,225,0.8);">No projects in database. Create one above!</div>';
         } else {
             projectsCache.forEach(function(p) {
-                html += '<div class="modal-project-item" id="projRow-' + p.id + '" data-id="' + p.id + '" data-name="' + escapeHtml(p.name) + '" style="padding:8px 10px; border-radius:6px; background:var(--bg-secondary); margin-bottom:8px; border:1px solid var(--border-color);">';
+                html += '<div class="modal-project-item" id="projRow-' + p.id + '" data-id="' + p.id + '" data-name="' + escapeHtml(p.name) + '">';
                 
                 // View Mode
-                html += '  <div class="proj-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%;">';
-                html += '    <span class="modal-project-name" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600;">';
-                html += '      <i class="fa-solid fa-folder text-indigo-600"></i>';
+                html += '  <div class="proj-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px;">';
+                html += '    <span class="modal-project-name">';
+                html += '      <div style="width:32px; height:32px; border-radius:9px; background:rgba(99,102,241,0.12); color:#4f46e5; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0;"><i class="fa-solid fa-folder"></i></div>';
                 html += '      <span class="proj-name-text">' + escapeHtml(p.name) + '</span>';
                 if (p.is_default) {
-                    html += '  <span style="font-size:10px; color:#15803d; background:#dcfce7; padding:2px 8px; border-radius:10px; font-weight:700;">Default</span>';
+                    html += '  <span style="font-size:10.5px; color:#15803d; background:#dcfce7; padding:2px 9px; border-radius:999px; font-weight:700; border:1px solid #bbf7d0; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-check" style="font-size:9px;"></i> Default</span>';
                 }
                 html += '    </span>';
                 html += '    <div style="display:flex; align-items:center; gap:6px;">';
-                html += '      <button type="button" class="btn-action-icon btn-start-edit-proj" data-id="' + p.id + '" title="Rename Project" style="padding:5px 9px; font-size:11px;"><i class="fa-solid fa-pen"></i></button>';
+                html += '      <button type="button" class="btn-action-icon btn-start-edit-proj" data-id="' + p.id + '" title="Rename Project"><i class="fa-solid fa-pen"></i></button>';
                 if (!p.is_default) {
-                    html += '    <button type="button" class="btn-action-icon delete btn-delete-project" data-id="' + p.id + '" data-name="' + escapeHtml(p.name) + '" title="Delete Project" style="padding:5px 9px; font-size:11px;"><i class="fa-solid fa-trash"></i></button>';
+                    html += '    <button type="button" class="btn-action-icon delete btn-delete-project" data-id="' + p.id + '" data-name="' + escapeHtml(p.name) + '" title="Delete Project"><i class="fa-solid fa-trash"></i></button>';
                 }
                 html += '    </div>';
                 html += '  </div>';
@@ -2433,12 +3006,12 @@ $(document).ready(function() {
                 // Inline Edit Mode
                 html += '  <div class="proj-edit-mode" style="display:none; align-items:center; justify-content:space-between; width:100%; gap:8px;">';
                 html += '    <div style="display:flex; align-items:center; gap:8px; flex:1;">';
-                html += '      <i class="fa-solid fa-folder text-indigo-600"></i>';
-                html += '      <input type="text" class="proj-inline-input" value="' + escapeHtml(p.name) + '" placeholder="Project name" style="padding:5px 10px; font-size:13px; flex:1; border:1px solid var(--primary); border-radius:6px; background:var(--bg-card); color:var(--text-main); outline:none;">';
+                html += '      <div style="width:30px; height:30px; border-radius:8px; background:rgba(99,102,241,0.12); color:#4f46e5; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0;"><i class="fa-solid fa-folder"></i></div>';
+                html += '      <input type="text" class="proj-inline-input" value="' + escapeHtml(p.name) + '" placeholder="Project name" style="padding:7px 12px; font-size:13px; flex:1; border:1.5px solid #4f46e5; border-radius:10px; background:#ffffff; color:var(--text-headline); outline:none; box-shadow:0 0 0 3px rgba(79,70,229,0.15); font-family:\'Inter\', system-ui, sans-serif;">';
                 html += '    </div>';
                 html += '    <div style="display:flex; align-items:center; gap:6px;">';
-                html += '      <button type="button" class="btn btn-primary btn-save-inline-proj" data-id="' + p.id + '" title="Save Changes" style="padding:4px 10px; font-size:11px; height:30px;"><i class="fa-solid fa-check"></i> Save</button>';
-                html += '      <button type="button" class="btn btn-cancel-inline-proj" data-id="' + p.id + '" title="Cancel" style="padding:4px 8px; font-size:11px; height:30px; background:var(--bg-card); color:var(--text-muted); border:1px solid var(--border-color);"><i class="fa-solid fa-xmark"></i></button>';
+                html += '      <button type="button" class="btn btn-primary btn-save-inline-proj" data-id="' + p.id + '" title="Save Changes" style="padding:6px 14px; font-size:11.5px; border-radius:999px; background:linear-gradient(135deg, #4f46e5, #3b82f6); color:#fff; border:none; font-weight:700;"><i class="fa-solid fa-check"></i> Save</button>';
+                html += '      <button type="button" class="btn btn-cancel-inline-proj" data-id="' + p.id + '" title="Cancel" style="padding:6px 10px; font-size:11.5px; border-radius:999px; background:rgba(255,255,255,0.85); color:var(--text-muted); border:1.5px solid rgba(203,213,225,0.8);"><i class="fa-solid fa-xmark"></i></button>';
                 html += '    </div>';
                 html += '  </div>';
 
@@ -2639,32 +3212,31 @@ $(document).ready(function() {
     function renderModalClientsList() {
         var html = '';
         if (clientsCache.length === 0) {
-            html = '<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:16px;">No clients in database. Add one above!</div>';
+            html = '<div style="font-size:12.5px; color:var(--text-muted); text-align:center; padding:24px; background:rgba(255,255,255,0.5); border-radius:14px; border:1px dashed rgba(203,213,225,0.8);">No clients in database. Add one above!</div>';
         } else {
             clientsCache.forEach(function(c) {
-                html += '<div class="modal-project-item client-card-item" id="clientRow-' + c.id + '" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" data-email="' + escapeHtml(c.email || '') + '" style="padding:10px 12px; border-radius:8px; background:var(--bg-secondary); margin-bottom:8px; border:1px solid var(--border-color); width:100%; box-sizing:border-box; overflow:hidden;">';
+                html += '<div class="modal-project-item client-card-item" id="clientRow-' + c.id + '" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" data-email="' + escapeHtml(c.email || '') + '">';
                 
                 // View Mode
-                html += '  <div class="client-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px;">';
-                html += '    <div style="display:flex; flex-direction:column; gap:3px; flex:1; min-width:0;">';
-                html += '      <div style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--text-main); min-width:0;">';
-                html += '        <i class="fa-solid fa-user-tie" style="color:#0284c7; flex-shrink:0;"></i>';
-                html += '        <span class="client-name-text" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + escapeHtml(c.name) + '</span>';
+                html += '  <div class="client-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px;">';
+                html += '    <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:0;">';
+                html += '      <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:var(--text-headline); min-width:0;">';
+                html += '        <div style="width:32px; height:32px; border-radius:9px; background:rgba(2,132,199,0.12); color:#0284c7; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0;"><i class="fa-solid fa-user-tie"></i></div>';
+                html += '        <span class="client-name-text" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:\'Inter\', system-ui, sans-serif;">' + escapeHtml(c.name) + '</span>';
                 if (c.is_default) {
-                    html += '    <span style="font-size:10px; color:#15803d; background:#dcfce7; padding:1px 6px; border-radius:10px; font-weight:700; flex-shrink:0;">Default</span>';
+                    html += '    <span style="font-size:10.5px; color:#15803d; background:#dcfce7; padding:2px 9px; border-radius:999px; font-weight:700; border:1px solid #bbf7d0; flex-shrink:0;"><i class="fa-solid fa-check" style="font-size:9px;"></i> Default</span>';
                 }
                 html += '      </div>';
                 if (c.email) {
-                    html += '    <div class="client-email-badge" style="font-size:11px; color:#0369a1; background:#e0f2fe; padding:2px 8px; border-radius:6px; font-weight:500; display:inline-flex; align-items:center; gap:5px; max-width:100%; overflow:hidden;" title="' + escapeHtml(c.email) + '">';
-                    html += '      <i class="fa-regular fa-envelope" style="flex-shrink:0;"></i>';
-                    html += '      <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + escapeHtml(c.email) + '</span>';
+                    html += '    <div class="client-email-badge" style="font-size:11px; color:#0369a1; background:#e0f2fe; padding:3px 10px; border-radius:999px; font-weight:600; display:inline-flex; align-items:center; gap:5px; max-width:fit-content; border:1px solid #bae6fd;" title="' + escapeHtml(c.email) + '">';
+                    html += '      <i class="fa-regular fa-envelope" style="font-size:10px;"></i> <span>' + escapeHtml(c.email) + '</span>';
                     html += '    </div>';
                 }
                 html += '    </div>';
-                html += '    <div style="display:flex; align-items:center; gap:4px; flex-shrink:0;">';
-                html += '      <button type="button" class="btn-action-icon btn-start-edit-client" data-id="' + c.id + '" title="Edit Client & Email" style="padding:5px 8px; font-size:11px;"><i class="fa-solid fa-pen"></i></button>';
+                html += '    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">';
+                html += '      <button type="button" class="btn-action-icon btn-start-edit-client" data-id="' + c.id + '" title="Edit Client"><i class="fa-solid fa-pen"></i></button>';
                 if (!c.is_default) {
-                    html += '    <button type="button" class="btn-action-icon delete btn-delete-client" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" title="Delete Client" style="padding:5px 8px; font-size:11px;"><i class="fa-solid fa-trash"></i></button>';
+                    html += '    <button type="button" class="btn-action-icon delete btn-delete-client" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" title="Delete Client"><i class="fa-solid fa-trash"></i></button>';
                 }
                 html += '    </div>';
                 html += '  </div>';
@@ -3569,7 +4141,7 @@ $(document).ready(function() {
 
         var btn = $('#btnAiPolish');
         var origHtml = btn.html();
-        btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Polishing with AI...');
+        btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Polishing...');
 
         var promptText = "You are an expert technical editor for daily engineering updates and standups.\n" +
             "Please review and improve the following daily task notes.\n" +
