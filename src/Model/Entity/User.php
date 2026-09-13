@@ -31,6 +31,7 @@ class User extends Entity
         'email' => true,
         'google_id' => true,
         'picture' => true,
+        'gender' => true,
         'password' => true,
         'password_set' => true,
         'smtp_password' => true,

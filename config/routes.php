@@ -62,6 +62,7 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/profile', ['controller' => 'Users', 'action' => 'profile']);
         $builder->connect('/users/get-profile', ['controller' => 'Users', 'action' => 'getProfile']);
         $builder->connect('/users/update-profile', ['controller' => 'Users', 'action' => 'updateProfile']);
+        $builder->connect('/users/save-settings', ['controller' => 'Users', 'action' => 'saveSettings']);
         $builder->connect('/users/google-login', ['controller' => 'Users', 'action' => 'googleLogin']);
         $builder->connect('/users/google-auth', ['controller' => 'Users', 'action' => 'googleAuth']);
         $builder->connect('/users/google-callback', ['controller' => 'Users', 'action' => 'googleCallback']);

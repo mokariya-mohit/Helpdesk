@@ -645,12 +645,13 @@
             });
         });
 
-        // Initialize and sync Theme UI
+        // Synchronize across multiple open tabs in real-time
         window.syncThemeUi();
+        window.initMotionDock();
     });
 
     // ==========================================================================
-    // 9. Classic Sun / Moon Dark & Light Theme Controller
+    // 9. Classic Sun / Moon Dark & Light Theme Controller & Mode Switcher Pill
     // ==========================================================================
     window.getTheme = function () {
         var current = document.documentElement.getAttribute('data-theme');
@@ -675,6 +676,22 @@
                 $toggleBtns.html('<i class="fa-solid fa-moon" style="color: #64748b;"></i>');
                 $toggleBtns.attr('title', 'Switch to Dark Mode');
                 $toggleBtns.attr('aria-label', 'Switch to Dark Mode');
+            }
+        }
+
+        // Mode Switcher Pill (Matching Image 1: Mode: Sunrise ▾ / Mode: Dark ▾)
+        var $modePill = $('#btnHeaderModeToggle');
+        var $modeText = $('#modeSwitcherText');
+        var $modeIcon = $('#modeSwitcherIcon');
+        if ($modePill.length) {
+            if (isDark) {
+                if ($modeText.length) $modeText.text('Mode: Dark');
+                if ($modeIcon.length) $modeIcon.html('<i class="fa-solid fa-moon" style="color: #94a3b8;"></i>');
+                $modePill.attr('title', 'Current: Dark Mode (Click to switch Sunrise)');
+            } else {
+                if ($modeText.length) $modeText.text('Mode: Sunrise');
+                if ($modeIcon.length) $modeIcon.html('<i class="fa-solid fa-sun" style="color: #f59e0b;"></i>');
+                $modePill.attr('title', 'Current: Sunrise Mode (Click to switch Dark)');
             }
         }
 
@@ -706,7 +723,7 @@
         window.syncThemeUi();
 
         if (notify && typeof window.showToast === 'function') {
-            var msg = (theme === 'dark') ? 'Dark Mode activated' : 'Light Mode activated';
+            var msg = (theme === 'dark') ? 'Dark Mode activated' : 'Sunrise Light Mode activated';
             window.showToast(msg, 'info');
         }
     };
@@ -718,7 +735,7 @@
     };
 
     // Event Delegations for Theme Toggle
-    $(document).on('click', '.btn-theme-toggle-header, #btnThemeToggleHeader, #btnThemeTogglePopover', function (e) {
+    $(document).on('click', '.btn-theme-toggle-header, #btnThemeToggleHeader, #btnThemeTogglePopover, #btnHeaderModeToggle', function (e) {
         e.preventDefault();
         e.stopPropagation();
         window.toggleTheme();
@@ -737,6 +754,174 @@
         if (e.key === 'helpdesk_theme' && e.newValue) {
             window.setTheme(e.newValue, false);
         }
+    });
+
+    // ==========================================================================
+    // 10. Motion Primitives Vertical Dock Magnification (macOS Wave Physics & Dynamic Spacing)
+    // ==========================================================================
+    window.initMotionDock = function () {
+        var $dock = $('#motionDockSidebar');
+        var $items = $dock.find('.dock-item');
+        if (!$dock.length || !$items.length) return;
+
+        var maxDistance = 110; // Radius of magnification wave influence (px)
+        var maxScale = 1.40;   // Reduced by ~2.6px (rendered diameter ~61.6px vs ~64.2px)
+        var maxPushX = 11;     // Clean, balanced protrusion outside dock border
+        var maxSpreadY = 5;    // Subtle vertical breathing room to keep icons closely spaced
+
+        var itemCenters = [];
+
+        function updateRestingCenters() {
+            itemCenters = [];
+            $items.each(function () {
+                var rect = this.getBoundingClientRect();
+                itemCenters.push(rect.top + (rect.height / 2));
+            });
+        }
+
+        $dock.off('mouseenter.motionDock mousemove.motionDock mouseleave.motionDock');
+        $(window).off('resize.motionDock scroll.motionDock');
+
+        $dock.on('mouseenter.motionDock', function () {
+            // Measure static resting positions before transforms to avoid jitter
+            $items.each(function () {
+                this.style.transform = 'translate(0px, 0px) scale(1)';
+            });
+            updateRestingCenters();
+        });
+
+        $(window).on('resize.motionDock scroll.motionDock', function () {
+            updateRestingCenters();
+        });
+
+        // Initialize centers on setup
+        updateRestingCenters();
+
+        $dock.on('mousemove.motionDock', function (e) {
+            var mouseY = e.clientY;
+            if (!itemCenters.length) updateRestingCenters();
+
+            $items.each(function (i) {
+                var item = this;
+                var itemCenterY = itemCenters[i] || (item.getBoundingClientRect().top + item.offsetHeight / 2);
+                var diffY = mouseY - itemCenterY;
+                var absDiffY = Math.abs(diffY);
+
+                if (absDiffY < maxDistance) {
+                    var normDist = absDiffY / maxDistance; // 0 to 1
+                    var t = 1 - normDist;
+
+                    // Power curve: high peak on hovered icon (~1.62x), decent falloff on adjacent neighbor (~1.20x)
+                    var scale = 1 + (maxScale - 1) * Math.pow(t, 2.4);
+
+                    // Horizontal pop-out: hovered item pushes ~26px rightwards (almost 50% outside sidebar)
+                    var pushX = maxPushX * Math.pow(t, 2.0);
+
+                    // Dynamic vertical separation:
+                    // Items above cursor (diffY > 0) are pushed UPWARDS (negative Y)
+                    // Items below cursor (diffY < 0) are pushed DOWNWARDS (positive Y)
+                    // At the peak item itself (diffY near 0), pushY is 0 so it stays centered
+                    var spreadFactor = Math.sin(normDist * Math.PI);
+                    var pushY = 0;
+                    if (diffY > 0) {
+                        pushY = -1 * maxSpreadY * spreadFactor;
+                    } else if (diffY < 0) {
+                        pushY = maxSpreadY * spreadFactor;
+                    }
+
+                    item.style.transform = 'translate(' + pushX.toFixed(1) + 'px, ' + pushY.toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
+                    item.style.zIndex = Math.round(scale * 100).toString();
+                } else {
+                    item.style.transform = 'translate(0px, 0px) scale(1)';
+                    item.style.zIndex = '1';
+                }
+            });
+        });
+
+        $dock.on('mouseleave.motionDock', function () {
+            $items.each(function () {
+                this.style.transform = 'translate(0px, 0px) scale(1)';
+                this.style.zIndex = '1';
+            });
+        });
+    };
+
+    // ==========================================================================
+    // 11. Top Header & Dock Universal Interactions
+    // ==========================================================================
+    // Work Logs Drawer Slide In/Out
+    $(document).on('click', '#btnDockWorkLogs', function (e) {
+        e.preventDefault();
+        $('#workLogsDrawer').toggleClass('open');
+    });
+
+    $(document).on('click', '#btnCloseWorkLogsDrawer', function (e) {
+        e.preventDefault();
+        $('#workLogsDrawer').removeClass('open');
+    });
+
+    // Top Header Global Search Transfer
+    $(document).on('click', '#topHeaderSearchBox, #topHeaderSearchInput', function (e) {
+        e.preventDefault();
+        var $searchModal = $('#globalSearchModal');
+        if ($searchModal.length) {
+            $searchModal.addClass('active');
+            var val = $('#topHeaderSearchInput').val();
+            if (val) {
+                $('#globalSearchInput').val(val).trigger('input');
+            }
+            setTimeout(function () {
+                $('#globalSearchInput').focus();
+            }, 100);
+        }
+    });
+
+    // Dock Projects & Clients Triggers
+    $(document).on('click', '#btnDockProjects', function (e) {
+        e.preventDefault();
+        var $pModal = $('#manageProjectModal');
+        if ($pModal.length) {
+            $pModal.addClass('active');
+            $('#newProjectInput').val('').focus();
+        }
+    });
+
+    $(document).on('click', '#btnDockClients', function (e) {
+        e.preventDefault();
+        var $cModal = $('#manageClientModal');
+        if ($cModal.length) {
+            $cModal.addClass('active');
+            $('#newClientInput').val('').focus();
+        }
+    });
+
+    // Dock Chat Placeholder
+    $(document).on('click', '#btnDockChat', function (e) {
+        e.preventDefault();
+        window.showToast('Team Chat is coming soon in the next release!', 'info');
+    });
+
+    // Header Notification Placeholder
+    $(document).on('click', '#btnHeaderNotification', function (e) {
+        e.preventDefault();
+        window.showToast('No unread notifications at this time.', 'info');
+    });
+
+    // Dock Logout with Custom Confirmation Modal
+    $(document).on('click', '#btnDockLogout', function (e) {
+        e.preventDefault();
+        var logoutUrl = $(this).data('url') || (window.APP_BASE + 'logout');
+        window.showConfirmModal({
+            title: 'Sign Out Session?',
+            message: 'Are you sure you want to log out of your Helpdesk account?',
+            type: 'warning',
+            icon: 'fa-solid fa-arrow-right-from-bracket',
+            confirmText: 'Sign Out',
+            cancelText: 'Stay Logged In',
+            onConfirm: function () {
+                window.location.href = logoutUrl;
+            }
+        });
     });
 
 })(window, window.jQuery);

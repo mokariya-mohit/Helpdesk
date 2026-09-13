@@ -1829,21 +1829,41 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
 
                 <!-- User Info Card (Theme-Matched) -->
                 <div class="profile-banner-card">
-                    <div id="profileAvatarBig" class="profile-avatar-circle">
-                        <?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?>
+                    <div class="profile-avatar-wrapper">
+                        <div id="profileAvatarBig" class="profile-avatar-circle">
+                            <?php
+                                $duUserId = (int)($currentUser['id'] ?? 1);
+                                $duGender = !empty($currentUser['gender']) ? $currentUser['gender'] : 'male';
+                                $duMaleIdx = (($duUserId - 1) % 7) + 1;
+                                $duFemaleIdx = (($duUserId - 1) % 6) + 1;
+                                $duInitMalePic = ($duGender === 'male' && !empty($currentUser['picture'])) ? $currentUser['picture'] : "img/avatars/male/male_{$duMaleIdx}.png";
+                                $duInitFemalePic = ($duGender === 'female' && !empty($currentUser['picture'])) ? $currentUser['picture'] : "img/avatars/female/female_{$duFemaleIdx}.png";
+                                $duInitMaleUrl = $this->Url->build('/' . ltrim($duInitMalePic, '/'));
+                                $duInitFemaleUrl = $this->Url->build('/' . ltrim($duInitFemalePic, '/'));
+                                $duAvatar = !empty($currentUser['picture']) ? $currentUser['picture'] : ($duGender === 'female' ? $duInitFemalePic : $duInitMalePic);
+                                $duAvatarUrl = str_starts_with($duAvatar, 'http') ? $duAvatar : $this->Url->build('/' . ltrim($duAvatar, '/'));
+                            ?>
+                            <img src="<?= h($duAvatarUrl) ?>" alt="Avatar" id="profileBigAvatarImg" class="profile-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                            <span class="profile-avatar-fallback" style="display:none;"><?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?></span>
+                        </div>
+                        <input type="hidden" id="profSelectedPicture" value="<?= h($duAvatar) ?>" data-male-pic="<?= h($duInitMalePic) ?>" data-male-url="<?= h($duInitMaleUrl) ?>" data-female-pic="<?= h($duInitFemalePic) ?>" data-female-url="<?= h($duInitFemaleUrl) ?>">
                     </div>
                     <div class="profile-banner-meta">
                         <div id="profileBannerName" class="profile-banner-name"><?= h($currentUser['name'] ?? 'User') ?></div>
                         <div class="profile-banner-sub">
                             <span><i class="fa-regular fa-envelope" style="margin-right: 3px;"></i> <span id="profileBannerEmail"><?= h($currentUser['email'] ?? '') ?></span></span>
                             <span><i class="fa-regular fa-calendar-check" style="margin-right: 3px;"></i> Member Since: <strong id="profileMemberSince">Loading...</strong></span>
+                            <span class="profile-gender-badge" id="profileGenderBadge">
+                                <i class="fa-solid <?= ($currentUser['gender'] ?? 'male') === 'female' ? 'fa-venus' : 'fa-mars' ?>" style="color: <?= ($currentUser['gender'] ?? 'male') === 'female' ? '#ec4899' : '#3b82f6' ?>; margin-right: 3px;"></i>
+                                <span id="profileGenderText"><?= ucfirst($currentUser['gender'] ?? 'male') ?></span>
+                            </span>
                         </div>
                     </div>
                 </div>
 
-            <!-- Section 1: Personal Details -->
-            <div>
-                <div class="profile-section-title">Personal Information</div>
+                <!-- Section 1: Personal Details -->
+                <div>
+                    <div class="profile-section-title">Personal Information</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <div>
                             <label for="profInputName" class="profile-field-label">Full Name <span style="color: #ef4444;">*</span> :</label>
@@ -1858,6 +1878,22 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
                             <div id="profEmailError" style="display:none; color:#ef4444; font-size:11px; font-weight:600; margin-top:3px;">
                                 <i class="fa-solid fa-circle-exclamation"></i> <span></span>
                             </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 12px;">
+                        <label class="profile-field-label">Gender <span style="color: #ef4444;">*</span> :</label>
+                        <div class="profile-gender-toggle-group">
+                            <label class="profile-gender-toggle-opt <?= ($currentUser['gender'] ?? 'male') === 'male' ? 'active' : '' ?>" id="labelGenderMale">
+                                <input type="radio" name="profGender" id="profGenderMale" value="male" <?= ($currentUser['gender'] ?? 'male') === 'male' ? 'checked' : '' ?>>
+                                <i class="fa-solid fa-mars" style="color: #3b82f6; font-size: 15px;"></i>
+                                <span>Male</span>
+                            </label>
+                            <label class="profile-gender-toggle-opt <?= ($currentUser['gender'] ?? 'male') === 'female' ? 'active' : '' ?>" id="labelGenderFemale">
+                                <input type="radio" name="profGender" id="profGenderFemale" value="female" <?= ($currentUser['gender'] ?? 'male') === 'female' ? 'checked' : '' ?>>
+                                <i class="fa-solid fa-venus" style="color: #ec4899; font-size: 15px;"></i>
+                                <span>Female</span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -2797,6 +2833,20 @@ $(document).ready(function() {
     // ==========================================
     // User Menu Popover & Profile Modal Logic
     // ==========================================
+    // User Menu Popover & Profile Modal Logic
+    // ==========================================
+    // User assigned avatars cache (deterministic by gender, no random cycling)
+    window.profileUserAvatars = {
+        male: {
+            pic: $('#profSelectedPicture').data('male-pic') || '',
+            url: $('#profSelectedPicture').data('male-url') || ''
+        },
+        female: {
+            pic: $('#profSelectedPicture').data('female-pic') || '',
+            url: $('#profSelectedPicture').data('female-url') || ''
+        }
+    };
+
     function openProfileModal() {
         $('#userPopoverMenu').removeClass('show');
         $('#btnUserMenuToggle').removeClass('active');
@@ -2828,7 +2878,43 @@ $(document).ready(function() {
                     $('#profileBannerName').text(u.name);
                     $('#profileBannerEmail').text(u.email);
                     $('#profileMemberSince').text(u.created_formatted);
-                    $('#profileAvatarBig').text((u.name || 'U').charAt(0).toUpperCase());
+
+                    // Cache assigned avatars for both genders
+                    if (u.male_avatar && u.male_avatar_url) {
+                        window.profileUserAvatars.male = { pic: u.male_avatar, url: u.male_avatar_url };
+                    }
+                    if (u.female_avatar && u.female_avatar_url) {
+                        window.profileUserAvatars.female = { pic: u.female_avatar, url: u.female_avatar_url };
+                    }
+
+                    // Populate gender radio selection & hidden picture
+                    var gender = (u.gender || 'male').toLowerCase();
+                    if (gender === 'female') {
+                        $('#profGenderFemale').prop('checked', true);
+                        $('#labelGenderFemale').addClass('active');
+                        $('#labelGenderMale').removeClass('active');
+                    } else {
+                        $('#profGenderMale').prop('checked', true);
+                        $('#labelGenderMale').addClass('active');
+                        $('#labelGenderFemale').removeClass('active');
+                    }
+                    $('#profSelectedPicture').val(u.picture || '');
+
+                    // Banner gender badge
+                    var genderIcon = gender === 'female' ? '<i class="fa-solid fa-venus" style="color:#ec4899; margin-right:4px;"></i>' : '<i class="fa-solid fa-mars" style="color:#3b82f6; margin-right:4px;"></i>';
+                    $('#profileGenderBadge').html(genderIcon + '<span id="profileGenderText">' + (gender.charAt(0).toUpperCase() + gender.slice(1)) + '</span>');
+
+                    if (u.avatar_url) {
+                        var $bigImg = $('#profileBigAvatarImg');
+                        if ($bigImg.length && $bigImg[0]) $bigImg[0].style.display = '';
+                        $bigImg.attr('src', u.avatar_url).show();
+                        $('#profileAvatarBig .profile-avatar-fallback').hide();
+                    } else {
+                        var initial = (u.name || 'U').charAt(0).toUpperCase();
+                        $('#profileAvatarBig .profile-avatar-fallback').text(initial).show();
+                        $('#profileBigAvatarImg').hide();
+                    }
+
                     if (u.api_key) {
                         $('#profApiKey').val(u.api_key);
                     }
@@ -2847,6 +2933,35 @@ $(document).ready(function() {
     function closeProfileModal() {
         $('#userProfileModal').removeClass('active');
     }
+
+    // Gender toggle change handler (switches deterministically to user's assigned avatar for chosen gender)
+    $('input[name="profGender"]').change(function() {
+        var selGender = $(this).val();
+        $('.profile-gender-toggle-opt').removeClass('active');
+        $(this).closest('.profile-gender-toggle-opt').addClass('active');
+
+        // Update banner badge
+        var gIcon = selGender === 'female' ? '<i class="fa-solid fa-venus" style="color:#ec4899; margin-right:4px;"></i>' : '<i class="fa-solid fa-mars" style="color:#3b82f6; margin-right:4px;"></i>';
+        $('#profileGenderBadge').html(gIcon + '<span id="profileGenderText">' + (selGender.charAt(0).toUpperCase() + selGender.slice(1)) + '</span>');
+
+        // Use deterministic assigned avatar for this gender (never randomly cycles on toggle)
+        var assigned = (window.profileUserAvatars && window.profileUserAvatars[selGender])
+            ? window.profileUserAvatars[selGender]
+            : {
+                pic: $('#profSelectedPicture').data(selGender + '-pic') || '',
+                url: $('#profSelectedPicture').data(selGender + '-url') || ''
+            };
+
+        if (assigned && assigned.pic) {
+            $('#profSelectedPicture').val(assigned.pic);
+        }
+        if (assigned && assigned.url) {
+            var $bigImg = $('#profileBigAvatarImg');
+            if ($bigImg.length && $bigImg[0]) $bigImg[0].style.display = '';
+            $bigImg.attr('src', assigned.url).show();
+            $('#profileAvatarBig .profile-avatar-fallback').hide();
+        }
+    });
 
     $('#btnOpenProfileModal').click(function(e) {
         e.preventDefault();
@@ -2941,6 +3056,9 @@ $(document).ready(function() {
 
         if (hasError) return;
 
+        var gender = $('input[name="profGender"]:checked').val() || 'male';
+        var picture = $('#profSelectedPicture').val() || '';
+
         var $btn = $(this);
         var origHtml = $btn.html();
         $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Saving...');
@@ -2951,6 +3069,8 @@ $(document).ready(function() {
             data: {
                 name: name,
                 email: email,
+                gender: gender,
+                picture: picture,
                 current_password: currentPass,
                 new_password: newPass,
                 confirm_password: confirmPass,
@@ -2973,7 +3093,29 @@ $(document).ready(function() {
                     $('.user-popover-email').text(res.user.email);
                     $('#profileBannerName').text(res.user.name);
                     $('#profileBannerEmail').text(res.user.email);
-                    $('#profileAvatarBig').text(initial);
+
+                    if (res.user.gender) {
+                        var g = res.user.gender.toLowerCase();
+                        var gIcon = g === 'female' ? '<i class="fa-solid fa-venus" style="color:#ec4899; margin-right:4px;"></i>' : '<i class="fa-solid fa-mars" style="color:#3b82f6; margin-right:4px;"></i>';
+                        $('#profileGenderBadge').html(gIcon + '<span id="profileGenderText">' + (g.charAt(0).toUpperCase() + g.slice(1)) + '</span>');
+                    }
+
+                    if (res.user.male_avatar && res.user.male_avatar_url) {
+                        window.profileUserAvatars.male = { pic: res.user.male_avatar, url: res.user.male_avatar_url };
+                    }
+                    if (res.user.female_avatar && res.user.female_avatar_url) {
+                        window.profileUserAvatars.female = { pic: res.user.female_avatar, url: res.user.female_avatar_url };
+                    }
+                    if (res.user.picture) {
+                        $('#profSelectedPicture').val(res.user.picture);
+                    }
+
+                    if (res.user.avatar_url) {
+                        var bigImg = $('#profileBigAvatarImg')[0];
+                        if (bigImg) bigImg.style.display = '';
+                        $('#profileBigAvatarImg').attr('src', res.user.avatar_url).show();
+                        $('#profileAvatarBig .profile-avatar-fallback').hide();
+                    }
 
                     // Dynamically update Send Email button visibility based on whether user has configured SMTP password
                     userHasSmtpConfigured = !!(res.user && res.user.email && res.user.has_smtp_password);

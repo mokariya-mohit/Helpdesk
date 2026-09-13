@@ -216,6 +216,22 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         font-weight: 500;
     }
 
+    .header-center-cluster {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+        max-width: 780px;
+        justify-content: center;
+    }
+
+    .header-search-box {
+        position: relative;
+        flex: 1;
+        max-width: 440px;
+        min-width: 220px;
+    }
+
     /* Header Date Selector Capsule */
     .date-controls {
         display: flex;
@@ -719,6 +735,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         scrollbar-width: thin;
         scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
         padding-right: 4px;
+        padding-bottom: 8px;
+        border-bottom-left-radius: calc(var(--radius-xl, 24px) - 6px);
+        border-bottom-right-radius: calc(var(--radius-xl, 24px) - 6px);
     }
 
     .log-list::-webkit-scrollbar {
@@ -855,19 +874,25 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         flex-direction: column;
         box-shadow: var(--glass-shadow);
         min-height: 0;
-        overflow: hidden;
+        overflow: visible !important;
+        position: relative;
+        z-index: 15;
     }
 
     .editor-toolbar {
         padding: 10px 18px;
         background: var(--glass-bg-subtle);
         border-bottom: 1.5px solid var(--glass-border-subtle);
+        border-top-left-radius: var(--radius-xl);
+        border-top-right-radius: var(--radius-xl);
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 10px;
         flex-wrap: nowrap;
-        overflow-x: auto;
+        overflow: visible !important;
+        position: relative;
+        z-index: 100;
     }
 
     .editor-title-group {
@@ -876,6 +901,8 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         gap: 8px;
         flex-wrap: nowrap;
         flex-shrink: 0;
+        position: relative;
+        z-index: 110;
     }
 
     .editor-toolbar-actions {
@@ -913,12 +940,19 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         border: 1.5px solid var(--glass-border);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
         transition: all 0.2s ease;
+        z-index: 120;
     }
 
     .custom-project-wrapper:hover {
         background: #ffffff;
         transform: translateY(-1px);
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+
+    .custom-project-wrapper:focus-within,
+    .custom-project-wrapper.menu-active,
+    .custom-project-wrapper:has(.custom-project-menu.active) {
+        z-index: 500 !important;
     }
 
     [data-theme="dark"] .custom-project-wrapper:hover {
@@ -944,15 +978,15 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         position: absolute;
         top: calc(100% + 8px);
         left: 0;
-        min-width: 240px;
-        background: rgba(255, 255, 255, 0.96);
+        min-width: 260px;
+        background: rgba(255, 255, 255, 0.98);
         backdrop-filter: blur(32px) saturate(190%);
         -webkit-backdrop-filter: blur(32px) saturate(190%);
         border: 1.5px solid rgba(255, 255, 255, 0.95);
         border-radius: 18px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+        box-shadow: 0 25px 50px -10px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.05);
         padding: 8px;
-        z-index: 2500;
+        z-index: 600 !important;
         display: none;
         flex-direction: column;
         gap: 4px;
@@ -960,7 +994,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     .custom-project-menu.active {
-        display: flex;
+        display: flex !important;
     }
 
     .custom-menu-header {
@@ -1239,6 +1273,8 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         padding: 12px 22px;
         background: var(--glass-bg-subtle);
         border-top: 1.5px solid var(--glass-border-subtle);
+        border-bottom-left-radius: var(--radius-xl) !important;
+        border-bottom-right-radius: var(--radius-xl) !important;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -1304,7 +1340,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         align-items: center;
         justify-content: center;
         padding: 20px;
-        z-index: 99999 !important;
+        z-index: 100005 !important;
         opacity: 0;
         pointer-events: none;
         transition: all 0.2s ease;
@@ -1622,6 +1658,15 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             height: calc(100vh - 24px);
             gap: 12px;
         }
+        .app-main-layout {
+            gap: 12px !important;
+        }
+        .work-logs-drawer {
+            margin-right: -12px !important;
+        }
+        .work-logs-drawer.open {
+            margin-right: 0 !important;
+        }
         .workspace {
             grid-template-columns: 260px 1fr;
             gap: 12px;
@@ -1798,6 +1843,481 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         from { opacity: 0; transform: translateY(-4px); }
         to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ==========================================================================
+       Main Workspace Layout & Motion Primitives Dock Sidebar (macOS Wave Magnification)
+       ========================================================================== */
+    .app-main-layout {
+        display: flex !important;
+        gap: 14px !important;
+        flex: 1 !important;
+        min-height: 0 !important;
+        position: relative !important;
+        align-items: stretch !important;
+    }
+
+    .work-logs-drawer {
+        width: 0 !important;
+        max-width: 0 !important;
+        opacity: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+        margin-right: -14px !important;
+        transition: width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+            max-width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+            opacity 0.22s ease,
+            margin-right 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        flex-shrink: 0 !important;
+        min-height: 0 !important;
+        border-radius: var(--radius-xl, 24px) !important;
+        border-bottom-left-radius: var(--radius-xl, 24px) !important;
+        border-bottom-right-radius: var(--radius-xl, 24px) !important;
+    }
+
+    .work-logs-drawer.open {
+        width: 320px !important;
+        max-width: 320px !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        margin-right: 0 !important;
+        border-radius: var(--radius-xl, 24px) !important;
+        border-bottom-left-radius: var(--radius-xl, 24px) !important;
+        border-bottom-right-radius: var(--radius-xl, 24px) !important;
+    }
+
+    .work-logs-drawer-content {
+        width: 320px !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        background: var(--glass-bg, rgba(255, 255, 255, 0.74)) !important;
+        backdrop-filter: blur(28px) saturate(190%) !important;
+        -webkit-backdrop-filter: blur(28px) saturate(190%);
+        border: 1.5px solid var(--glass-border, rgba(255, 255, 255, 0.9)) !important;
+        border-radius: var(--radius-xl, 24px) !important;
+        border-bottom-left-radius: var(--radius-xl, 24px) !important;
+        border-bottom-right-radius: var(--radius-xl, 24px) !important;
+        padding: 18px 16px !important;
+        box-shadow: var(--glass-shadow) !important;
+        min-height: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    [data-theme="dark"] .work-logs-drawer-content {
+        background: rgba(15, 23, 42, 0.76) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+
+    .motion-dock-sidebar {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        background: var(--glass-bg, rgba(255, 255, 255, 0.74)) !important;
+        backdrop-filter: blur(32px) saturate(190%) !important;
+        -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+        border: 1.5px solid var(--glass-border, rgba(255, 255, 255, 0.9)) !important;
+        border-radius: var(--radius-xl, 24px) !important;
+        padding: 20px 6px !important;
+        box-shadow: var(--glass-shadow, 0 20px 45px -12px rgba(15, 23, 42, 0.1)) !important;
+        width: 58px !important;
+        min-width: 58px !important;
+        height: 100% !important;
+        align-self: stretch !important;
+        z-index: 100 !important;
+        flex-shrink: 0 !important;
+        user-select: none !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+    }
+
+    [data-theme="dark"] .motion-dock-sidebar {
+        background: rgba(15, 23, 42, 0.76) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .dock-item-list {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+        width: 100% !important;
+        overflow: visible !important;
+        position: relative !important;
+    }
+
+    .dock-divider {
+        width: 28px !important;
+        height: 2px !important;
+        background: rgba(71, 85, 105, 0.38) !important;
+        border-radius: 999px !important;
+        margin: 3px 0 !important;
+    }
+
+    [data-theme="dark"] .dock-divider {
+        background: rgba(255, 255, 255, 0.16) !important;
+    }
+
+    /* Circular Motion Primitives Dock Item */
+    .dock-item {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        border-radius: 50% !important;
+        cursor: pointer !important;
+        color: var(--text-headline, #0f172a) !important;
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1.5px solid rgba(226, 232, 240, 0.9) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+        transform-origin: center center !important;
+        will-change: transform !important;
+        transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 0.08s ease-out !important;
+    }
+
+    /* Light Theme Hover: Signature Glowing Sunshine Yellow */
+    .dock-item:hover,
+    .dock-item.active,
+    .dock-item.dock-item-active {
+        background: linear-gradient(135deg, #fef9c3 0%, #ebf84a 100%) !important;
+        border-color: #d9e638 !important;
+        color: #0f172a !important;
+        box-shadow: 0 10px 28px rgba(234, 179, 8, 0.45), 0 0 18px rgba(235, 248, 74, 0.6) !important;
+    }
+
+    .dock-item:hover .dock-item-icon,
+    .dock-item.active .dock-item-icon {
+        color: #0f172a !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* Dark Theme: Sleek Slate with Vibrant Glowing Purple on Hover */
+    [data-theme="dark"] .dock-item {
+        background: rgba(30, 41, 59, 0.72) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+        color: #f1f5f9 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    [data-theme="dark"] .dock-item:hover,
+    [data-theme="dark"] .dock-item.active,
+    [data-theme="dark"] .dock-item.dock-item-active {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+        border-color: #a78bfa !important;
+        color: #ffffff !important;
+        box-shadow: 0 10px 32px rgba(124, 58, 237, 0.6), 0 0 20px rgba(99, 102, 241, 0.5) !important;
+    }
+
+    [data-theme="dark"] .dock-item:hover .dock-item-icon,
+    [data-theme="dark"] .dock-item.active .dock-item-icon {
+        color: #ffffff !important;
+        transform: scale(1.05) !important;
+    }
+
+    .dock-item-icon {
+        font-size: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        pointer-events: none !important;
+        transition: transform 0.15s ease, color 0.15s ease !important;
+    }
+
+    .dock-badge {
+        display: none !important;
+    }
+
+    .dock-label-tooltip {
+        position: absolute !important;
+        left: calc(100% + 14px) !important;
+        top: 50% !important;
+        transform: translateY(-50%) translateX(-6px) !important;
+        background: rgba(15, 23, 42, 0.94) !important;
+        backdrop-filter: blur(12px) !important;
+        color: #ffffff !important;
+        padding: 5px 12px !important;
+        border-radius: 8px !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: opacity 0.18s ease, transform 0.18s ease !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+        z-index: 10000 !important;
+    }
+
+    .dock-label-tooltip::before {
+        content: '' !important;
+        position: absolute !important;
+        right: 100% !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        border: 5px solid transparent !important;
+        border-right-color: rgba(15, 23, 42, 0.94) !important;
+    }
+
+    .dock-item:hover .dock-label-tooltip {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(-50%) translateX(0) !important;
+    }
+
+    /* ==========================================================================
+       Settings Modal (Gemini AI & Google SMTP Configuration)
+       ========================================================================== */
+    .settings-modal-card {
+        width: 95% !important;
+        max-width: 560px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(32px) saturate(190%) !important;
+        -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+        border-radius: 24px !important;
+        box-shadow: 0 30px 65px -15px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        animation: fadeIn 0.2s ease-out;
+    }
+
+    [data-theme="dark"] .settings-modal-card {
+        background: rgba(22, 28, 45, 0.98) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .settings-modal-header {
+        padding: 18px 24px !important;
+        border-bottom: 1.5px solid rgba(226, 232, 240, 0.75) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        background: rgba(255, 255, 255, 0.5) !important;
+        flex-shrink: 0 !important;
+        position: relative !important;
+    }
+
+    [data-theme="dark"] .settings-modal-header {
+        background: rgba(15, 23, 42, 0.5) !important;
+        border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .settings-header-title {
+        display: flex !important;
+        align-items: center !important;
+        gap: 14px !important;
+    }
+
+    .settings-header-icon {
+        width: 42px !important;
+        height: 42px !important;
+        border-radius: 12px !important;
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
+        color: #ffffff !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 17px !important;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.32) !important;
+        flex-shrink: 0 !important;
+    }
+
+    .settings-title-text {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 17px !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        line-height: 1.25 !important;
+        display: block !important;
+    }
+
+    [data-theme="dark"] .settings-title-text {
+        color: #f8fafc !important;
+    }
+
+    .settings-subtitle-text {
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-size: 11.5px !important;
+        font-weight: 500 !important;
+        color: #64748b !important;
+        display: block !important;
+        margin-top: 2px !important;
+    }
+
+    [data-theme="dark"] .settings-subtitle-text {
+        color: #94a3b8 !important;
+    }
+
+    .settings-modal-header .btn-close-modal {
+        position: static !important;
+        margin-left: auto !important;
+        flex-shrink: 0 !important;
+    }
+
+    .settings-tabs-nav {
+        display: flex !important;
+        gap: 8px !important;
+        border-bottom: 1.5px solid rgba(226, 232, 240, 0.8) !important;
+        padding: 0 24px !important;
+        background: rgba(255, 255, 255, 0.35) !important;
+        flex-shrink: 0 !important;
+    }
+
+    [data-theme="dark"] .settings-tabs-nav {
+        background: rgba(15, 23, 42, 0.4) !important;
+        border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .settings-tab-btn {
+        padding: 13px 18px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: #64748b !important;
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2.5px solid transparent !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .settings-tab-btn:hover {
+        color: #0f172a !important;
+    }
+
+    [data-theme="dark"] .settings-tab-btn:hover {
+        color: #f8fafc !important;
+    }
+
+    .settings-tab-btn.active {
+        color: #4f46e5 !important;
+        border-bottom-color: #4f46e5 !important;
+    }
+
+    [data-theme="dark"] .settings-tab-btn.active {
+        color: #818cf8 !important;
+        border-bottom-color: #818cf8 !important;
+    }
+
+    .settings-modal-body {
+        padding: 22px 24px !important;
+        overflow-y: auto !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        background: transparent !important;
+    }
+
+    .settings-tab-pane {
+        display: none !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+    }
+
+    .settings-tab-pane.active {
+        display: flex !important;
+    }
+
+    .settings-pane-card {
+        background: rgba(255, 255, 255, 0.65) !important;
+        border: 1.5px solid rgba(226, 232, 240, 0.9) !important;
+        border-radius: 18px !important;
+        padding: 18px 20px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03) !important;
+    }
+
+    [data-theme="dark"] .settings-pane-card {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .settings-pane-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 4px !important;
+    }
+
+    .settings-pane-title {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 15px !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    [data-theme="dark"] .settings-pane-title {
+        color: #f8fafc !important;
+    }
+
+    .settings-badge-encrypted {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: #15803d !important;
+        background: #f0fdf4 !important;
+        border: 1px solid #bbf7d0 !important;
+        padding: 2.5px 9px !important;
+        border-radius: 999px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+    }
+
+    [data-theme="dark"] .settings-badge-encrypted {
+        background: rgba(20, 83, 45, 0.4) !important;
+        border-color: rgba(34, 197, 94, 0.3) !important;
+        color: #86efac !important;
+    }
+
+    .settings-pane-desc {
+        font-size: 12px !important;
+        color: #64748b !important;
+        line-height: 1.55 !important;
+        margin: 0 0 14px 0 !important;
+    }
+
+    [data-theme="dark"] .settings-pane-desc {
+        color: #94a3b8 !important;
+    }
+
+    .settings-modal-footer {
+        padding: 14px 24px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 12px !important;
+        background: rgba(248, 250, 252, 0.65) !important;
+        border-top: 1.5px solid rgba(226, 232, 240, 0.75) !important;
+        flex-shrink: 0 !important;
+    }
+
+    [data-theme="dark"] .settings-modal-footer {
+        background: rgba(15, 23, 42, 0.5) !important;
+        border-top-color: rgba(255, 255, 255, 0.08) !important;
+    }
 </style>
 
 <!-- Radiant Ambient Glowing Mesh Orbs -->
@@ -1806,81 +2326,66 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 <div class="ambient-glow-orb orb-3"></div>
 
 <div class="app-container">
-    <!-- Header -->
-    <header>
-        <div class="brand-row">
-            <div class="brand">
-                <div class="brand-icon">
-                    <i class="fa-solid fa-note-sticky"></i>
-                </div>
-                <div>
-                    <h1 class="brand-title">Today's Work Log</h1>
-                    <p class="brand-subtitle">Track your daily tasks, progress, and development notes</p>
-                </div>
-            </div>
+    <!-- Top Header Bar (Rulse-Inspired Glassmorphic Header) -->
+    <header class="top-header-bar">
+        <div class="header-left-cluster">
+            <a href="<?= $this->Url->build('/') ?>" class="header-brand" title="Helpdesk Daily Work Journal">
+                <span class="header-brand-logo">
+                    <i class="fa-solid fa-layer-group"></i> HELPDESK
+                </span>
+            </a>
 
-            <!-- Mobile Quick Sidebar Toggle (Visible only on <= 991px) -->
-            <div class="header-mobile-tools">
-                <button type="button" class="btn btn-toggle-sidebar-mobile" id="btnToggleSidebarMobile" title="View / Hide Past Work Logs">
-                    <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i>
-                    <span>Logs</span>
+            <!-- Mode Switcher Pill (Matching Image 1: Mode: Sunrise ▾ / Mode: Dark ▾) -->
+            <button type="button" class="mode-switcher-pill" id="btnHeaderModeToggle" title="Click to switch Sunrise / Dark mode">
+                <span id="modeSwitcherIcon"><i class="fa-solid fa-sun" style="color: #f59e0b;"></i></span>
+                <span id="modeSwitcherText">Mode: Sunrise</span>
+                <i class="fa-solid fa-chevron-down text-xs" style="opacity: 0.6; margin-left: 2px;"></i>
+            </button>
+        </div>
+
+        <div class="header-center-cluster">
+            <!-- Date Controls Module (Previous, Date Picker, Today, Next) -->
+            <div class="header-date-module date-controls">
+                <button type="button" class="btn-nav" id="btnPrevDay" title="Previous Day">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <input type="date" id="datePicker" class="date-picker" value="<?= h($todayIso) ?>" max="<?= h($todayIso) ?>" title="Change Work Log Date">
+                <button type="button" class="btn-nav" id="btnToday" title="Jump to Today">Today</button>
+                <button type="button" class="btn-nav" id="btnNextDay" title="Next Day">
+                    <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
+
+            <!-- Global Search Pill -->
+            <div class="header-search-box" id="topHeaderSearchBox">
+                <i class="fa-solid fa-magnifying-glass header-search-icon"></i>
+                <input type="text" id="topHeaderSearchInput" class="header-search-input" placeholder="Search database notes..." autocomplete="off" title="Click or type to search all past notes">
+            </div>
         </div>
 
-        <!-- Date Controls -->
-        <div class="date-controls">
-            <button type="button" class="btn-nav" id="btnPrevDay" title="Previous Day">
-                <i class="fa-solid fa-chevron-left"></i>
+        <div class="header-right-cluster">
+            <!-- Notification Icon (Visual Placeholder) -->
+            <button type="button" class="btn-header-circle" id="btnHeaderNotification" title="Notifications">
+                <i class="fa-regular fa-bell"></i>
             </button>
-            <input type="date" id="datePicker" class="date-picker" value="<?= h($todayIso) ?>" max="<?= h($todayIso) ?>">
-            <button type="button" class="btn-nav" id="btnToday">Today</button>
-            <button type="button" class="btn-nav" id="btnNextDay" title="Next Day">
-                <i class="fa-solid fa-chevron-right"></i>
-            </button>
-        </div>
 
-        <!-- Header Actions -->
-        <div class="action-btns">
-            <button type="button" class="btn" id="btnOpenGlobalSearch" title="Search across all past notes in Database">
-                <i class="fa-solid fa-magnifying-glass text-indigo-600"></i> <span class="action-btn-text">Global Search</span>
-            </button>
-            <button type="button" class="btn btn-primary" id="btnInsertTemplate" title="Insert Standard Daily Template">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> <span class="action-btn-text">Insert Template</span>
+            <!-- Settings Menu Gear Icon (Opens Gemini & SMTP Settings Modal) -->
+            <button type="button" class="btn-header-circle" id="btnHeaderSettings" title="System Settings (Gemini AI & Google SMTP)">
+                <i class="fa-solid fa-gear"></i>
             </button>
 
             <?php if (!empty($currentUser)): ?>
-                <!-- User Menu Dropdown -->
-                <div class="user-menu-wrapper">
-                    <button type="button" class="user-pill-btn" id="btnUserMenuToggle" title="Click for Profile & Logout">
-                        <span style="width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg, #6366f1, #4f46e5); color:#ffffff; font-size:11px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(99,102,241,0.4);"><?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?></span>
-                        <span class="user-pill-name" style="font-size:12.5px; font-weight:700;"><?= h($currentUser['name']) ?></span>
-                        <i class="fa-solid fa-chevron-down" style="font-size: 10px; opacity: 0.7;"></i>
-                    </button>
-                    <div class="user-popover-menu" id="userPopoverMenu">
-                        <div class="user-popover-header">
-                            <div class="user-popover-avatar"><?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?></div>
-                            <div class="user-popover-meta">
-                                <div class="user-popover-name"><?= h($currentUser['name']) ?></div>
-                                <div class="user-popover-email"><?= h($currentUser['email'] ?? '') ?></div>
-                            </div>
-                        </div>
-                        <div class="user-popover-divider"></div>
-                        <button type="button" class="user-popover-item" id="btnOpenProfileModal">
-                            <i class="fa-solid fa-user-gear" style="color: #4f46e5;"></i>
-                            <span>Profile</span>
-                        </button>
-                        <button type="button" class="user-popover-item" id="btnThemeTogglePopover">
-                            <i class="fa-solid fa-moon" style="color: #64748b; width: 16px;"></i>
-                            <span>Switch to Dark Mode</span>
-                        </button>
-                        <div class="user-popover-divider"></div>
-                        <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout']) ?>" class="user-popover-item item-logout" id="btnLogoutLink">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                            <span>Logout</span>
-                        </a>
-                    </div>
-                </div>
+                <?php
+                    $gender = !empty($currentUser['gender']) ? $currentUser['gender'] : 'male';
+                    $headerAvatar = !empty($currentUser['picture']) ? $currentUser['picture'] : "img/avatars/{$gender}/{$gender}_1.png";
+                    $headerAvatarUrl = str_starts_with($headerAvatar, 'http') ? $headerAvatar : $this->Url->build('/' . ltrim($headerAvatar, '/'));
+                    $userInitial = strtoupper(substr($currentUser['name'] ?? 'U', 0, 1));
+                ?>
+                <!-- User Profile Avatar (Directly opens Profile Modal matching Image 2) -->
+                <button type="button" class="header-user-avatar-btn" id="btnHeaderProfile" title="User Profile & Account Settings">
+                    <img src="<?= h($headerAvatarUrl) ?>" alt="<?= h($currentUser['name'] ?? 'User') ?>" class="header-user-avatar-img" id="headerProfileAvatarImg" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span class="header-user-avatar-fallback" style="display:none;"><?= $userInitial ?></span>
+                </button>
             <?php else: ?>
                 <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login']) ?>" class="btn" style="background:#1c201e; color:#ffffff; border-color:#1c201e;">
                     <i class="fa-solid fa-right-to-bracket"></i> Login
@@ -1889,38 +2394,95 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         </div>
     </header>
 
-    <!-- Main Workspace Grid -->
-    <div class="workspace">
-        <!-- Left Sidebar: Past Daily Logs from Database -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <span><i class="fa-solid fa-database mr-1" style="color: #4f46e5;"></i> &nbsp; Work Logs</span>
-                <span id="logCountBadge" style="font-size: 11px; color: var(--text-muted);">0</span>
-            </div>
+    <!-- Main Workspace Layout with Left Motion Dock, Collapsible Work Logs Drawer & Task Editor -->
+    <div class="app-main-layout">
+        <!-- Left Floating Motion Primitives Dock Sidebar (macOS Wave Magnification) -->
+        <aside class="motion-dock-sidebar" id="motionDockSidebar" aria-label="Application Dock">
+            <div class="dock-item-list" id="dockItemList">
+                <!-- 1. Work Logs Toggle Icon -->
+                <div class="dock-item" id="btnDockWorkLogs" role="button" tabindex="0" data-title="Work Logs">
+                    <div class="dock-item-icon">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <span class="dock-label-tooltip">Work Logs</span>
+                </div>
 
-            <!-- Month & Year Filter Bar -->
-            <div class="month-filter-bar">
-                <button type="button" id="btnPrevMonth" class="btn-month-nav" title="Previous Month">
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
-                </button>
-                <span id="currentMonthDisplay" class="month-label"><?= date('M Y') ?></span>
-                <button type="button" id="btnNextMonth" class="btn-month-nav" title="Next Month">
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
-                </button>
-            </div>
+                <!-- 2. Projects Manager Modal -->
+                <div class="dock-item" id="btnDockProjects" role="button" tabindex="0" data-title="Projects">
+                    <div class="dock-item-icon">
+                        <i class="fa-solid fa-folder-tree"></i>
+                    </div>
+                    <span class="dock-label-tooltip">Projects</span>
+                </div>
 
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="searchInput" class="search-input" placeholder="Search date logs (DD, MM, YYYY)..." inputmode="numeric" autocomplete="off" title="Filter by date, month or year (numbers only)">
-            </div>
+                <!-- 3. Clients Manager Modal -->
+                <div class="dock-item" id="btnDockClients" role="button" tabindex="0" data-title="Clients">
+                    <div class="dock-item-icon">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <span class="dock-label-tooltip">Clients</span>
+                </div>
 
-            <div id="logListContainer" class="log-list">
-                <!-- Dynamically populated from MySQL -->
-            </div>
-        </div>
+                <!-- 4. Daily Updates Generator -->
+                <a href="<?= $this->Url->build(['controller' => 'DailyUpdates', 'action' => 'index', 'plugin' => false]) ?>" class="dock-item" id="btnDockDailyUpdates" data-title="Daily Updates" style="text-decoration:none;">
+                    <div class="dock-item-icon">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    <span class="dock-label-tooltip">Daily Updates</span>
+                </a>
 
-        <!-- Right Main Panel: Clean Text Editor -->
-        <div class="editor-container">
+                <div class="dock-divider"></div>
+
+                <!-- 5. Team Chat Placeholder -->
+                <div class="dock-item" id="btnDockChat" role="button" tabindex="0" data-title="Team Chat">
+                    <div class="dock-item-icon">
+                        <i class="fa-regular fa-comment-dots"></i>
+                    </div>
+                    <span class="dock-label-tooltip">Team Chat</span>
+                </div>
+
+                <!-- 6. Logout Trigger with Custom Confirmation -->
+                <div class="dock-item" id="btnDockLogout" role="button" tabindex="0" data-title="Logout" data-url="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout', 'plugin' => false]) ?>">
+                    <div class="dock-item-icon" style="color: #ef4444;">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </div>
+                    <span class="dock-label-tooltip">Logout</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Collapsible Animated Work Logs Drawer (Closed by default) -->
+        <aside class="work-logs-drawer" id="workLogsDrawer">
+            <div class="work-logs-drawer-content">
+                <div class="sidebar-header">
+                    <span><i class="fa-solid fa-database mr-1" style="color: #4f46e5;"></i> &nbsp; Work Logs</span>
+                    <button type="button" id="btnCloseWorkLogsDrawer" class="btn-close-modal" style="width:26px; height:26px; font-size:16px;" title="Close Work Logs">&times;</button>
+                </div>
+
+                <!-- Month & Year Filter Bar -->
+                <div class="month-filter-bar">
+                    <button type="button" id="btnPrevMonth" class="btn-month-nav" title="Previous Month">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <span id="currentMonthDisplay" class="month-label"><?= date('M Y') ?></span>
+                    <button type="button" id="btnNextMonth" class="btn-month-nav" title="Next Month">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search date logs (DD, MM, YYYY)..." inputmode="numeric" autocomplete="off" title="Filter by date, month or year (numbers only)">
+                </div>
+
+                <div id="logListContainer" class="log-list">
+                    <!-- Dynamically populated from MySQL -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Main Panel: Clean Text Editor (Automatically fills available width) -->
+        <main class="editor-container">
             <div class="editor-toolbar">
                 <div class="editor-title-group">
                     <div class="editor-title">
@@ -1930,13 +2492,10 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
                     <!-- Custom Project Selection Dropdown -->
                     <div class="custom-project-wrapper">
-                        <button type="button" id="btnProjectDropdownToggle" class="custom-project-trigger" title="Select Active Project">
+                        <button type="button" id="btnProjectDropdownToggle" class="custom-project-trigger">
                             <i class="fa-solid fa-folder-open text-indigo-600"></i>
                             <span id="activeProjectDisplay" class="font-bold"><?= h($defaultProject ? $defaultProject->name : 'No Project') ?></span>
                             <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
-                        </button>
-                        <button type="button" id="btnAddProject" class="btn-add-project" title="Manage Projects">
-                            <i class="fa-solid fa-plus"></i> Project
                         </button>
 
                         <!-- Custom Popover Menu -->
@@ -1952,13 +2511,10 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
                     <!-- Custom Client Selection Dropdown -->
                     <div class="custom-project-wrapper">
-                        <button type="button" id="btnClientDropdownToggle" class="custom-project-trigger" title="Select Active Client" style="border-color:#bae6fd;">
+                        <button type="button" id="btnClientDropdownToggle" class="custom-project-trigger" style="border-color:#bae6fd;">
                             <i class="fa-solid fa-user-tie" style="color:#0284c7;"></i>
                             <span id="activeClientDisplay" class="font-bold"><?= h($defaultClient ? $defaultClient->name : 'Select Client') ?></span>
                             <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
-                        </button>
-                        <button type="button" id="btnAddClient" class="btn-add-client" title="Manage Clients">
-                            <i class="fa-solid fa-plus"></i> Client
                         </button>
 
                         <!-- Custom Client Popover Menu -->
@@ -1974,6 +2530,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                 </div>
 
                 <div class="editor-toolbar-actions" style="display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; flex-shrink: 0;">
+                    <button type="button" class="btn btn-primary" id="btnInsertTemplate" title="Insert Standard Daily Template">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> <span class="action-btn-text">Insert Template</span>
+                    </button>
                     <button type="button" class="btn" id="btnTogglePreview" title="Preview notes with clickable links">
                         <i class="fa-regular fa-eye" id="iconTogglePreview"></i> <span id="textTogglePreview">Preview</span>
                     </button>
@@ -2000,7 +2559,6 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                 </button>
             </div>
 
-
             <!-- Main Monospace Editor -->
             <textarea id="workNotesEditor" class="editor-textarea" placeholder="Type or paste your daily task points here..."><?= h($todayLog ? $todayLog->content : '') ?></textarea>
             <!-- Formatted Clickable Links Preview -->
@@ -2018,7 +2576,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                     </a>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <!-- Footer Copyright -->
@@ -2228,16 +2786,37 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         <div class="profile-modal-body">
             <div id="profileAlert" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;"></div>
 
-            <!-- User Info Card (Theme-Matched) -->
+            <!-- User Info Card (Theme-Matched with Big 3D Pixar Avatar) -->
             <div class="profile-banner-card">
-                <div id="profileAvatarBig" class="profile-avatar-circle">
-                    <?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?>
+                <div class="profile-avatar-wrapper">
+                    <div id="profileAvatarBig" class="profile-avatar-circle">
+                        <?php
+                            $pGender = !empty($currentUser['gender']) ? $currentUser['gender'] : 'male';
+                            $pAvatar = !empty($currentUser['picture']) ? $currentUser['picture'] : "img/avatars/{$pGender}/{$pGender}_1.png";
+                            $pAvatarUrl = str_starts_with($pAvatar, 'http') ? $pAvatar : $this->Url->build('/' . ltrim($pAvatar, '/'));
+
+                            $userId = (int)($currentUser['id'] ?? 1);
+                            $maleIdx = (($userId - 1) % 7) + 1;
+                            $femaleIdx = (($userId - 1) % 6) + 1;
+                            $initMalePic = ($pGender === 'male' && !empty($currentUser['picture'])) ? $currentUser['picture'] : "img/avatars/male/male_{$maleIdx}.png";
+                            $initFemalePic = ($pGender === 'female' && !empty($currentUser['picture'])) ? $currentUser['picture'] : "img/avatars/female/female_{$femaleIdx}.png";
+                            $initMaleUrl = $this->Url->build('/' . ltrim($initMalePic, '/'));
+                            $initFemaleUrl = $this->Url->build('/' . ltrim($initFemalePic, '/'));
+                        ?>
+                        <img src="<?= h($pAvatarUrl) ?>" alt="Avatar" id="profileBigAvatarImg" class="profile-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                        <span class="profile-avatar-fallback" style="display:none;"><?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?></span>
+                    </div>
+                    <input type="hidden" id="profSelectedPicture" value="<?= h($pAvatar) ?>" data-male-pic="<?= h($initMalePic) ?>" data-male-url="<?= h($initMaleUrl) ?>" data-female-pic="<?= h($initFemalePic) ?>" data-female-url="<?= h($initFemaleUrl) ?>">
                 </div>
                 <div class="profile-banner-meta">
                     <div id="profileBannerName" class="profile-banner-name"><?= h($currentUser['name'] ?? 'User') ?></div>
                     <div class="profile-banner-sub">
                         <span><i class="fa-regular fa-envelope" style="margin-right: 3px;"></i> <span id="profileBannerEmail"><?= h($currentUser['email'] ?? '') ?></span></span>
                         <span><i class="fa-regular fa-calendar-check" style="margin-right: 3px;"></i> Member Since: <strong id="profileMemberSince">Loading...</strong></span>
+                        <span class="profile-gender-badge" id="profileGenderBadge">
+                            <i class="fa-solid <?= ($currentUser['gender'] ?? 'male') === 'female' ? 'fa-venus' : 'fa-mars' ?>" style="color: <?= ($currentUser['gender'] ?? 'male') === 'female' ? '#ec4899' : '#3b82f6' ?>; margin-right: 3px;"></i>
+                            <span id="profileGenderText"><?= ucfirst($currentUser['gender'] ?? 'male') ?></span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -2259,6 +2838,22 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                         <div id="profEmailError" style="display:none; color:#ef4444; font-size:11px; font-weight:600; margin-top:3px;">
                             <i class="fa-solid fa-circle-exclamation"></i> <span></span>
                         </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <label class="profile-field-label">Gender <span style="color: #ef4444;">*</span> :</label>
+                    <div class="profile-gender-toggle-group">
+                        <label class="profile-gender-toggle-opt <?= ($currentUser['gender'] ?? 'male') === 'male' ? 'active' : '' ?>" id="labelGenderMale">
+                            <input type="radio" name="profGender" id="profGenderMale" value="male" <?= ($currentUser['gender'] ?? 'male') === 'male' ? 'checked' : '' ?>>
+                            <i class="fa-solid fa-mars" style="color: #3b82f6; font-size: 15px;"></i>
+                            <span>Male</span>
+                        </label>
+                        <label class="profile-gender-toggle-opt <?= ($currentUser['gender'] ?? 'male') === 'female' ? 'active' : '' ?>" id="labelGenderFemale">
+                            <input type="radio" name="profGender" id="profGenderFemale" value="female" <?= ($currentUser['gender'] ?? 'male') === 'female' ? 'checked' : '' ?>>
+                            <i class="fa-solid fa-venus" style="color: #ec4899; font-size: 15px;"></i>
+                            <span>Female</span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -2314,54 +2909,115 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                     </div>
                 </div>
             </div>
-
-            <!-- Section 3: Gemini AI API Key -->
-            <div class="profile-box-panel">
-                <div class="profile-section-title" style="margin-bottom: 0;">
-                    <span><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary); margin-right: 4px;"></i> Gemini AI API Key</span>
-                    <span style="font-size: 11px; text-transform: none; font-weight: 600; color: #15803d; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 2px 7px; border-radius: 4px;">
-                        <i class="fa-solid fa-shield-halved"></i> Encrypted in MySQL
-                    </span>
-                </div>
-                <div style="position: relative; margin-top: 6px;">
-                    <input type="password" id="profApiKey" class="profile-input-field" placeholder="AIzaSy... (leave blank to keep current key)" style="padding-right: 36px;">
-                    <button type="button" class="btn-toggle-password" data-target="#profApiKey" title="Show/Hide Key">
-                        <i class="fa-solid fa-eye"></i>
-                    </button>
-                </div>
-                <div style="font-size: 11px; margin-top: 4px; display: flex; justify-content: flex-end;">
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #2563eb; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
-                        <i class="fa-solid fa-key"></i> Get Gemini API Key <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Section 4: Email App / SMTP Password -->
-            <div class="profile-box-panel">
-                <div class="profile-section-title" style="margin-bottom: 0;">
-                    <span><i class="fa-solid fa-envelope" style="color: var(--primary); margin-right: 4px;"></i> Email App / SMTP Password</span>
-                    <span style="font-size: 11px; text-transform: none; font-weight: 600; color: #15803d; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 2px 7px; border-radius: 4px;">
-                        <i class="fa-solid fa-shield-halved"></i> Encrypted in MySQL
-                    </span>
-                </div>
-                <div style="position: relative; margin-top: 6px;">
-                    <input type="password" id="profSmtpPass" class="profile-input-field" placeholder="Enter your 16-digit Google App Password" style="padding-right: 36px;">
-                    <button type="button" class="btn-toggle-password" data-target="#profSmtpPass" title="Show/Hide Password">
-                        <i class="fa-solid fa-eye"></i>
-                    </button>
-                </div>
-                <div style="font-size: 11px; margin-top: 4px; display: flex; justify-content: flex-end;">
-                    <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" style="color: #2563eb; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
-                        <i class="fa-brands fa-google"></i> Get Google App Password <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
-                    </a>
-                </div>
-            </div>
         </div>
 
         <div class="profile-modal-footer">
             <button type="button" class="btn-prof-cancel" id="btnCancelProfileModal">Cancel</button>
             <button type="button" class="btn-prof-save" id="btnSaveProfileModal">
                 <i class="fa-solid fa-check"></i> Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Dedicated System Settings Modal (Google Gemini AI & Google SMTP) -->
+<div id="settingsModal" class="modal-overlay">
+    <div class="modal-card settings-modal-card">
+        <div class="settings-modal-header">
+            <div class="settings-header-title">
+                <div class="settings-header-icon">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <div>
+                    <span class="settings-title-text">System Settings</span>
+                    <span class="settings-subtitle-text">Configure Google Gemini AI & Google SMTP Integration</span>
+                </div>
+            </div>
+            <button type="button" class="btn-close-modal" id="btnCloseSettingsModal" title="Close">&times;</button>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="settings-tabs-nav">
+            <button type="button" class="settings-tab-btn active" data-tab="geminiTab">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Gemini AI
+            </button>
+            <button type="button" class="settings-tab-btn" data-tab="smtpTab">
+                <i class="fa-solid fa-envelope"></i> Google SMTP
+            </button>
+        </div>
+
+        <div class="settings-modal-body">
+            <div id="settingsAlert" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; margin-bottom: 12px;"></div>
+
+            <!-- Tab Pane 1: Gemini AI -->
+            <div class="settings-tab-pane active" id="geminiTab">
+                <div class="settings-pane-card">
+                    <div class="settings-pane-header">
+                        <div class="settings-pane-title">
+                            <i class="fa-solid fa-wand-magic-sparkles" style="color: #6366f1;"></i> Google Gemini AI API
+                        </div>
+                        <span class="settings-badge-encrypted">
+                            <i class="fa-solid fa-shield-halved"></i> Encrypted in MySQL
+                        </span>
+                    </div>
+                    <p class="settings-pane-desc">
+                        Gemini AI powers <strong>AI Polish</strong>, grammar correction, and professional phrasing for your work notes and daily emails.
+                    </p>
+                    <div style="margin-bottom: 12px;">
+                        <label for="settingsGeminiKey" class="profile-field-label">Gemini API Key :</label>
+                        <div style="position: relative;">
+                            <input type="password" id="settingsGeminiKey" class="profile-input-field" placeholder="AIzaSy... (leave blank to keep current key)" style="padding-right: 36px;">
+                            <button type="button" class="btn-toggle-password" data-target="#settingsGeminiKey" title="Show/Hide Key">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted);">Status: <strong id="settingsGeminiStatus">Checking...</strong></span>
+                            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="font-size: 11px; color: #4f46e5; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
+                                <i class="fa-solid fa-key"></i> Get free Gemini API Key <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Pane 2: Google SMTP -->
+            <div class="settings-tab-pane" id="smtpTab">
+                <div class="settings-pane-card">
+                    <div class="settings-pane-header">
+                        <div class="settings-pane-title">
+                            <i class="fa-solid fa-envelope" style="color: #0284c7;"></i> Google SMTP Email App Password
+                        </div>
+                        <span class="settings-badge-encrypted">
+                            <i class="fa-solid fa-shield-halved"></i> Encrypted in MySQL
+                        </span>
+                    </div>
+                    <p class="settings-pane-desc">
+                        Required to dispatch daily updates and work reports directly from your Gmail account via authenticated SMTP.
+                    </p>
+                    <div style="margin-bottom: 12px;">
+                        <label for="settingsSmtpPass" class="profile-field-label">16-Digit Google App Password :</label>
+                        <div style="position: relative;">
+                            <input type="password" id="settingsSmtpPass" class="profile-input-field" placeholder="xxxx xxxx xxxx xxxx (leave blank to keep current password)" style="padding-right: 36px;">
+                            <button type="button" class="btn-toggle-password" data-target="#settingsSmtpPass" title="Show/Hide Password">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted);">Status: <strong id="settingsSmtpStatus">Checking...</strong></span>
+                            <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" style="font-size: 11px; color: #0284c7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
+                                <i class="fa-brands fa-google"></i> Get Google App Password <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-modal-footer">
+            <button type="button" class="btn-confirm-cancel" id="btnCancelSettingsModal">Close</button>
+            <button type="button" class="btn-confirm-action" id="btnSaveSettingsModal">
+                <i class="fa-solid fa-check"></i> Save Settings
             </button>
         </div>
     </div>
@@ -2981,7 +3637,7 @@ $(document).ready(function() {
         $('#projectMenuList').html(html);
 
         $('#btnDropdownCreateProj').click(function() {
-            $('#projectDropdownMenu').removeClass('active');
+            $('#projectDropdownMenu').removeClass('active').closest('.custom-project-wrapper').removeClass('menu-active');
             $('#manageProjectModal').addClass('active');
             $('#newProjectInput').val('').focus();
         });
@@ -2991,7 +3647,7 @@ $(document).ready(function() {
             activeProjectId = $(this).attr('data-id');
             activeProjectName = $(this).attr('data-name');
             $('#activeProjectDisplay').text(activeProjectName);
-            $('#projectDropdownMenu').removeClass('active');
+            $('#projectDropdownMenu').removeClass('active').closest('.custom-project-wrapper').removeClass('menu-active');
             renderProjectsDropdown();
             updateEditorProjectHeader();
             saveNoteToDatabase();
@@ -3223,7 +3879,7 @@ $(document).ready(function() {
         $('#clientMenuList').html(html);
 
         $('#btnDropdownCreateClient').click(function() {
-            $('#clientDropdownMenu').removeClass('active');
+            $('#clientDropdownMenu').removeClass('active').closest('.custom-project-wrapper').removeClass('menu-active');
             $('#manageClientModal').addClass('active');
             $('#newClientInput').val('').focus();
         });
@@ -3233,7 +3889,7 @@ $(document).ready(function() {
             activeClientId = $(this).attr('data-id');
             activeClientName = $(this).attr('data-name');
             $('#activeClientDisplay').text(activeClientName);
-            $('#clientDropdownMenu').removeClass('active');
+            $('#clientDropdownMenu').removeClass('active').closest('.custom-project-wrapper').removeClass('menu-active');
             renderClientsDropdown();
             saveNoteToDatabase();
             showToast('Active client set to: ' + activeClientName);
@@ -3784,21 +4440,26 @@ $(document).ready(function() {
     // Project Dropdown Toggle
     $('#btnProjectDropdownToggle').click(function(e) {
         e.stopPropagation();
-        $('#clientDropdownMenu').removeClass('active');
-        $('#projectDropdownMenu').toggleClass('active');
+        $('#clientDropdownMenu').removeClass('active').closest('.custom-project-wrapper').removeClass('menu-active');
+        var $menu = $('#projectDropdownMenu');
+        $menu.toggleClass('active');
+        $(this).closest('.custom-project-wrapper').toggleClass('menu-active', $menu.hasClass('active'));
     });
 
     // Client Dropdown Toggle
     $('#btnClientDropdownToggle').click(function(e) {
         e.stopPropagation();
-        $('#projectDropdownMenu').removeClass('active');
-        $('#clientDropdownMenu').toggleClass('active');
+        $('#projectDropdownMenu').removeClass('active').closest('.custom-project-wrapper').removeClass('menu-active');
+        var $menu = $('#clientDropdownMenu');
+        $menu.toggleClass('active');
+        $(this).closest('.custom-project-wrapper').toggleClass('menu-active', $menu.hasClass('active'));
     });
 
     $(document).click(function(e) {
         if (!$(e.target).closest('.custom-project-wrapper').length) {
             $('#projectDropdownMenu').removeClass('active');
             $('#clientDropdownMenu').removeClass('active');
+            $('.custom-project-wrapper').removeClass('menu-active');
         }
     });
 
@@ -4241,12 +4902,24 @@ $(document).ready(function() {
     // ==========================================
     // User Menu Popover & Profile Modal Logic
     // ==========================================
+    // User assigned avatars cache (deterministic by gender, no random cycling)
+    window.profileUserAvatars = {
+        male: {
+            pic: $('#profSelectedPicture').data('male-pic') || '',
+            url: $('#profSelectedPicture').data('male-url') || ''
+        },
+        female: {
+            pic: $('#profSelectedPicture').data('female-pic') || '',
+            url: $('#profSelectedPicture').data('female-url') || ''
+        }
+    };
+
     function openProfileModal() {
         $('#userPopoverMenu').removeClass('show');
         $('#btnUserMenuToggle').removeClass('active');
         $('#profileAlert').hide().text('').css({'background': '', 'color': '', 'border': ''});
         $('#profNameError, #profEmailError, #profCurrentPassError, #profNewPassError, #profConfirmPassError').hide().find('span').text('');
-        $('#profInputName, #profInputEmail, #profCurrentPass, #profNewPass, #profConfirmPass, #profApiKey').css({'border-color': '', 'background': ''});
+        $('#profInputName, #profInputEmail, #profCurrentPass, #profNewPass, #profConfirmPass').css({'border-color': '', 'background': ''});
         $('#profCurrentPass, #profNewPass, #profConfirmPass').val('');
 
         // Fetch fresh profile data via AJAX
@@ -4272,14 +4945,48 @@ $(document).ready(function() {
                     $('#profileBannerName').text(u.name);
                     $('#profileBannerEmail').text(u.email);
                     $('#profileMemberSince').text(u.created_formatted);
-                    $('#profileAvatarBig').text((u.name || 'U').charAt(0).toUpperCase());
-                    if (u.api_key) {
-                        $('#profApiKey').val(u.api_key);
+
+                    // Cache assigned avatars for both genders
+                    if (u.male_avatar && u.male_avatar_url) {
+                        window.profileUserAvatars.male = { pic: u.male_avatar, url: u.male_avatar_url };
                     }
-                    if (u.smtp_password) {
-                        $('#profSmtpPass').val(u.smtp_password);
+                    if (u.female_avatar && u.female_avatar_url) {
+                        window.profileUserAvatars.female = { pic: u.female_avatar, url: u.female_avatar_url };
+                    }
+
+                    // Populate gender radio selection & hidden picture
+                    var gender = (u.gender || 'male').toLowerCase();
+                    if (gender === 'female') {
+                        $('#profGenderFemale').prop('checked', true);
+                        $('#labelGenderFemale').addClass('active');
+                        $('#labelGenderMale').removeClass('active');
                     } else {
-                        $('#profSmtpPass').val('');
+                        $('#profGenderMale').prop('checked', true);
+                        $('#labelGenderMale').addClass('active');
+                        $('#labelGenderFemale').removeClass('active');
+                    }
+                    $('#profSelectedPicture').val(u.picture || '');
+
+                    // Banner gender badge
+                    var genderIcon = gender === 'female' ? '<i class="fa-solid fa-venus" style="color:#ec4899; margin-right:4px;"></i>' : '<i class="fa-solid fa-mars" style="color:#3b82f6; margin-right:4px;"></i>';
+                    $('#profileGenderBadge').html(genderIcon + '<span id="profileGenderText">' + (gender.charAt(0).toUpperCase() + gender.slice(1)) + '</span>');
+
+                    if (u.avatar_url) {
+                        var $bigImg = $('#profileBigAvatarImg');
+                        if ($bigImg.length && $bigImg[0]) $bigImg[0].style.display = '';
+                        $bigImg.attr('src', u.avatar_url).show();
+                        $('#profileAvatarBig .profile-avatar-fallback').hide();
+
+                        var $hdrImg = $('#headerProfileAvatarImg');
+                        if ($hdrImg.length && $hdrImg[0]) $hdrImg[0].style.display = '';
+                        $hdrImg.attr('src', u.avatar_url).show();
+                        $('#btnHeaderProfile .header-user-avatar-fallback').hide();
+                    } else {
+                        var initial = (u.name || 'U').charAt(0).toUpperCase();
+                        $('#profileAvatarBig .profile-avatar-fallback').text(initial).show();
+                        $('#profileBigAvatarImg').hide();
+                        $('#btnHeaderProfile .header-user-avatar-fallback').text(initial).show();
+                        $('#headerProfileAvatarImg').hide();
                     }
                 }
             }
@@ -4292,7 +4999,36 @@ $(document).ready(function() {
         $('#userProfileModal').removeClass('active');
     }
 
-    $('#btnOpenProfileModal').click(function(e) {
+    // Gender toggle change handler (switches deterministically to user's assigned avatar for chosen gender)
+    $('input[name="profGender"]').change(function() {
+        var selGender = $(this).val();
+        $('.profile-gender-toggle-opt').removeClass('active');
+        $(this).closest('.profile-gender-toggle-opt').addClass('active');
+
+        // Update banner badge
+        var gIcon = selGender === 'female' ? '<i class="fa-solid fa-venus" style="color:#ec4899; margin-right:4px;"></i>' : '<i class="fa-solid fa-mars" style="color:#3b82f6; margin-right:4px;"></i>';
+        $('#profileGenderBadge').html(gIcon + '<span id="profileGenderText">' + (selGender.charAt(0).toUpperCase() + selGender.slice(1)) + '</span>');
+
+        // Use deterministic assigned avatar for this gender (never randomly cycles on toggle)
+        var assigned = (window.profileUserAvatars && window.profileUserAvatars[selGender])
+            ? window.profileUserAvatars[selGender]
+            : {
+                pic: $('#profSelectedPicture').data(selGender + '-pic') || '',
+                url: $('#profSelectedPicture').data(selGender + '-url') || ''
+            };
+
+        if (assigned && assigned.pic) {
+            $('#profSelectedPicture').val(assigned.pic);
+        }
+        if (assigned && assigned.url) {
+            var $bigImg = $('#profileBigAvatarImg');
+            if ($bigImg.length && $bigImg[0]) $bigImg[0].style.display = '';
+            $bigImg.attr('src', assigned.url).show();
+            $('#profileAvatarBig .profile-avatar-fallback').hide();
+        }
+    });
+
+    $('#btnHeaderProfile, #btnOpenProfileModal').click(function(e) {
         e.preventDefault();
         openProfileModal();
     });
@@ -4305,6 +5041,133 @@ $(document).ready(function() {
         if (e.target === this) {
             closeProfileModal();
         }
+    });
+
+    // ==========================================
+    // System Settings Modal (Gemini & SMTP)
+    // ==========================================
+    function openSettingsModal() {
+        $('#settingsAlert').hide().text('').css({'background': '', 'color': '', 'border': ''});
+        $('#settingsGeminiKey, #settingsSmtpPass').val('');
+
+        // Reset to default Gemini tab
+        $('.settings-tab-btn').removeClass('active');
+        $('.settings-tab-btn[data-tab="geminiTab"]').addClass('active');
+        $('.settings-tab-pane').removeClass('active');
+        $('#geminiTab').addClass('active');
+
+        // Fetch current settings via AJAX
+        $.ajax({
+            url: window.APP_BASE + 'users/get-profile',
+            type: 'GET',
+            dataType: 'json',
+            success: function(res) {
+                if (res.success && res.user) {
+                    var u = res.user;
+                    if (u.api_key) {
+                        $('#settingsGeminiKey').val(u.api_key);
+                        $('#settingsGeminiStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured</span>');
+                    } else {
+                        $('#settingsGeminiStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');
+                    }
+
+                    if (u.smtp_password) {
+                        $('#settingsSmtpPass').val(u.smtp_password);
+                        $('#settingsSmtpStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured</span>');
+                    } else {
+                        $('#settingsSmtpStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');
+                    }
+                }
+            }
+        });
+
+        $('#settingsModal').addClass('active');
+    }
+
+    function closeSettingsModal() {
+        $('#settingsModal').removeClass('active');
+    }
+
+    $('#btnHeaderSettings').click(function(e) {
+        e.preventDefault();
+        openSettingsModal();
+    });
+
+    $('#btnCloseSettingsModal, #btnCancelSettingsModal').click(function() {
+        closeSettingsModal();
+    });
+
+    $('#settingsModal').click(function(e) {
+        if (e.target === this) {
+            closeSettingsModal();
+        }
+    });
+
+    // Settings Navigation Tabs
+    $(document).on('click', '.settings-tab-btn', function(e) {
+        e.preventDefault();
+        var tabTarget = $(this).data('tab');
+        $('.settings-tab-btn').removeClass('active');
+        $(this).addClass('active');
+        $('.settings-tab-pane').removeClass('active');
+        $('#' + tabTarget).addClass('active');
+    });
+
+    // Save System Settings AJAX
+    $('#btnSaveSettingsModal').click(function() {
+        var apiKey = $('#settingsGeminiKey').val().trim();
+        var smtpPass = $('#settingsSmtpPass').val().trim();
+        var alertBox = $('#settingsAlert');
+        alertBox.hide().text('').css({'background': '', 'color': '', 'border': ''});
+
+        var $btn = $(this);
+        var origHtml = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Saving...');
+
+        $.ajax({
+            url: window.APP_BASE + 'users/save-settings',
+            type: 'POST',
+            data: {
+                api_key: apiKey,
+                smtp_password: smtpPass
+            },
+            dataType: 'json',
+            success: function(res) {
+                $btn.prop('disabled', false).html(origHtml);
+                if (res.success) {
+                    alertBox.css({'background': '#f0fdf4', 'color': '#15803d', 'border': '1px solid #bbf7d0'}).html('<i class="fa-solid fa-circle-check"></i> ' + res.message).show();
+                    showToast(res.message, 'success');
+
+                    if (res.has_api_key) {
+                        userDatabaseApiKey = res.api_key || apiKey;
+                        $('#settingsGeminiStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured</span>');
+                    } else {
+                        userDatabaseApiKey = '';
+                        $('#settingsGeminiStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');
+                    }
+
+                    if (res.has_smtp_password) {
+                        $('#settingsSmtpStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured</span>');
+                    } else {
+                        $('#settingsSmtpStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');
+                    }
+
+                    setTimeout(function() {
+                        closeSettingsModal();
+                    }, 1000);
+                } else {
+                    var msg = res.message || 'Failed to save settings.';
+                    alertBox.css({'background': '#fef2f2', 'color': '#b91c1c', 'border': '1px solid #fecaca'}).html('<i class="fa-solid fa-circle-exclamation"></i> ' + msg).show();
+                    showToast(msg, 'error');
+                }
+            },
+            error: function(xhr) {
+                $btn.prop('disabled', false).html(origHtml);
+                var errMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Network error while saving settings.';
+                alertBox.css({'background': '#fef2f2', 'color': '#b91c1c', 'border': '1px solid #fecaca'}).html('<i class="fa-solid fa-circle-exclamation"></i> ' + errMsg).show();
+                showToast(errMsg, 'error');
+            }
+        });
     });
 
     // Toggle password view/hide for all eye buttons
@@ -4332,15 +5195,13 @@ $(document).ready(function() {
         $('#profileAlert').hide().text('');
     });
 
-    // Save Profile Submit
+    // Save Profile Submit (Personal Info & Password only, matching Image 2)
     $('#btnSaveProfileModal').click(function() {
         var name = $('#profInputName').val().trim();
         var email = $('#profInputEmail').val().trim();
         var currentPass = $('#profCurrentPass').val();
         var newPass = $('#profNewPass').val();
         var confirmPass = $('#profConfirmPass').val();
-        var apiKey = $('#profApiKey').val().trim();
-        var smtpPassword = $('#profSmtpPass').val().trim();
 
         var alertBox = $('#profileAlert');
         alertBox.hide().text('').css({'background': '', 'color': '', 'border': ''});
@@ -4385,6 +5246,9 @@ $(document).ready(function() {
 
         if (hasError) return;
 
+        var gender = $('input[name="profGender"]:checked').val() || 'male';
+        var picture = $('#profSelectedPicture').val() || '';
+
         var $btn = $(this);
         var origHtml = $btn.html();
         $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Saving...');
@@ -4395,11 +5259,11 @@ $(document).ready(function() {
             data: {
                 name: name,
                 email: email,
+                gender: gender,
+                picture: picture,
                 current_password: currentPass,
                 new_password: newPass,
-                confirm_password: confirmPass,
-                api_key: apiKey,
-                smtp_password: smtpPassword
+                confirm_password: confirmPass
             },
             dataType: 'json',
             success: function(res) {
@@ -4417,10 +5281,33 @@ $(document).ready(function() {
                     $('.user-popover-email').text(res.user.email);
                     $('#profileBannerName').text(res.user.name);
                     $('#profileBannerEmail').text(res.user.email);
-                    $('#profileAvatarBig').text(initial);
 
-                    if (res.user.api_key) {
-                        userDatabaseApiKey = res.user.api_key;
+                    if (res.user.gender) {
+                        var g = res.user.gender.toLowerCase();
+                        var gIcon = g === 'female' ? '<i class="fa-solid fa-venus" style="color:#ec4899; margin-right:4px;"></i>' : '<i class="fa-solid fa-mars" style="color:#3b82f6; margin-right:4px;"></i>';
+                        $('#profileGenderBadge').html(gIcon + '<span id="profileGenderText">' + (g.charAt(0).toUpperCase() + g.slice(1)) + '</span>');
+                    }
+
+                    if (res.user.male_avatar && res.user.male_avatar_url) {
+                        window.profileUserAvatars.male = { pic: res.user.male_avatar, url: res.user.male_avatar_url };
+                    }
+                    if (res.user.female_avatar && res.user.female_avatar_url) {
+                        window.profileUserAvatars.female = { pic: res.user.female_avatar, url: res.user.female_avatar_url };
+                    }
+                    if (res.user.picture) {
+                        $('#profSelectedPicture').val(res.user.picture);
+                    }
+
+                    if (res.user.avatar_url) {
+                        var hdrImg = $('#headerProfileAvatarImg')[0];
+                        if (hdrImg) hdrImg.style.display = '';
+                        $('#headerProfileAvatarImg').attr('src', res.user.avatar_url).show();
+                        $('#btnHeaderProfile .header-user-avatar-fallback').hide();
+
+                        var bigImg = $('#profileBigAvatarImg')[0];
+                        if (bigImg) bigImg.style.display = '';
+                        $('#profileBigAvatarImg').attr('src', res.user.avatar_url).show();
+                        $('#profileAvatarBig .profile-avatar-fallback').hide();
                     }
 
                     // Clear passwords

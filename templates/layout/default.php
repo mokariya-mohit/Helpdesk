@@ -56,14 +56,18 @@ $pageTitle = $this->fetch('title', 'Helpdesk - Daily Work Notepad & Update Gener
     <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- Global Application Stylesheet -->
-    <?= $this->Html->css(['helpdesk.css']) ?>
+    <!-- Global Application Stylesheet with Auto Cache-Busting -->
+    <?php
+        $cssVer = file_exists(WWW_ROOT . 'css' . DS . 'helpdesk.css') ? filemtime(WWW_ROOT . 'css' . DS . 'helpdesk.css') : time();
+        $jsVer = file_exists(WWW_ROOT . 'js' . DS . 'helpdesk.js') ? filemtime(WWW_ROOT . 'js' . DS . 'helpdesk.js') : time();
+    ?>
+    <?= $this->Html->css('helpdesk.css?v=' . $cssVer) ?>
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
-    <!-- Global Application JavaScript Library -->
-    <?= $this->Html->script(['helpdesk.js']) ?>
+    <!-- Global Application JavaScript Library with Auto Cache-Busting -->
+    <?= $this->Html->script('helpdesk.js?v=' . $jsVer) ?>
 
     <script>
         window.APP_BASE = '<?= $this->Url->build('/') ?>';

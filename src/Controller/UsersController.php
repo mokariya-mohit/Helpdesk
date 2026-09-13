@@ -14,6 +14,72 @@ class UsersController extends AppController
     }
 
     /**
+     * Get assigned 3D Pixar avatar file path for male or female deterministically based on user ID
+     */
+    public static function getAssignedAvatarPath(?int $userId, string $gender = 'male'): string
+    {
+        $g = strtolower(trim($gender)) === 'female' ? 'female' : 'male';
+        $max = ($g === 'female') ? 6 : 7;
+        $id = ($userId !== null && $userId > 0) ? $userId : 1;
+        $index = (($id - 1) % $max) + 1;
+        return "img/avatars/{$g}/{$g}_{$index}.png";
+    }
+
+    /**
+     * Get random 3D Pixar avatar file path for male or female
+     */
+    public static function getRandomAvatarPath(string $gender = 'male'): string
+    {
+        $g = strtolower(trim($gender)) === 'female' ? 'female' : 'male';
+        $dir = WWW_ROOT . 'img' . DS . 'avatars' . DS . $g;
+        if (is_dir($dir)) {
+            $files = glob($dir . DS . '*.png');
+            if (!empty($files)) {
+                $chosen = basename($files[array_rand($files)]);
+                return "img/avatars/{$g}/{$chosen}";
+            }
+        }
+        return "img/avatars/{$g}/{$g}_1.png";
+    }
+
+    /**
+     * Resolve avatar path or URL into a web-accessible URL
+     */
+    public static function getAvatarUrl(?string $picture, ?string $gender = 'male', string $webroot = '/'): string
+    {
+        if (!empty($picture)) {
+            if (str_starts_with($picture, 'http://') || str_starts_with($picture, 'https://')) {
+                return $picture;
+            }
+            return rtrim($webroot, '/') . '/' . ltrim($picture, '/');
+        }
+        $g = strtolower(trim((string)$gender)) === 'female' ? 'female' : 'male';
+        return rtrim($webroot, '/') . "/img/avatars/{$g}/{$g}_1.png";
+    }
+
+    /**
+     * AJAX: Get a random avatar path and url based on gender
+     */
+    public function getRandomAvatar()
+    {
+        $this->request->allowMethod(['get', 'post']);
+        $gender = strtolower(trim((string)$this->request->getQuery('gender', $this->request->getData('gender', 'male'))));
+        $gender = $gender === 'female' ? 'female' : 'male';
+
+        $avatarPath = self::getRandomAvatarPath($gender);
+        $webroot = $this->request->getAttribute('webroot') ?? '/';
+        $avatarUrl = self::getAvatarUrl($avatarPath, $gender, $webroot);
+
+        return $this->response->withType('application/json')
+            ->withStringBody(json_encode([
+                'success' => true,
+                'gender' => $gender,
+                'avatar_path' => $avatarPath,
+                'avatar_url' => $avatarUrl,
+            ]));
+    }
+
+    /**
      * User Signup (Register)
      */
     public function signup()
@@ -45,10 +111,18 @@ class UsersController extends AppController
                 if ($existing) {
                     $this->Flash->error('An account with this email already exists. Please log in.');
                 } else {
+                    $gender = strtolower(trim((string)($data['gender'] ?? 'male')));
+                    if (!in_array($gender, ['male', 'female'], true)) {
+                        $gender = 'male';
+                    }
+                    $picture = self::getRandomAvatarPath($gender);
+
                     $user = $this->Users->newEntity([
                         'name' => $name,
                         'email' => $email,
                         'password' => $password,
+                        'gender' => $gender,
+                        'picture' => $picture,
                     ]);
 
                     if ($this->Users->save($user)) {
@@ -60,6 +134,8 @@ class UsersController extends AppController
                             'id' => $user->id,
                             'name' => $user->name,
                             'email' => $user->email,
+                            'gender' => $user->gender,
+                            'picture' => $user->picture,
                         ]);
 
                         $this->Flash->success('Welcome, ' . $user->name . '! Your account has been created successfully.');
@@ -108,11 +184,26 @@ class UsersController extends AppController
                     // Clear old flash messages
                     $this->request->getSession()->delete('Flash');
 
+                    $needsSave = false;
+                    if (empty($user->gender)) {
+                        $user->gender = 'male';
+                        $needsSave = true;
+                    }
+                    if (empty($user->picture)) {
+                        $user->picture = self::getRandomAvatarPath($user->gender);
+                        $needsSave = true;
+                    }
+                    if ($needsSave) {
+                        $this->Users->save($user);
+                    }
+
                     // Successful login
                     $this->request->getSession()->write('AuthUser', [
                         'id' => $user->id,
                         'name' => $user->name,
                         'email' => $user->email,
+                        'gender' => $user->gender,
+                        'picture' => $user->picture,
                     ]);
 
                     $this->Flash->success('Welcome back, ' . $user->name . '!');
@@ -344,6 +435,8 @@ class UsersController extends AppController
                             'id' => $user->id,
                             'name' => $user->name,
                             'email' => $user->email,
+                            'gender' => $user->gender ?: 'male',
+                            'picture' => $user->picture ?: self::getRandomAvatarPath($user->gender ?: 'male'),
                         ]);
                         $this->Flash->success('Profile updated successfully.');
                         return $this->redirect(['action' => 'profile']);
@@ -374,6 +467,22 @@ class UsersController extends AppController
         $smtpPassword = !empty($user->smtp_password) ? \App\Model\Entity\User::decryptString($user->smtp_password) : '';
         $needsPasswordSetup = (!empty($user->google_id) && empty($user->password_set));
 
+        $gender = !empty($user->gender) ? $user->gender : 'male';
+        $picture = (!empty($user->picture) && str_contains($user->picture, "avatars/{$gender}/")) ? $user->picture : self::getAssignedAvatarPath($user->id, $gender);
+        if ($user->gender !== $gender || $user->picture !== $picture) {
+            $user->gender = $gender;
+            $user->picture = $picture;
+            $this->Users->save($user);
+        }
+        $webroot = $this->request->getAttribute('webroot') ?? '/';
+        $avatarUrl = self::getAvatarUrl($picture, $gender, $webroot);
+
+        // Precompute assigned avatars for both genders for this user
+        $maleAvatar = ($gender === 'male') ? $picture : self::getAssignedAvatarPath($user->id, 'male');
+        $femaleAvatar = ($gender === 'female') ? $picture : self::getAssignedAvatarPath($user->id, 'female');
+        $maleAvatarUrl = self::getAvatarUrl($maleAvatar, 'male', $webroot);
+        $femaleAvatarUrl = self::getAvatarUrl($femaleAvatar, 'female', $webroot);
+
         return $this->response->withType('application/json')
             ->withStringBody(json_encode([
                 'success' => true,
@@ -381,6 +490,13 @@ class UsersController extends AppController
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'gender' => $gender,
+                    'picture' => $picture,
+                    'avatar_url' => $avatarUrl,
+                    'male_avatar' => $maleAvatar,
+                    'male_avatar_url' => $maleAvatarUrl,
+                    'female_avatar' => $femaleAvatar,
+                    'female_avatar_url' => $femaleAvatarUrl,
                     'is_google_user' => !empty($user->google_id),
                     'needs_password_setup' => $needsPasswordSetup,
                     'api_key' => $apiKey,
@@ -408,6 +524,23 @@ class UsersController extends AppController
 
         $name = trim((string)($data['name'] ?? ''));
         $email = strtolower(trim((string)($data['email'] ?? '')));
+
+        // User can update gender (male or female)
+        $newGender = strtolower(trim((string)($data['gender'] ?? '')));
+        if ($newGender === 'male' || $newGender === 'female') {
+            $user->gender = $newGender;
+            $clientPic = trim((string)($data['picture'] ?? ''));
+            // If client sent the assigned picture for this gender and it exists, save it!
+            if (!empty($clientPic) && str_contains($clientPic, "avatars/{$newGender}/") && file_exists(WWW_ROOT . ltrim($clientPic, '/'))) {
+                $user->picture = $clientPic;
+            } elseif (empty($user->picture) || !str_contains((string)$user->picture, "avatars/{$newGender}/")) {
+                $user->picture = self::getAssignedAvatarPath($user->id, $newGender);
+            }
+        } elseif (empty($user->gender)) {
+            $user->gender = 'male';
+            $user->picture = self::getAssignedAvatarPath($user->id, 'male');
+        }
+
         $currentPassword = (string)($data['current_password'] ?? '');
         $newPassword = (string)($data['new_password'] ?? '');
         $confirmPassword = (string)($data['confirm_password'] ?? '');
@@ -480,7 +613,19 @@ class UsersController extends AppController
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'gender' => $user->gender,
+                'picture' => $user->picture,
             ]);
+
+            $webroot = $this->request->getAttribute('webroot') ?? '/';
+            $avatarUrl = self::getAvatarUrl($user->picture, $user->gender, $webroot);
+            $resApiKey = !empty($user->api_key) ? \App\Model\Entity\User::decryptString($user->api_key) : '';
+            $resSmtpPassword = !empty($user->smtp_password) ? \App\Model\Entity\User::decryptString($user->smtp_password) : '';
+
+            $maleAvatar = ($user->gender === 'male') ? $user->picture : self::getAssignedAvatarPath($user->id, 'male');
+            $femaleAvatar = ($user->gender === 'female') ? $user->picture : self::getAssignedAvatarPath($user->id, 'female');
+            $maleAvatarUrl = self::getAvatarUrl($maleAvatar, 'male', $webroot);
+            $femaleAvatarUrl = self::getAvatarUrl($femaleAvatar, 'female', $webroot);
 
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
@@ -490,9 +635,16 @@ class UsersController extends AppController
                         'id' => $user->id,
                         'name' => $user->name,
                         'email' => $user->email,
-                        'api_key' => $apiKey,
-                        'smtp_password' => $smtpPassword,
-                        'has_smtp_password' => !empty($smtpPassword),
+                        'gender' => $user->gender,
+                        'picture' => $user->picture,
+                        'avatar_url' => $avatarUrl,
+                        'male_avatar' => $maleAvatar,
+                        'male_avatar_url' => $maleAvatarUrl,
+                        'female_avatar' => $femaleAvatar,
+                        'female_avatar_url' => $femaleAvatarUrl,
+                        'api_key' => $resApiKey,
+                        'smtp_password' => $resSmtpPassword,
+                        'has_smtp_password' => !empty($resSmtpPassword),
                     ],
                 ]));
         }
@@ -501,6 +653,52 @@ class UsersController extends AppController
             ->withStringBody(json_encode([
                 'success' => false,
                 'message' => 'Failed to save profile changes.',
+                'errors' => $user->getErrors(),
+            ]));
+    }
+
+    /**
+     * AJAX: Save System Settings (Gemini AI API Key and/or Google SMTP credentials)
+     */
+    public function saveSettings()
+    {
+        $this->request->allowMethod(['post', 'put']);
+        $auth = $this->getAuthUser();
+        if (!$auth) {
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode(['success' => false, 'message' => 'Unauthorized']));
+        }
+
+        $user = $this->Users->get($auth['id']);
+        $data = $this->request->getData();
+
+        if (array_key_exists('api_key', $data)) {
+            $apiKey = trim((string)$data['api_key']);
+            $user->api_key = !empty($apiKey) ? \App\Model\Entity\User::encryptString($apiKey) : null;
+        }
+
+        if (array_key_exists('smtp_password', $data)) {
+            $smtpPassword = trim((string)$data['smtp_password']);
+            $user->smtp_password = !empty($smtpPassword) ? \App\Model\Entity\User::encryptString($smtpPassword) : null;
+        }
+
+        if ($this->Users->save($user)) {
+            $currentApiKey = !empty($user->api_key) ? \App\Model\Entity\User::decryptString($user->api_key) : '';
+            $currentSmtp = !empty($user->smtp_password) ? \App\Model\Entity\User::decryptString($user->smtp_password) : '';
+            return $this->response->withType('application/json')
+                ->withStringBody(json_encode([
+                    'success' => true,
+                    'message' => 'System settings saved successfully!',
+                    'api_key' => $currentApiKey,
+                    'has_api_key' => !empty($currentApiKey),
+                    'has_smtp_password' => !empty($currentSmtp),
+                ]));
+        }
+
+        return $this->response->withType('application/json')
+            ->withStringBody(json_encode([
+                'success' => false,
+                'message' => 'Failed to save settings.',
                 'errors' => $user->getErrors(),
             ]));
     }
@@ -724,13 +922,17 @@ class UsersController extends AppController
             // Generate 32-character cryptographically secure random password
             $randomSecurePassword = bin2hex(random_bytes(16));
 
+            $gender = 'male';
+            $userPicture = !empty($picture) ? $picture : self::getRandomAvatarPath($gender);
+
             $user = $this->Users->newEntity([
                 'name' => $displayName,
                 'email' => $email,
                 'password' => $randomSecurePassword, // Will be securely hashed by User::_setPassword()
                 'password_set' => 0, // Needs first-time password setup
                 'google_id' => $googleId,
-                'picture' => $picture ?: null,
+                'gender' => $gender,
+                'picture' => $userPicture,
             ]);
 
             if (!$this->Users->save($user)) {
@@ -748,6 +950,8 @@ class UsersController extends AppController
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
+            'gender' => $user->gender ?: 'male',
+            'picture' => $user->picture ?: self::getRandomAvatarPath($user->gender ?: 'male'),
         ]);
 
         // 5. Generate 30-day Remember User Cookie

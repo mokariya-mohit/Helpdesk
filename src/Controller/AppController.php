@@ -62,6 +62,24 @@ class AppController extends Controller
         }
 
         $currentUser = $this->request->getSession()->read('AuthUser');
+        if ($currentUser && !empty($currentUser['id'])) {
+            if (empty($currentUser['picture']) || empty($currentUser['gender'])) {
+                $usersTable = $this->fetchTable('Users');
+                $dbUser = $usersTable->find()->where(['id' => $currentUser['id']])->first();
+                if ($dbUser) {
+                    $gender = !empty($dbUser->gender) ? $dbUser->gender : 'male';
+                    $picture = !empty($dbUser->picture) ? $dbUser->picture : \App\Controller\UsersController::getRandomAvatarPath($gender);
+                    if ($dbUser->picture !== $picture || $dbUser->gender !== $gender) {
+                        $dbUser->gender = $gender;
+                        $dbUser->picture = $picture;
+                        $usersTable->save($dbUser);
+                    }
+                    $currentUser['gender'] = $gender;
+                    $currentUser['picture'] = $picture;
+                    $this->request->getSession()->write('AuthUser', $currentUser);
+                }
+            }
+        }
         $this->set(compact('currentUser'));
     }
 
@@ -83,10 +101,19 @@ class AppController extends Controller
                 $usersTable = $this->fetchTable('Users');
                 $user = $usersTable->find()->where(['id' => (int)$userId])->first();
                 if ($user && hash('sha256', $user->email . $user->password) === $tokenHash) {
+                    $gender = !empty($user->gender) ? $user->gender : 'male';
+                    $picture = !empty($user->picture) ? $user->picture : \App\Controller\UsersController::getRandomAvatarPath($gender);
+                    if ($user->picture !== $picture || $user->gender !== $gender) {
+                        $user->gender = $gender;
+                        $user->picture = $picture;
+                        $usersTable->save($user);
+                    }
                     $userData = [
                         'id' => $user->id,
                         'name' => $user->name,
                         'email' => $user->email,
+                        'gender' => $gender,
+                        'picture' => $picture,
                     ];
                     $this->request->getSession()->write('AuthUser', $userData);
                     return $userData;
