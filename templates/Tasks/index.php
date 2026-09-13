@@ -2424,12 +2424,12 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                 </div>
 
                 <!-- 4. Daily Updates Generator -->
-                <a href="<?= $this->Url->build(['controller' => 'DailyUpdates', 'action' => 'index', 'plugin' => false]) ?>" class="dock-item" id="btnDockDailyUpdates" data-title="Daily Updates" style="text-decoration:none;">
+                <!-- <a href="<?= $this->Url->build(['controller' => 'DailyUpdates', 'action' => 'index', 'plugin' => false]) ?>" class="dock-item" id="btnDockDailyUpdates" data-title="Daily Updates" style="text-decoration:none;">
                     <div class="dock-item-icon">
                         <i class="fa-solid fa-file-invoice"></i>
                     </div>
                     <span class="dock-label-tooltip">Daily Updates</span>
-                </a>
+                </a> -->
 
                 <div class="dock-divider"></div>
 
