@@ -425,8 +425,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     #btnInsertTemplate:hover {
         background: var(--sun-yellow-hover) !important;
-        transform: translateY(-1.5px) scale(1.02) !important;
-        box-shadow: 0 6px 18px rgba(161, 98, 7, 0.25) !important;
+        transform: none !important;
+        filter: brightness(1.04);
+        box-shadow: 0 4px 16px rgba(161, 98, 7, 0.25) !important;
     }
 
     [data-theme="dark"] #btnInsertTemplate {
@@ -440,8 +441,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         background: #fde047 !important;
         border-color: #fef08a !important;
         color: #000000 !important;
-        transform: translateY(-1.5px) scale(1.02) !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+        transform: none !important;
+        filter: brightness(1.04);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important;
     }
 
     /* User Profile Pill */
@@ -885,6 +887,10 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         margin-left: auto;
     }
 
+    .editor-toolbar-actions .btn:hover {
+        transform: none !important;
+    }
+
     .editor-title {
         font-family: 'Fira Code', monospace;
         font-size: 13.5px;
@@ -1097,8 +1103,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     #btnAiPolish:hover {
-        transform: translateY(-1.5px) scale(1.02);
-        box-shadow: 0 6px 22px rgba(139, 92, 246, 0.6) !important;
+        transform: none !important;
+        box-shadow: 0 4px 18px rgba(139, 92, 246, 0.6) !important;
+        filter: brightness(1.08);
     }
 
     [data-theme="dark"] #btnAiPolish {
@@ -1111,8 +1118,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     [data-theme="dark"] #btnAiPolish:hover {
         background: linear-gradient(135deg, #4338ca 0%, #6d28d9 50%, #db2777 100%) !important;
-        box-shadow: 0 6px 24px rgba(124, 58, 237, 0.75) !important;
-        transform: translateY(-1.5px) scale(1.03) !important;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.75) !important;
+        transform: none !important;
+        filter: brightness(1.08);
         color: #ffffff !important;
     }
 
@@ -1131,7 +1139,8 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     #btnCopyOnlyTasks:hover {
         background: #ffffff !important;
-        transform: translateY(-1px);
+        transform: none !important;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
     }
 
     [data-theme="dark"] #btnCopyOnlyTasks {
@@ -1145,6 +1154,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         background: #334155 !important;
         border-color: #6366f1 !important;
         color: #ffffff !important;
+        transform: none !important;
     }
 
     #btnClearCurrent {
@@ -1161,7 +1171,8 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     #btnClearCurrent:hover {
         background: #fee2e2 !important;
-        transform: translateY(-1px);
+        transform: none !important;
+        box-shadow: 0 3px 10px rgba(225, 29, 72, 0.12);
     }
 
     /* Editor Textarea */
@@ -1277,7 +1288,8 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     #btnContinueToEmail:hover {
-        transform: translateY(-1.5px) scale(1.02);
+        transform: none !important;
+        filter: brightness(1.08);
         box-shadow: 0 8px 26px rgba(79, 70, 229, 0.6) !important;
     }
 
@@ -2625,12 +2637,21 @@ $(document).ready(function() {
 
     // 3. Clear note from MySQL
     function clearNoteFromDatabase() {
-        if (!confirm('Are you sure you want to clear this note from Database?')) return;
-        $('#workNotesEditor').val('');
-        updateCharCount();
-        broadcastTaskUpdate();
-        saveNoteToDatabase();
-        showToast('Note cleared from database');
+        window.showConfirmModal({
+            title: 'Clear Note?',
+            message: 'Are you sure you want to clear this note from the database? This action cannot be undone.',
+            type: 'danger',
+            icon: 'fa-solid fa-trash-can',
+            confirmText: 'Yes, Clear Note',
+            cancelText: 'Cancel',
+            onConfirm: function() {
+                $('#workNotesEditor').val('');
+                updateCharCount();
+                broadcastTaskUpdate();
+                saveNoteToDatabase();
+                showToast('Note cleared from database', 'success');
+            }
+        });
     }
 
     // Two-Way Real-Time Sync: Receive Done Tasks edits made in Daily Update Generator
@@ -3114,33 +3135,43 @@ $(document).ready(function() {
             var delId = row.attr('data-id');
             var delName = row.attr('data-name');
 
-            $.ajax({
-                url: window.APP_BASE + 'projects/delete/' + delId,
-                type: 'POST',
-                dataType: 'json',
-                success: function(res) {
-                    if (res.success) {
-                        showToast('Project "' + delName + '" deleted', 'success');
-                        loadProjects();
-                        if (activeProjectId == delId) {
-                            var def = projectsCache.find(function(x) { return x.is_default; }) || projectsCache[0];
-                            if (def) {
-                                activeProjectId = def.id;
-                                activeProjectName = def.name;
-                                $('#activeProjectDisplay').text(activeProjectName);
-                                loadNoteFromDatabase(currentDateIso, activeProjectId);
+            window.showConfirmModal({
+                title: 'Delete Project?',
+                message: 'Are you sure you want to delete project "' + escapeHtml(delName) + '"? This will remove its associated settings.',
+                type: 'danger',
+                icon: 'fa-solid fa-trash-can',
+                confirmText: 'Delete Project',
+                cancelText: 'Cancel',
+                onConfirm: function() {
+                    $.ajax({
+                        url: window.APP_BASE + 'projects/delete/' + delId,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function(res) {
+                            if (res.success) {
+                                showToast('Project "' + delName + '" deleted', 'success');
+                                loadProjects();
+                                if (activeProjectId == delId) {
+                                    var def = projectsCache.find(function(x) { return x.is_default; }) || projectsCache[0];
+                                    if (def) {
+                                        activeProjectId = def.id;
+                                        activeProjectName = def.name;
+                                        $('#activeProjectDisplay').text(activeProjectName);
+                                        loadNoteFromDatabase(currentDateIso, activeProjectId);
+                                    } else {
+                                        activeProjectId = 0;
+                                        activeProjectName = '';
+                                        $('#activeProjectDisplay').text('No Project');
+                                    }
+                                }
                             } else {
-                                activeProjectId = 0;
-                                activeProjectName = '';
-                                $('#activeProjectDisplay').text('No Project');
+                                showToast(res.message || 'Could not delete project', 'error');
                             }
+                        },
+                        error: function() {
+                            showToast('Network error while deleting', 'error');
                         }
-                    } else {
-                        showToast(res.message || 'Could not delete project', 'error');
-                    }
-                },
-                error: function() {
-                    showToast('Network error while deleting', 'error');
+                    });
                 }
             });
         });
@@ -3405,32 +3436,42 @@ $(document).ready(function() {
             var delId = row.attr('data-id');
             var delName = row.attr('data-name');
 
-            $.ajax({
-                url: window.APP_BASE + 'clients/delete/' + delId,
-                type: 'POST',
-                dataType: 'json',
-                success: function(res) {
-                    if (res.success) {
-                        showToast('Client "' + delName + '" deleted');
-                        loadClients();
-                        if (activeClientId == delId) {
-                            var def = clientsCache.find(function(x) { return x.is_default; }) || clientsCache[0];
-                            if (def) {
-                                activeClientId = def.id;
-                                activeClientName = def.name;
-                                $('#activeClientDisplay').text(activeClientName);
+            window.showConfirmModal({
+                title: 'Delete Client?',
+                message: 'Are you sure you want to delete client "' + escapeHtml(delName) + '"? This will remove its associated settings.',
+                type: 'danger',
+                icon: 'fa-solid fa-trash-can',
+                confirmText: 'Delete Client',
+                cancelText: 'Cancel',
+                onConfirm: function() {
+                    $.ajax({
+                        url: window.APP_BASE + 'clients/delete/' + delId,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function(res) {
+                            if (res.success) {
+                                showToast('Client "' + delName + '" deleted', 'success');
+                                loadClients();
+                                if (activeClientId == delId) {
+                                    var def = clientsCache.find(function(x) { return x.is_default; }) || clientsCache[0];
+                                    if (def) {
+                                        activeClientId = def.id;
+                                        activeClientName = def.name;
+                                        $('#activeClientDisplay').text(activeClientName);
+                                    } else {
+                                        activeClientId = 0;
+                                        activeClientName = '';
+                                        $('#activeClientDisplay').text('Select Client');
+                                    }
+                                }
                             } else {
-                                activeClientId = 0;
-                                activeClientName = '';
-                                $('#activeClientDisplay').text('Select Client');
+                                showToast(res.message || 'Could not delete client', 'error');
                             }
+                        },
+                        error: function() {
+                            showToast('Network error while deleting', 'error');
                         }
-                    } else {
-                        showToast(res.message || 'Could not delete client');
-                    }
-                },
-                error: function() {
-                    showToast('Network error while deleting');
+                    });
                 }
             });
         });
@@ -3565,15 +3606,26 @@ $(document).ready(function() {
         var tpl = header + '\n-------------------\nBackend:\n- \n\nFrontend:\n- \n';
         var editor = $('#workNotesEditor');
         if (editor.val().trim().length > 0) {
-            if (confirm('Insert template at top of current note?')) {
-                editor.val(tpl + '\n' + editor.val());
-            }
+            window.showConfirmModal({
+                title: 'Insert Template?',
+                message: 'Do you want to insert the task template at the top of your current note?',
+                type: 'warning',
+                icon: 'fa-solid fa-file-circle-plus',
+                confirmText: 'Insert Template',
+                cancelText: 'Cancel',
+                onConfirm: function() {
+                    editor.val(tpl + '\n' + editor.val());
+                    updateCharCount();
+                    saveNoteToDatabase();
+                    showToast('Template inserted with ' + (activeProjectName || 'project') + '!', 'success');
+                }
+            });
         } else {
             editor.val(tpl);
+            updateCharCount();
+            saveNoteToDatabase();
+            showToast('Template inserted with ' + (activeProjectName || 'project') + '!', 'success');
         }
-        updateCharCount();
-        saveNoteToDatabase();
-        showToast('Template inserted with ' + (activeProjectName || 'project') + '!');
     });
 
     // Editor Input & Auto-Save

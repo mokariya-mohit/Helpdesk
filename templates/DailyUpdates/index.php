@@ -257,8 +257,8 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
     .btn-dark:hover, #btnBackToTasks:hover {
         background: #1e293b !important;
         border-color: #1e293b !important;
-        transform: translateY(-1.5px);
-        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.3) !important;
+        transform: none !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.3) !important;
         color: #ffffff !important;
     }
 
@@ -275,8 +275,8 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         background: #334155 !important;
         border-color: #6366f1 !important;
         color: #ffffff !important;
-        transform: translateY(-1.5px);
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3) !important;
+        transform: none !important;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
     }
 
     /* Sync Today's Tasks: Signature Rulse Sunshine Yellow CTA Button */
@@ -298,8 +298,9 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
 
     #btnSyncFromDb:hover {
         background: var(--sun-yellow-hover) !important;
-        transform: translateY(-1.5px) scale(1.02) !important;
-        box-shadow: 0 6px 18px rgba(161, 98, 7, 0.25) !important;
+        transform: none !important;
+        filter: brightness(1.04);
+        box-shadow: 0 4px 16px rgba(161, 98, 7, 0.25) !important;
     }
 
     [data-theme="dark"] #btnSyncFromDb {
@@ -313,8 +314,9 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         background: #fde047 !important;
         border-color: #fef08a !important;
         color: #000000 !important;
-        transform: translateY(-1.5px) scale(1.02) !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+        transform: none !important;
+        filter: brightness(1.04);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important;
     }
 
     /* Reset Tasks Button */
@@ -336,8 +338,8 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
 
     #btnResetTasks:hover {
         background: #ffffff;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+        transform: none !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
     }
 
     [data-theme="dark"] #btnResetTasks {
@@ -351,8 +353,8 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         background: #334155 !important;
         border-color: #6366f1 !important;
         color: #ffffff !important;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(99, 102, 241, 0.25) !important;
+        transform: none !important;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25) !important;
     }
 
     /* User Pill Button */
@@ -380,8 +382,8 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
 
     .user-pill-btn:hover, .user-pill-btn.active {
         background: #ffffff !important;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+        transform: none !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
     }
 
     [data-theme="dark"] .user-pill-btn:hover,
@@ -634,6 +636,8 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         display: flex;
         flex-direction: column;
         gap: 10px;
+        padding-top: 6px;
+        padding-inline: 4px;
     }
 
     .mail_body_wrapper {
@@ -647,6 +651,7 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         align-items: center;
         justify-content: space-between;
         gap: 12px;
+        padding-top: 6px;
         padding-bottom: 10px;
         border-bottom: 1px solid var(--glass-border-subtle);
     }
@@ -678,8 +683,8 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
 
     .btn-copy-subject:hover {
         background: #ffffff;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transform: none !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     /* Copy Content: Vibrant Indigo/Purple Gradient Pill */
@@ -701,8 +706,9 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
     }
 
     .btn-copy-content:hover, #btnCopyContent:hover {
-        transform: translateY(-1.5px) scale(1.02);
-        box-shadow: 0 6px 22px rgba(79, 70, 229, 0.55) !important;
+        transform: none !important;
+        filter: brightness(1.08);
+        box-shadow: 0 4px 18px rgba(79, 70, 229, 0.5) !important;
     }
 
     [data-theme="dark"] .btn-copy-content,
@@ -716,9 +722,10 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
     [data-theme="dark"] .btn-copy-content:hover,
     [data-theme="dark"] #btnCopyContent:hover {
         background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%) !important;
-        box-shadow: 0 6px 22px rgba(124, 58, 237, 0.65) !important;
-        transform: translateY(-1.5px) scale(1.02) !important;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.6) !important;
+        transform: none !important;
         color: #ffffff !important;
+        filter: brightness(1.08);
     }
 
     .mail_body {
@@ -763,7 +770,7 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
     }
 
     .btn-send-email-bottom {
-        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
         color: #ffffff !important;
         border: none !important;
         border-radius: var(--radius-pill) !important;
@@ -779,8 +786,9 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
     }
 
     .btn-send-email-bottom:hover {
-        transform: translateY(-1.5px) scale(1.02);
-        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.6) !important;
+        transform: none !important;
+        filter: brightness(1.08);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5) !important;
     }
 
     /* Modals & Dialogs: Frosted Glass Floating Style */
@@ -1780,20 +1788,15 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
                     </div>
                 </div>
 
-                <!-- Email Content Preview with Dedicated Copy Action -->
+                <!-- Email Content Preview -->
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 2px; margin-bottom: 0; flex: 1; min-height: 0;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-headline); display: flex; align-items: center; gap: 6px;">
-                                <i class="fa-solid fa-file-lines" style="color: #4f46e5;"></i> Email Content Preview :
-                            </span>
-                            <span style="background: rgba(99, 102, 241, 0.1); color: #4f46e5; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">
-                                <i class="fa-solid fa-code"></i> HTML formatted
-                            </span>
-                        </div>
-                        <button type="button" class="btn-copy-preview-modal" id="btnCopyModalPreview" title="Copy email content with guaranteed black text (#000000)">
-                            <i class="fa-solid fa-copy"></i> Copy Content
-                        </button>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-headline); display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-file-lines" style="color: #4f46e5;"></i> Email Content Preview :
+                        </span>
+                        <span style="background: rgba(99, 102, 241, 0.1); color: #4f46e5; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="fa-solid fa-code"></i> HTML formatted
+                        </span>
                     </div>
                     <div id="emailHtmlPreviewContainer" class="email-preview-box">
                         <!-- Live rendered HTML content -->
@@ -2302,16 +2305,6 @@ $(document).ready(function() {
         window.copyElementAsBlackText(container, 'Mail Content copied to clipboard (Black Text)!');
     });
 
-    // Copy Content from Send Email Modal Preview (Always copies clean black text #000000)
-    $(document).on('click', '#btnCopyModalPreview', function() {
-        var container = document.getElementById('emailHtmlPreviewContainer');
-        if (!container || !container.innerText.trim()) {
-            showToast('No Email Content to copy', 'warning');
-            return;
-        }
-        window.copyElementAsBlackText(container, 'Email Content copied to clipboard (Black Text)!');
-    });
-
     // Back to Tasks Button with safe synchronous wait
     $('#btnBackToTasks').click(function(e) {
         e.preventDefault();
@@ -2331,13 +2324,22 @@ $(document).ready(function() {
 
     // Reset Tasks
     $('#btnResetTasks').click(function() {
-        if (!confirm('Clear all task fields in form and DB?')) return;
-        $('textarea.task_detail').val('');
-        renderAllTaskSections();
-        updateSendEmailButtonVisibility();
-        broadcastDoneTasksToWorkLog();
-        saveUpdateToDatabase();
-        showToast('All task fields cleared!', 'success');
+        window.showConfirmModal({
+            title: 'Reset All Tasks?',
+            message: 'Are you sure you want to clear all task fields from the form and database? This action cannot be undone.',
+            type: 'danger',
+            icon: 'fa-solid fa-rotate-left',
+            confirmText: 'Yes, Reset Tasks',
+            cancelText: 'Cancel',
+            onConfirm: function() {
+                $('textarea.task_detail').val('');
+                renderAllTaskSections();
+                updateSendEmailButtonVisibility();
+                broadcastDoneTasksToWorkLog();
+                saveUpdateToDatabase();
+                showToast('All task fields cleared!', 'success');
+            }
+        });
     });
 
     // Sync Today's Tasks Button

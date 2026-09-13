@@ -1451,8 +1451,9 @@ html[data-theme="dark"],
 [data-theme="dark"] .btn-copy-content:hover,
 [data-theme="dark"] #btnCopyContent:hover {
     background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%) !important;
-    box-shadow: 0 6px 22px rgba(124, 58, 237, 0.65) !important;
-    transform: translateY(-1.5px) scale(1.02) !important;
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.6) !important;
+    transform: none !important;
+    filter: brightness(1.08);
     color: #ffffff !important;
 }
 
@@ -1878,4 +1879,287 @@ iframe#debug-kit-toolbar {
     pointer-events: none !important;
     width: 0 !important;
     height: 0 !important;
+}
+
+/* ==========================================================================
+   Helpdesk Universal Custom Confirmation Modal (Seamless UI Theme)
+   ========================================================================== */
+#customConfirmModal {
+    z-index: 100005 !important;
+}
+
+.custom-confirm-modal-card {
+    width: 92% !important;
+    max-width: 460px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    backdrop-filter: blur(32px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    animation: confirmModalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes confirmModalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.confirm-modal-header {
+    padding: 18px 24px 16px 24px !important;
+    border-bottom: 1.5px solid rgba(226, 232, 240, 0.75) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: rgba(255, 255, 255, 0.45) !important;
+    flex-shrink: 0 !important;
+}
+
+.confirm-modal-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.confirm-icon-badge {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 15px !important;
+    color: #ffffff !important;
+    flex-shrink: 0 !important;
+}
+
+.confirm-icon-badge.badge-danger {
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.28) !important;
+}
+
+.confirm-icon-badge.badge-warning,
+.confirm-icon-badge.badge-primary {
+    background: linear-gradient(135deg, #fef08a 0%, #facc15 100%) !important;
+    color: #854d0e !important;
+    box-shadow: 0 4px 12px rgba(234, 179, 8, 0.28) !important;
+    border: 1px solid rgba(234, 179, 8, 0.35) !important;
+}
+
+.confirm-icon-badge.badge-info {
+    background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%) !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.32) !important;
+}
+
+.confirm-title-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+}
+
+.confirm-title-text {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 16.5px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    line-height: 1.25 !important;
+    display: block !important;
+}
+
+.confirm-subtitle-text {
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-size: 11.5px !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    display: block !important;
+}
+
+.confirm-modal-body {
+    padding: 22px 24px !important;
+    background: transparent !important;
+    overflow-y: auto !important;
+    flex: 1 !important;
+}
+
+.confirm-message-text {
+    margin: 0 !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-size: 13.5px !important;
+    line-height: 1.65 !important;
+    color: #334155 !important;
+    font-weight: 500 !important;
+}
+
+.confirm-modal-footer {
+    padding: 14px 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+    background: rgba(248, 250, 252, 0.65) !important;
+    border-top: 1.5px solid rgba(226, 232, 240, 0.75) !important;
+    flex-shrink: 0 !important;
+}
+
+/* Universal Cancel Button for Modals (Light & Dark Theme) */
+.btn-confirm-cancel,
+.btn-cancel-modal {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1.5px solid rgba(203, 213, 225, 0.9) !important;
+    color: #334155 !important;
+    border-radius: 999px !important;
+    padding: 8.5px 22px !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    outline: none !important;
+    text-decoration: none !important;
+}
+
+.btn-confirm-cancel:hover,
+.btn-cancel-modal:hover {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    transform: none !important;
+}
+
+/* ==========================================================================
+   Action Confirm Buttons: Signature Sunshine Yellow CTA Theme
+   Matches Helpdesk's Sunrise Yellow (#ebf84a) UI Theme
+   ========================================================================== */
+.btn-confirm-action,
+.btn-confirm-action.btn-type-danger,
+.btn-confirm-action.btn-type-warning,
+.btn-confirm-action.btn-type-primary,
+.btn-confirm-action.btn-type-info {
+    background: #ebf84a !important;
+    background: linear-gradient(135deg, #ebf84a 0%, #e2f038 100%) !important;
+    color: #0f172a !important;
+    border: 1.5px solid #d9e638 !important;
+    border-radius: 999px !important;
+    padding: 8.5px 24px !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    outline: none !important;
+    text-decoration: none !important;
+    box-shadow: 0 4px 14px rgba(161, 98, 7, 0.22) !important;
+}
+
+.btn-confirm-action:hover,
+.btn-confirm-action.btn-type-danger:hover,
+.btn-confirm-action.btn-type-warning:hover,
+.btn-confirm-action.btn-type-primary:hover,
+.btn-confirm-action.btn-type-info:hover {
+    background: #e2f038 !important;
+    background: linear-gradient(135deg, #e2f038 0%, #d5e428 100%) !important;
+    border-color: #c9d820 !important;
+    color: #090d16 !important;
+    box-shadow: 0 6px 18px rgba(161, 98, 7, 0.32) !important;
+    filter: brightness(1.03);
+    transform: none !important;
+}
+
+.btn-confirm-action:active {
+    transform: scale(0.98) !important;
+}
+
+/* ==========================================================================
+   Dark Theme Overrides for Confirmation Modal & Sunshine Yellow Button
+   ========================================================================== */
+[data-theme="dark"] .custom-confirm-modal-card {
+    background: rgba(22, 28, 45, 0.96) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 30px 65px -15px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] .confirm-modal-header {
+    background: rgba(15, 23, 42, 0.45) !important;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="dark"] .confirm-title-text {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .confirm-subtitle-text {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .confirm-modal-body {
+    background: transparent !important;
+}
+
+[data-theme="dark"] .confirm-message-text {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .confirm-modal-footer {
+    background: rgba(15, 23, 42, 0.5) !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="dark"] .btn-confirm-cancel,
+[data-theme="dark"] .btn-cancel-modal {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
+    color: #f1f5f9 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .btn-confirm-cancel:hover,
+[data-theme="dark"] .btn-cancel-modal:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(255, 255, 255, 0.28) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme="dark"] .btn-confirm-action,
+[data-theme="dark"] .btn-confirm-action.btn-type-danger,
+[data-theme="dark"] .btn-confirm-action.btn-type-warning,
+[data-theme="dark"] .btn-confirm-action.btn-type-primary,
+[data-theme="dark"] .btn-confirm-action.btn-type-info {
+    background: #facc15 !important;
+    background: linear-gradient(135deg, #facc15 0%, #eab308 100%) !important;
+    color: #090d16 !important;
+    border: 1.5px solid #fde047 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme="dark"] .btn-confirm-action:hover,
+[data-theme="dark"] .btn-confirm-action.btn-type-danger:hover,
+[data-theme="dark"] .btn-confirm-action.btn-type-warning:hover,
+[data-theme="dark"] .btn-confirm-action.btn-type-primary:hover,
+[data-theme="dark"] .btn-confirm-action.btn-type-info:hover {
+    background: #fde047 !important;
+    background: linear-gradient(135deg, #fde047 0%, #facc15 100%) !important;
+    border-color: #fef08a !important;
+    color: #000000 !important;
+    box-shadow: 0 6px 20px rgba(250, 204, 21, 0.35) !important;
 }

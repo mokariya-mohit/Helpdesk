@@ -60,7 +60,149 @@
         }, 3200);
     };
 
-    // 2. Safe HTML Escaping
+    // 2. Universal Custom Confirmation Modal (UI Themed Glassmorphism Modal)
+    window.showConfirmModal = function (options, onConfirmCallback, onCancelCallback) {
+        if (typeof options === 'string') {
+            options = { message: options };
+        }
+        options = options || {};
+
+        var title = options.title || 'Please Confirm';
+        var subtitle = options.subtitle || (type === 'danger' ? 'This action cannot be undone' : 'Please confirm your action');
+        var message = options.message || 'Are you sure you want to proceed?';
+        var confirmText = options.confirmText || 'Confirm';
+        var cancelText = options.cancelText || 'Cancel';
+        var type = options.type || 'danger'; // 'danger' | 'warning' | 'primary' | 'info'
+        var icon = options.icon;
+
+        if (!icon) {
+            if (type === 'danger') icon = 'fa-solid fa-trash-can';
+            else if (type === 'warning') icon = 'fa-solid fa-triangle-exclamation';
+            else if (type === 'primary') icon = 'fa-solid fa-wand-magic-sparkles';
+            else icon = 'fa-solid fa-circle-info';
+        }
+
+        var onConfirm = options.onConfirm || onConfirmCallback || function () { };
+        var onCancel = options.onCancel || onCancelCallback || function () { };
+
+        return new Promise(function (resolve) {
+            var $modal = $('#customConfirmModal');
+            if (!$modal.length) {
+                var modalHtml = [
+                    '<div id="customConfirmModal" class="modal-overlay" style="z-index: 100005 !important;">',
+                    '  <div class="modal-card custom-confirm-modal-card">',
+                    '    <div class="modal-header confirm-modal-header">',
+                    '      <div class="modal-title confirm-modal-title">',
+                    '        <div id="confirmModalIconWrapper" class="confirm-icon-badge">',
+                    '          <i id="confirmModalIcon" class="fa-solid fa-triangle-exclamation"></i>',
+                    '        </div>',
+                    '        <div class="confirm-title-group">',
+                    '          <span id="confirmModalTitle" class="confirm-title-text">Please Confirm</span>',
+                    '          <span id="confirmModalSubtitle" class="confirm-subtitle-text">Confirmation required</span>',
+                    '        </div>',
+                    '      </div>',
+                    '      <button type="button" class="btn-close-modal" id="btnCancelConfirmX" title="Close">&times;</button>',
+                    '    </div>',
+                    '    <div class="modal-body confirm-modal-body">',
+                    '      <p id="confirmModalMessage" class="confirm-message-text"></p>',
+                    '    </div>',
+                    '    <div class="modal-footer confirm-modal-footer">',
+                    '      <button type="button" class="btn-confirm-cancel" id="btnCancelConfirm">Cancel</button>',
+                    '      <button type="button" class="btn-confirm-action" id="btnAcceptConfirm">Confirm</button>',
+                    '    </div>',
+                    '  </div>',
+                    '</div>'
+                ].join('\n');
+                $('body').append(modalHtml);
+                $modal = $('#customConfirmModal');
+            }
+
+            $('#confirmModalTitle').text(title);
+            if (subtitle) {
+                $('#confirmModalSubtitle').text(subtitle).show();
+            } else {
+                $('#confirmModalSubtitle').hide();
+            }
+            $('#confirmModalMessage').html(typeof message === 'string' ? message.replace(/\n/g, '<br>') : message);
+            $('#btnAcceptConfirm').text(confirmText);
+            $('#btnCancelConfirm').text(cancelText);
+
+            var $iconBadge = $('#confirmModalIconWrapper');
+            var $icon = $('#confirmModalIcon');
+            var $confirmBtn = $('#btnAcceptConfirm');
+
+            $iconBadge.removeClass('badge-danger badge-warning badge-primary badge-info')
+                .addClass('badge-' + type);
+            $icon.attr('class', icon);
+
+            $confirmBtn.removeClass('btn-type-danger btn-type-warning btn-type-primary btn-type-info')
+                .addClass('btn-type-' + type);
+
+            $modal.off('click.confirmModal');
+            $('#btnAcceptConfirm').off('click.confirm');
+            $('#btnCancelConfirm, #btnCancelConfirmX').off('click.confirm');
+            $(document).off('keydown.confirmModal');
+
+            var isHandled = false;
+            function closeModal(confirmed) {
+                if (isHandled) return;
+                isHandled = true;
+                $modal.removeClass('active');
+                $(document).off('keydown.confirmModal');
+                setTimeout(function () {
+                    if (confirmed) {
+                        onConfirm();
+                        resolve(true);
+                    } else {
+                        onCancel();
+                        resolve(false);
+                    }
+                }, 100);
+            }
+
+            $('#btnAcceptConfirm').on('click.confirm', function (e) {
+                e.preventDefault();
+                closeModal(true);
+            });
+
+            $('#btnCancelConfirm, #btnCancelConfirmX').on('click.confirm', function (e) {
+                e.preventDefault();
+                closeModal(false);
+            });
+
+            $modal.on('click.confirmModal', function (e) {
+                if ($(e.target).is($modal)) {
+                    closeModal(false);
+                }
+            });
+
+            $(document).on('keydown.confirmModal', function (e) {
+                if (e.key === 'Escape') {
+                    closeModal(false);
+                } else if (e.key === 'Enter' && !$(e.target).is('button, textarea, input')) {
+                    closeModal(true);
+                }
+            });
+
+            $modal.addClass('active');
+            $('#btnAcceptConfirm').focus();
+        });
+    };
+
+    window.showConfirmDialog = window.showConfirmModal;
+
+    // Override browser native confirm to prevent system alert popups
+    window.confirm = function (msg) {
+        console.warn('Native confirm() intercepted with: "' + msg + '". Displaying custom themed modal instead.');
+        window.showConfirmModal({
+            title: 'Please Confirm',
+            message: msg,
+            type: 'warning'
+        });
+        return false;
+    };
+
+    // 3. Safe HTML Escaping
     window.escapeHtml = function (str) {
         if (!str) return '';
         return String(str)
@@ -485,6 +627,23 @@
                 $flash.remove();
             }
         }
+
+        // Logout Confirmation Bridge
+        $(document).on('click', '#btnLogoutLink, .item-logout', function (e) {
+            e.preventDefault();
+            var logoutUrl = $(this).attr('href');
+            window.showConfirmModal({
+                title: 'Log Out?',
+                message: 'Are you sure you want to sign out of your Helpdesk session?',
+                type: 'warning',
+                icon: 'fa-solid fa-arrow-right-from-bracket',
+                confirmText: 'Log Out',
+                cancelText: 'Stay Signed In',
+                onConfirm: function () {
+                    window.location.href = logoutUrl;
+                }
+            });
+        });
 
         // Initialize and sync Theme UI
         window.syncThemeUi();
