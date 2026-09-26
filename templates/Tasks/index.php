@@ -4539,12 +4539,11 @@ $(document).ready(function() {
 
     function checkAndApplyDateRollover() {
         var realToday = getRealTodayIso();
-        if (maxAllowedIso !== realToday) {
-            var wasViewingLatest = (currentDateIso === maxAllowedIso);
+        if (maxAllowedIso !== realToday || currentDateIso < realToday) {
             maxAllowedIso = realToday;
             $('#datePicker').attr('max', maxAllowedIso);
             updateNextDayButtonState();
-            if (wasViewingLatest && currentDateIso < realToday) {
+            if (currentDateIso < realToday) {
                 setDate(realToday);
                 showToast('Rolled over to today: ' + isoToFormatted(realToday), 'info');
             }
@@ -4738,13 +4737,10 @@ $(document).ready(function() {
             // 2. Skip horizontal rule / separator line (e.g. "-------------------", "====")
             if (/^[-=]{3,}$/.test(trimmed)) continue;
 
-            // 3. Category headers (e.g. "Backend:", "**Backend:**", "Frontend & UI:")
-            var cleanHeaderTest = trimmed.replace(/^\*\*|\*\*$/g, '').trim();
-            if (/^[A-Za-z0-9\s_\-\/&]{2,60}:$/.test(cleanHeaderTest) && !/^\d+[\.\)]/.test(trimmed) && !/^[•▪▫◦*\-–—]/.test(trimmed)) {
-                if (resultLines.length > 0 && resultLines[resultLines.length - 1] !== '') {
-                    resultLines.push('');
-                }
-                resultLines.push(cleanHeaderTest);
+            // 3. Skip category headers (e.g. "Backend:", "Backend & System Setup:", "Frontend:", "**Backend:**")
+            // Category headers are excluded from clipboard so only actual task points are copied
+            var cleanHeaderTest = trimmed.replace(/^#+\s*/, '').replace(/\*\*/g, '').trim();
+            if ((/^[A-Za-z0-9\s_\-\/&]{2,60}:$/.test(cleanHeaderTest) || /^(backend|frontend|design|database|testing|bug\s*fixes|features?|setup|devops|notes?):?$/i.test(cleanHeaderTest)) && !/^\d+[\.\)]/.test(trimmed) && !/^[•▪▫◦*\-–—]/.test(trimmed)) {
                 continue;
             }
 
@@ -5752,6 +5748,23 @@ $(document).ready(function() {
     });
 
     // Boot App
+    checkAndApplyDateRollover();
+    setInterval(checkAndApplyDateRollover, 60000);
+
+    // Clean stale URL date parameter so page is not locked to yesterday
+    if (window.history && window.history.replaceState) {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('date')) {
+            var qDate = urlParams.get('date');
+            if (qDate === currentDateIso || qDate <= currentDateIso) {
+                urlParams.delete('date');
+                var newSearch = urlParams.toString();
+                var newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '');
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        }
+    }
+
     loadProjects();
     loadClients();
     loadSidebarLogs();

@@ -1792,10 +1792,7 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 2px; margin-bottom: 0; flex: 1; min-height: 0;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-headline); display: flex; align-items: center; gap: 6px;">
-                            <i class="fa-solid fa-file-lines" style="color: #4f46e5;"></i> Email Content Preview :
-                        </span>
-                        <span style="background: rgba(99, 102, 241, 0.1); color: #4f46e5; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">
-                            <i class="fa-solid fa-code"></i> HTML formatted
+                            <i class="fa-solid fa-file-lines" style="color: #4f46e5;"></i> Email Content Preview
                         </span>
                     </div>
                     <div id="emailHtmlPreviewContainer" class="email-preview-box">
@@ -2069,10 +2066,9 @@ $(document).ready(function() {
     // Auto Date Rollover & Fresh State Detector across Midnight / Next Morning
     function checkAndApplyDateRollover() {
         var realToday = getRealTodayIso();
-        if (maxAllowedIso !== realToday) {
-            var wasViewingLatest = (currentDateIso === maxAllowedIso);
+        if (maxAllowedIso !== realToday || currentDateIso < realToday) {
             maxAllowedIso = realToday;
-            if (wasViewingLatest && currentDateIso < realToday) {
+            if (currentDateIso < realToday) {
                 currentDateIso = realToday;
                 if (window.history && window.history.replaceState) {
                     var newUrl = window.location.pathname + '?date=' + currentDateIso;
@@ -2350,9 +2346,9 @@ $(document).ready(function() {
         var clientVal = $('#client_name').val() || '';
 
         saveUpdateToDatabase(function() {
-            var url = window.APP_BASE + '?date=' + currentDateIso;
+            var url = window.APP_BASE;
             if (clientVal) {
-                url += '&client_name=' + encodeURIComponent(clientVal);
+                url += '?client_name=' + encodeURIComponent(clientVal);
             }
             window.location.href = url;
         });

@@ -54,12 +54,13 @@ class AppController extends Controller
     {
         parent::beforeRender($event);
 
-        if ($this->request->is('ajax') || $this->request->is('json') || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
-            $this->response = $this->response
-                ->withHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
-                ->withHeader('Pragma', 'no-cache')
-                ->withHeader('Expires', '0');
-        }
+        // Prevent browser caching for ALL responses (HTML, JSON, AJAX)
+        // Ensures user always gets fresh date, fresh workpad, and valid CSRF token without hard refresh
+        $this->response = $this->response
+            ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0')
+            ->withHeader('Pragma', 'no-cache')
+            ->withHeader('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
+
 
         $currentUser = $this->request->getSession()->read('AuthUser');
         if ($currentUser && !empty($currentUser['id'])) {

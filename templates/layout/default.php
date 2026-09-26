@@ -76,19 +76,28 @@ $pageTitle = $this->fetch('title', 'Helpdesk - Daily Work Notepad & Update Gener
         function getCsrfToken() {
             var match = document.cookie.match(new RegExp('(^| )csrfToken=([^;]+)'));
             if (match) return decodeURIComponent(match[2]);
-            return window.CSRF_TOKEN;
+            var meta = document.querySelector('meta[name="csrf-token"]');
+            if (meta && meta.content) return meta.content;
+            return window.CSRF_TOKEN || '';
         }
 
         // Setup jQuery global AJAX with CSRF token and zero-caching for fresh data
         $.ajaxSetup({
             cache: false,
-            headers: {
-                'X-CSRF-Token': getCsrfToken()
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRF-Token', getCsrfToken());
             }
         });
 
         $(document).ajaxSend(function(e, xhr, options) {
             xhr.setRequestHeader('X-CSRF-Token', getCsrfToken());
+        });
+
+        $(document).ajaxComplete(function(e, xhr) {
+            var respCsrf = xhr.getResponseHeader('X-CSRF-Token');
+            if (respCsrf) {
+                window.CSRF_TOKEN = respCsrf;
+            }
         });
     </script>
 
