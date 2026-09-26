@@ -1532,45 +1532,176 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         border-radius: 4px;
     }
 
-    /* Modal Project Item List */
+    /* Modal Project & Client Manager UI Improvements */
+    .modal-create-card {
+        background: rgba(248, 250, 252, 0.85);
+        border: 1.5px solid rgba(226, 232, 240, 0.95);
+        border-radius: 16px;
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        transition: all 0.25s ease;
+    }
+
+    [data-theme="dark"] .modal-create-card {
+        background: rgba(15, 23, 42, 0.65) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .modal-section-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        user-select: none;
+    }
+
+    [data-theme="dark"] .modal-section-label {
+        color: #94a3b8;
+    }
+
+    .modal-form-input {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 12px;
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 13.5px;
+        border: 1.5px solid rgba(203, 213, 225, 0.85);
+        background: #ffffff;
+        color: #0f172a;
+        outline: none;
+        box-sizing: border-box;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-form-input::placeholder {
+        color: #94a3b8;
+    }
+
+    .modal-form-input:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    [data-theme="dark"] .modal-form-input {
+        background: rgba(11, 15, 25, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        color: #f8fafc !important;
+    }
+
+    [data-theme="dark"] .modal-form-input::placeholder {
+        color: #64748b !important;
+    }
+
+    [data-theme="dark"] .modal-form-input:focus {
+        border-color: #818cf8 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+        background: rgba(11, 15, 25, 0.95) !important;
+    }
+
+    #manageClientModal .modal-form-input:focus {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+    }
+
+    [data-theme="dark"] #manageClientModal .modal-form-input:focus {
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+    }
+
+    .modal-form-input.is-invalid {
+        border-color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.05) !important;
+    }
+
+    [data-theme="dark"] .modal-form-input.is-invalid {
+        border-color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.12) !important;
+    }
+
+    .modal-input-error {
+        color: #ef4444;
+        font-size: 11.5px;
+        font-weight: 600;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    [data-theme="dark"] .modal-input-error {
+        color: #f87171;
+    }
+
+    /* Modal Project & Client Item List */
     .modal-project-list {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 9px;
         max-height: 280px;
         overflow-y: auto;
         padding-right: 4px;
     }
 
+    .modal-project-list::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .modal-project-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .modal-project-list::-webkit-scrollbar-thumb {
+        background: rgba(203, 213, 225, 0.7);
+        border-radius: 999px;
+    }
+
+    [data-theme="dark"] .modal-project-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    [data-theme="dark"] .modal-project-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.25) !important;
+    }
+
     .modal-project-item {
-        background: rgba(255, 255, 255, 0.78);
+        background: rgba(255, 255, 255, 0.85);
         border: 1.5px solid rgba(226, 232, 240, 0.95);
         border-radius: 14px;
-        padding: 12px 16px;
+        padding: 11px 15px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .modal-project-item:hover {
         background: #ffffff;
         border-color: rgba(99, 102, 241, 0.4);
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.12);
-        transform: translateY(-1.5px);
+        box-shadow: 0 6px 18px rgba(99, 102, 241, 0.12);
+        transform: translateY(-1px);
     }
 
     [data-theme="dark"] .modal-project-item {
-        background: rgba(15, 23, 42, 0.65);
-        border-color: rgba(255, 255, 255, 0.1);
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+        background: rgba(15, 23, 42, 0.65) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
     }
 
     [data-theme="dark"] .modal-project-item:hover {
-        background: rgba(30, 41, 59, 0.85);
-        border-color: rgba(99, 102, 241, 0.5);
+        background: rgba(30, 41, 59, 0.75) !important;
+        border-color: rgba(99, 102, 241, 0.45) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+        transform: translateY(-1px);
     }
 
     .modal-project-name {
@@ -1581,6 +1712,88 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         display: flex;
         align-items: center;
         gap: 10px;
+    }
+
+    .modal-item-avatar-proj {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: rgba(99, 102, 241, 0.12);
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+
+    [data-theme="dark"] .modal-item-avatar-proj {
+        background: rgba(99, 102, 241, 0.2) !important;
+        color: #a5b4fc !important;
+    }
+
+    .modal-item-avatar-client {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: rgba(2, 132, 199, 0.12);
+        color: #0284c7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+
+    [data-theme="dark"] .modal-item-avatar-client {
+        background: rgba(14, 165, 233, 0.2) !important;
+        color: #38bdf8 !important;
+    }
+
+    .modal-badge-default {
+        font-size: 10.5px;
+        color: #15803d;
+        background: #dcfce7;
+        padding: 2.5px 9px;
+        border-radius: 999px;
+        font-weight: 700;
+        border: 1px solid #bbf7d0;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        user-select: none;
+        line-height: 1.2;
+    }
+
+    [data-theme="dark"] .modal-badge-default {
+        background: rgba(16, 185, 129, 0.16) !important;
+        color: #34d399 !important;
+        border: 1px solid rgba(16, 185, 129, 0.35) !important;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.2) !important;
+    }
+
+    .client-email-badge {
+        font-size: 11px;
+        color: #0369a1;
+        background: #e0f2fe;
+        padding: 2.5px 9px;
+        border-radius: 999px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        max-width: fit-content;
+        border: 1px solid #bae6fd;
+        transition: all 0.2s ease;
+        line-height: 1.3;
+    }
+
+    [data-theme="dark"] .client-email-badge {
+        background: rgba(14, 165, 233, 0.12) !important;
+        color: #38bdf8 !important;
+        border: 1px solid rgba(14, 165, 233, 0.28) !important;
     }
 
     .btn-action-icon {
@@ -1611,6 +1824,175 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         border-color: #fca5a5;
         box-shadow: 0 4px 12px rgba(239, 68, 68, 0.22);
     }
+
+    [data-theme="dark"] .btn-action-icon {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #94a3b8 !important;
+    }
+
+    [data-theme="dark"] .btn-action-icon:hover {
+        background: rgba(99, 102, 241, 0.2) !important;
+        border-color: rgba(99, 102, 241, 0.45) !important;
+        color: #c7d2fe !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(99, 102, 241, 0.3) !important;
+    }
+
+    [data-theme="dark"] .btn-action-icon.delete:hover {
+        background: rgba(239, 68, 68, 0.2) !important;
+        border-color: rgba(239, 68, 68, 0.45) !important;
+        color: #fca5a5 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(239, 68, 68, 0.3) !important;
+    }
+
+    .modal-list-empty-state {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        text-align: center;
+        padding: 24px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 14px;
+        border: 1px dashed rgba(203, 213, 225, 0.8);
+    }
+
+    [data-theme="dark"] .modal-list-empty-state {
+        background: rgba(15, 23, 42, 0.4) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        color: #94a3b8 !important;
+    }
+
+    /* Modal Inline Editors */
+    .proj-inline-input,
+    .client-inline-input,
+    .client-inline-email {
+        padding: 7px 12px;
+        font-size: 13px;
+        border-radius: 10px;
+        border: 1.5px solid #6366f1;
+        background: #ffffff;
+        color: #0f172a;
+        outline: none;
+        box-sizing: border-box;
+        font-family: 'Inter', system-ui, sans-serif;
+        transition: all 0.2s ease;
+    }
+
+    .client-inline-input {
+        border-color: #0284c7;
+        width: 100%;
+    }
+
+    .client-inline-email {
+        border-color: rgba(203, 213, 225, 0.85);
+        width: 100%;
+    }
+
+    .client-inline-email:focus {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18);
+    }
+
+    [data-theme="dark"] .proj-inline-input,
+    [data-theme="dark"] .client-inline-input,
+    [data-theme="dark"] .client-inline-email {
+        background: rgba(11, 15, 25, 0.9) !important;
+        color: #f8fafc !important;
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    }
+
+    [data-theme="dark"] .proj-inline-input:focus {
+        border-color: #818cf8 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+    }
+
+    [data-theme="dark"] .client-inline-input:focus,
+    [data-theme="dark"] .client-inline-email:focus {
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+    }
+
+    .proj-inline-input.is-invalid,
+    .client-inline-input.is-invalid,
+    .client-inline-email.is-invalid {
+        border-color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.08) !important;
+    }
+
+    [data-theme="dark"] .proj-inline-input.is-invalid,
+    [data-theme="dark"] .client-inline-input.is-invalid,
+    [data-theme="dark"] .client-inline-email.is-invalid {
+        border-color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.15) !important;
+    }
+
+    .btn-save-inline-proj,
+    .btn-save-inline-client {
+        padding: 6px 14px !important;
+        font-size: 11.5px !important;
+        border-radius: 999px !important;
+        background: linear-gradient(135deg, #4f46e5, #3b82f6) !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3) !important;
+    }
+
+    .btn-save-inline-client {
+        background: linear-gradient(135deg, #0284c7, #0ea5e9) !important;
+        box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3) !important;
+    }
+
+    .btn-save-inline-proj:hover,
+    .btn-save-inline-client:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.45) !important;
+    }
+
+    .btn-save-inline-client:hover {
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.45) !important;
+    }
+
+    .btn-cancel-inline-proj,
+    .btn-cancel-inline-client {
+        padding: 6px 10px !important;
+        font-size: 11.5px !important;
+        border-radius: 999px !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        color: var(--text-muted) !important;
+        border: 1.5px solid rgba(203, 213, 225, 0.8) !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .btn-cancel-inline-proj:hover,
+    .btn-cancel-inline-client:hover {
+        background: #ffffff !important;
+        color: var(--text-headline) !important;
+    }
+
+    [data-theme="dark"] .btn-cancel-inline-proj,
+    [data-theme="dark"] .btn-cancel-inline-client {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        color: #cbd5e1 !important;
+    }
+
+    [data-theme="dark"] .btn-cancel-inline-proj:hover,
+    [data-theme="dark"] .btn-cancel-inline-client:hover {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff !important;
+    }
+
 
     /* Mobile Sidebar Toggle Button */
     .btn-toggle-sidebar-mobile {
@@ -2624,22 +3006,26 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         </div>
         <div class="modal-body" style="gap: 18px; padding: 22px 24px;">
             <!-- Add New Project Form -->
-            <div style="background: rgba(255, 255, 255, 0.55); border: 1.5px solid rgba(226, 232, 240, 0.85); border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
-                <label style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: block;">Add New Project to Database</label>
+            <div class="modal-create-card">
+                <label class="modal-section-label">
+                    <i class="fa-solid fa-plus-circle" style="color: #6366f1;"></i> Add New Project to Database
+                </label>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="text" id="newProjectInput" class="global-search-input" placeholder="project_name (e.g. 8.bloqs, internal-crm)" style="padding: 11px 16px; flex: 1; border-radius: 12px; font-family: 'Inter', system-ui, sans-serif; font-size: 13.5px; border: 1.5px solid rgba(203, 213, 225, 0.85); background: #ffffff;">
-                    <button type="button" id="btnSaveNewProject" class="btn btn-primary" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important; color: #ffffff !important; border: none !important; border-radius: 999px !important; font-weight: 800 !important; font-size: 13px !important; padding: 10px 22px !important; box-shadow: 0 6px 18px rgba(79, 70, 229, 0.42) !important; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap;">
+                    <input type="text" id="newProjectInput" class="modal-form-input" placeholder="project_name (e.g. 8.bloqs, internal-crm)" style="flex: 1;">
+                    <button type="button" id="btnSaveNewProject" class="btn btn-primary" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important; color: #ffffff !important; border: none !important; border-radius: 12px !important; font-weight: 700 !important; font-size: 13px !important; padding: 10px 22px !important; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4) !important; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap;">
                         <i class="fa-solid fa-plus"></i> Add
                     </button>
                 </div>
-                <div id="newProjectNameError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:2px;">
+                <div id="newProjectNameError" class="modal-input-error" style="display:none;">
                     <i class="fa-solid fa-circle-exclamation"></i> <span></span>
                 </div>
             </div>
 
             <!-- Existing Projects List -->
             <div>
-                <label style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: block; margin-bottom: 10px;">All Projects in Database</label>
+                <label class="modal-section-label" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-layer-group" style="color: #818cf8;"></i> All Projects in Database
+                </label>
                 <div id="modalProjectList" class="modal-project-list">
                     <!-- Populated via AJAX -->
                 </div>
@@ -2665,23 +3051,25 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         </div>
         <div class="modal-body" style="gap: 18px; padding: 22px 24px;">
             <!-- Add New Client Form -->
-            <div style="background: rgba(255, 255, 255, 0.55); border: 1.5px solid rgba(226, 232, 240, 0.85); border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
-                <label style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: block;">Add New Client to Database</label>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="modal-create-card">
+                <label class="modal-section-label">
+                    <i class="fa-solid fa-user-plus" style="color: #0284c7;"></i> Add New Client to Database
+                </label>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
                     <div>
-                        <input type="text" id="newClientInput" class="global-search-input" placeholder="Client Name (e.g. John Doe, Example Company)" style="padding: 10px 16px; width: 100%; box-sizing: border-box; border-radius: 12px; font-family: 'Inter', system-ui, sans-serif; font-size: 13.5px; border: 1.5px solid rgba(203, 213, 225, 0.85); background: #ffffff;">
-                        <div id="newClientNameError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:2px;">
+                        <input type="text" id="newClientInput" class="modal-form-input" placeholder="Client Name (e.g. John Doe, Example Company)">
+                        <div id="newClientNameError" class="modal-input-error" style="display:none;">
                             <i class="fa-solid fa-circle-exclamation"></i> <span></span>
                         </div>
                     </div>
                     <div>
                         <div class="add-client-inputs-row" style="display: flex; gap: 10px; align-items: center;">
-                            <input type="email" id="newClientEmailInput" class="global-search-input" placeholder="Client Email (e.g. client@company.com)" style="padding: 10px 16px; flex: 1; min-width: 0; box-sizing: border-box; border-radius: 12px; font-family: 'Inter', system-ui, sans-serif; font-size: 13.5px; border: 1.5px solid rgba(203, 213, 225, 0.85); background: #ffffff;">
-                            <button type="button" id="btnSaveNewClient" class="btn btn-primary btn-add-client-submit" style="background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important; color: #ffffff !important; border: none !important; border-radius: 999px !important; font-weight: 800 !important; font-size: 13px !important; white-space: nowrap; padding: 10px 20px !important; box-shadow: 0 6px 18px rgba(2, 132, 199, 0.42) !important; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);">
+                            <input type="email" id="newClientEmailInput" class="modal-form-input" placeholder="Client Email (e.g. client@company.com)" style="flex: 1; min-width: 0;">
+                            <button type="button" id="btnSaveNewClient" class="btn btn-primary btn-add-client-submit" style="background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important; color: #ffffff !important; border: none !important; border-radius: 12px !important; font-weight: 700 !important; font-size: 13px !important; white-space: nowrap; padding: 10px 20px !important; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4) !important; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);">
                                 <i class="fa-solid fa-plus"></i> Add Client
                             </button>
                         </div>
-                        <div id="newClientEmailError" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:2px;">
+                        <div id="newClientEmailError" class="modal-input-error" style="display:none;">
                             <i class="fa-solid fa-circle-exclamation"></i> <span></span>
                         </div>
                     </div>
@@ -2690,7 +3078,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
             <!-- Existing Clients List -->
             <div>
-                <label style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: block; margin-bottom: 10px;">All Clients in Database</label>
+                <label class="modal-section-label" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-users" style="color: #38bdf8;"></i> All Clients in Database
+                </label>
                 <div id="modalClientList" class="modal-project-list">
                     <!-- Populated via AJAX -->
                 </div>
@@ -3658,7 +4048,7 @@ $(document).ready(function() {
     function renderModalProjectsList() {
         var html = '';
         if (projectsCache.length === 0) {
-            html = '<div style="font-size:12.5px; color:var(--text-muted); text-align:center; padding:24px; background:rgba(255,255,255,0.5); border-radius:14px; border:1px dashed rgba(203,213,225,0.8);">No projects in database. Create one above!</div>';
+            html = '<div class="modal-list-empty-state"><i class="fa-regular fa-folder-open" style="font-size:22px; display:block; margin-bottom:8px; opacity:0.6;"></i>No projects in database yet. Create one above!</div>';
         } else {
             projectsCache.forEach(function(p) {
                 html += '<div class="modal-project-item" id="projRow-' + p.id + '" data-id="' + p.id + '" data-name="' + escapeHtml(p.name) + '">';
@@ -3666,10 +4056,10 @@ $(document).ready(function() {
                 // View Mode
                 html += '  <div class="proj-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px;">';
                 html += '    <span class="modal-project-name">';
-                html += '      <div style="width:32px; height:32px; border-radius:9px; background:rgba(99,102,241,0.12); color:#4f46e5; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0;"><i class="fa-solid fa-folder"></i></div>';
+                html += '      <div class="modal-item-avatar-proj"><i class="fa-solid fa-folder"></i></div>';
                 html += '      <span class="proj-name-text">' + escapeHtml(p.name) + '</span>';
                 if (p.is_default) {
-                    html += '  <span style="font-size:10.5px; color:#15803d; background:#dcfce7; padding:2px 9px; border-radius:999px; font-weight:700; border:1px solid #bbf7d0; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-check" style="font-size:9px;"></i> Default</span>';
+                    html += '  <span class="modal-badge-default"><i class="fa-solid fa-check" style="font-size:9px;"></i> Default</span>';
                 }
                 html += '    </span>';
                 html += '    <div style="display:flex; align-items:center; gap:6px;">';
@@ -3683,12 +4073,12 @@ $(document).ready(function() {
                 // Inline Edit Mode
                 html += '  <div class="proj-edit-mode" style="display:none; align-items:center; justify-content:space-between; width:100%; gap:8px;">';
                 html += '    <div style="display:flex; align-items:center; gap:8px; flex:1;">';
-                html += '      <div style="width:30px; height:30px; border-radius:8px; background:rgba(99,102,241,0.12); color:#4f46e5; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0;"><i class="fa-solid fa-folder"></i></div>';
-                html += '      <input type="text" class="proj-inline-input" value="' + escapeHtml(p.name) + '" placeholder="Project name" style="padding:7px 12px; font-size:13px; flex:1; border:1.5px solid #4f46e5; border-radius:10px; background:#ffffff; color:var(--text-headline); outline:none; box-shadow:0 0 0 3px rgba(79,70,229,0.15); font-family:\'Inter\', system-ui, sans-serif;">';
+                html += '      <div class="modal-item-avatar-proj"><i class="fa-solid fa-folder"></i></div>';
+                html += '      <input type="text" class="proj-inline-input" value="' + escapeHtml(p.name) + '" placeholder="Project name" style="flex:1;">';
                 html += '    </div>';
                 html += '    <div style="display:flex; align-items:center; gap:6px;">';
-                html += '      <button type="button" class="btn btn-primary btn-save-inline-proj" data-id="' + p.id + '" title="Save Changes" style="padding:6px 14px; font-size:11.5px; border-radius:999px; background:linear-gradient(135deg, #4f46e5, #3b82f6); color:#fff; border:none; font-weight:700;"><i class="fa-solid fa-check"></i> Save</button>';
-                html += '      <button type="button" class="btn btn-cancel-inline-proj" data-id="' + p.id + '" title="Cancel" style="padding:6px 10px; font-size:11.5px; border-radius:999px; background:rgba(255,255,255,0.85); color:var(--text-muted); border:1.5px solid rgba(203,213,225,0.8);"><i class="fa-solid fa-xmark"></i></button>';
+                html += '      <button type="button" class="btn btn-save-inline-proj" data-id="' + p.id + '" title="Save Changes"><i class="fa-solid fa-check"></i> Save</button>';
+                html += '      <button type="button" class="btn btn-cancel-inline-proj" data-id="' + p.id + '" title="Cancel"><i class="fa-solid fa-xmark"></i></button>';
                 html += '    </div>';
                 html += '  </div>';
 
@@ -3704,16 +4094,20 @@ $(document).ready(function() {
             var editMode = row.find('.proj-edit-mode');
             editMode.css('display', 'flex');
             var input = editMode.find('.proj-inline-input');
-            input.focus().select();
+            input.removeClass('is-invalid').focus().select();
         });
 
         // Click Cancel -> Revert back to text
         $('.btn-cancel-inline-proj').click(function() {
             var row = $(this).closest('.modal-project-item');
             var origName = row.attr('data-name');
-            row.find('.proj-inline-input').val(origName);
+            row.find('.proj-inline-input').val(origName).removeClass('is-invalid');
             row.find('.proj-edit-mode').hide();
             row.find('.proj-view-mode').css('display', 'flex');
+        });
+
+        $('.proj-inline-input').on('input', function() {
+            $(this).removeClass('is-invalid');
         });
 
         // Save Function
@@ -3725,7 +4119,7 @@ $(document).ready(function() {
 
             if (!newName) {
                 showToast('Project name cannot be empty', 'warning');
-                input.focus();
+                input.addClass('is-invalid').focus();
                 return;
             }
 
@@ -3899,23 +4293,23 @@ $(document).ready(function() {
     function renderModalClientsList() {
         var html = '';
         if (clientsCache.length === 0) {
-            html = '<div style="font-size:12.5px; color:var(--text-muted); text-align:center; padding:24px; background:rgba(255,255,255,0.5); border-radius:14px; border:1px dashed rgba(203,213,225,0.8);">No clients in database. Add one above!</div>';
+            html = '<div class="modal-list-empty-state"><i class="fa-regular fa-address-book" style="font-size:22px; display:block; margin-bottom:8px; opacity:0.6;"></i>No clients in database yet. Add one above!</div>';
         } else {
             clientsCache.forEach(function(c) {
                 html += '<div class="modal-project-item client-card-item" id="clientRow-' + c.id + '" data-id="' + c.id + '" data-name="' + escapeHtml(c.name) + '" data-email="' + escapeHtml(c.email || '') + '">';
                 
                 // View Mode
                 html += '  <div class="client-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px;">';
-                html += '    <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:0;">';
+                html += '    <div style="display:flex; flex-direction:column; gap:5px; flex:1; min-width:0;">';
                 html += '      <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:var(--text-headline); min-width:0;">';
-                html += '        <div style="width:32px; height:32px; border-radius:9px; background:rgba(2,132,199,0.12); color:#0284c7; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0;"><i class="fa-solid fa-user-tie"></i></div>';
+                html += '        <div class="modal-item-avatar-client"><i class="fa-solid fa-user-tie"></i></div>';
                 html += '        <span class="client-name-text" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:\'Inter\', system-ui, sans-serif;">' + escapeHtml(c.name) + '</span>';
                 if (c.is_default) {
-                    html += '    <span style="font-size:10.5px; color:#15803d; background:#dcfce7; padding:2px 9px; border-radius:999px; font-weight:700; border:1px solid #bbf7d0; flex-shrink:0;"><i class="fa-solid fa-check" style="font-size:9px;"></i> Default</span>';
+                    html += '    <span class="modal-badge-default" style="flex-shrink:0;"><i class="fa-solid fa-check" style="font-size:9px;"></i> Default</span>';
                 }
                 html += '      </div>';
                 if (c.email) {
-                    html += '    <div class="client-email-badge" style="font-size:11px; color:#0369a1; background:#e0f2fe; padding:3px 10px; border-radius:999px; font-weight:600; display:inline-flex; align-items:center; gap:5px; max-width:fit-content; border:1px solid #bae6fd;" title="' + escapeHtml(c.email) + '">';
+                    html += '    <div class="client-email-badge" title="' + escapeHtml(c.email) + '">';
                     html += '      <i class="fa-regular fa-envelope" style="font-size:10px;"></i> <span>' + escapeHtml(c.email) + '</span>';
                     html += '    </div>';
                 }
@@ -3929,15 +4323,15 @@ $(document).ready(function() {
                 html += '  </div>';
 
                 // Inline Edit Mode
-                html += '  <div class="client-edit-mode" style="display:none; flex-direction:column; gap:6px; width:100%; box-sizing:border-box;">';
-                html += '    <div class="client-inline-inputs-row" style="display:flex; flex-direction:column; gap:6px; width:100%;">';
-                html += '      <input type="text" class="client-inline-input" value="' + escapeHtml(c.name) + '" placeholder="Client Name" style="padding:6px 10px; font-size:12.5px; width:100%; border:1px solid #0284c7; border-radius:6px; background:var(--bg-card); color:var(--text-main); outline:none; box-sizing:border-box;">';
-                html += '      <input type="email" class="client-inline-email" value="' + escapeHtml(c.email || '') + '" placeholder="Client Email (e.g. client@company.com)" style="padding:6px 10px; font-size:12.5px; width:100%; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); color:var(--text-main); outline:none; box-sizing:border-box;">';
+                html += '  <div class="client-edit-mode" style="display:none; flex-direction:column; gap:8px; width:100%; box-sizing:border-box;">';
+                html += '    <div class="client-inline-inputs-row" style="display:flex; flex-direction:column; gap:8px; width:100%;">';
+                html += '      <input type="text" class="client-inline-input" value="' + escapeHtml(c.name) + '" placeholder="Client Name">';
+                html += '      <input type="email" class="client-inline-email" value="' + escapeHtml(c.email || '') + '" placeholder="Client Email (e.g. client@company.com)">';
                 html += '    </div>';
-                html += '    <div class="inline-client-error" style="display:none; color:#ef4444; font-size:11.5px; font-weight:600; margin-top:2px; margin-left:4px;"><i class="fa-solid fa-circle-exclamation"></i> <span></span></div>';
+                html += '    <div class="inline-client-error modal-input-error" style="display:none;"><i class="fa-solid fa-circle-exclamation"></i> <span></span></div>';
                 html += '    <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:2px;">';
-                html += '      <button type="button" class="btn btn-save-inline-client" data-id="' + c.id + '" title="Save Changes" style="padding:5px 12px; font-size:11px; height:28px; background:#0284c7; color:#fff; border:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-check"></i> Save</button>';
-                html += '      <button type="button" class="btn btn-cancel-inline-client" data-id="' + c.id + '" title="Cancel" style="padding:5px 8px; font-size:11px; height:28px; background:var(--bg-card); color:var(--text-muted); border:1px solid var(--border-color);"><i class="fa-solid fa-xmark"></i></button>';
+                html += '      <button type="button" class="btn btn-save-inline-client" data-id="' + c.id + '" title="Save Changes"><i class="fa-solid fa-check"></i> Save</button>';
+                html += '      <button type="button" class="btn btn-cancel-inline-client" data-id="' + c.id + '" title="Cancel"><i class="fa-solid fa-xmark"></i></button>';
                 html += '    </div>';
                 html += '  </div>';
 
@@ -3954,8 +4348,8 @@ $(document).ready(function() {
             editMode.css('display', 'flex');
             var input = editMode.find('.client-inline-input');
             var emailInput = editMode.find('.client-inline-email');
-            input.css({'border-color': '#0284c7', 'background': 'var(--bg-card)'});
-            emailInput.css({'border-color': 'var(--border-color)', 'background': 'var(--bg-card)'});
+            input.removeClass('is-invalid');
+            emailInput.removeClass('is-invalid');
             editMode.find('.inline-client-error').hide().find('span').text('');
             input.focus().select();
         });
@@ -3965,8 +4359,8 @@ $(document).ready(function() {
             var row = $(this).closest('.modal-project-item');
             var origName = row.attr('data-name');
             var origEmail = row.attr('data-email') || '';
-            row.find('.client-inline-input').val(origName).css({'border-color': '#0284c7', 'background': 'var(--bg-card)'});
-            row.find('.client-inline-email').val(origEmail).css({'border-color': 'var(--border-color)', 'background': 'var(--bg-card)'});
+            row.find('.client-inline-input').val(origName).removeClass('is-invalid');
+            row.find('.client-inline-email').val(origEmail).removeClass('is-invalid');
             row.find('.inline-client-error').hide().find('span').text('');
             row.find('.client-edit-mode').hide();
             row.find('.client-view-mode').css('display', 'flex');
@@ -3983,12 +4377,12 @@ $(document).ready(function() {
             var newEmail = emailInput.val().trim();
 
             // Clear previous errors
-            input.css({'border-color': '#0284c7', 'background': 'var(--bg-card)'});
-            emailInput.css({'border-color': 'var(--border-color)', 'background': 'var(--bg-card)'});
+            input.removeClass('is-invalid');
+            emailInput.removeClass('is-invalid');
             errorBox.hide().find('span').text('');
 
             if (!newName) {
-                input.css({'border-color': '#ef4444', 'background': '#fef2f2'}).focus();
+                input.addClass('is-invalid').focus();
                 errorBox.show().find('span').text('Client name cannot be empty');
                 showToast('Client name cannot be empty');
                 return;
@@ -3996,7 +4390,7 @@ $(document).ready(function() {
 
             var emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
             if (newEmail && !emailPattern.test(newEmail)) {
-                emailInput.css({'border-color': '#ef4444', 'background': '#fef2f2'}).focus();
+                emailInput.addClass('is-invalid').focus();
                 errorBox.show().find('span').text('Please enter a valid email address (e.g. client@company.com)');
                 showToast('Please enter a valid email address');
                 return;
@@ -4028,7 +4422,7 @@ $(document).ready(function() {
                             if (row.find('.client-email-badge').length) {
                                 row.find('.client-email-badge').html('<i class="fa-regular fa-envelope"></i> ' + escapeHtml(newEmail));
                             } else {
-                                row.find('.client-name-text').after(' <span class="client-email-badge" style="font-size:11px; color:#0369a1; background:#e0f2fe; padding:2px 8px; border-radius:6px; font-weight:500;"><i class="fa-regular fa-envelope"></i> ' + escapeHtml(newEmail) + '</span>');
+                                row.find('.client-name-text').after(' <div class="client-email-badge" title="' + escapeHtml(newEmail) + '"><i class="fa-regular fa-envelope" style="font-size:10px;"></i> <span>' + escapeHtml(newEmail) + '</span></div>');
                             }
                         } else {
                             row.find('.client-email-badge').remove();
@@ -4049,9 +4443,9 @@ $(document).ready(function() {
                     } else {
                         var msg = res.message || 'Failed to update client';
                         if (msg.toLowerCase().indexOf('email') !== -1) {
-                            emailInput.css({'border-color': '#ef4444', 'background': '#fef2f2'}).focus();
+                            emailInput.addClass('is-invalid').focus();
                         } else {
-                            input.css({'border-color': '#ef4444', 'background': '#fef2f2'}).focus();
+                            input.addClass('is-invalid').focus();
                         }
                         errorBox.show().find('span').text(msg);
                         showToast(msg);
@@ -4071,7 +4465,7 @@ $(document).ready(function() {
 
         $('.client-inline-input, .client-inline-email').on('input', function() {
             var row = $(this).closest('.modal-project-item');
-            $(this).css({'border-color': '', 'background': '#ffffff'});
+            $(this).removeClass('is-invalid');
             row.find('.inline-client-error').hide().find('span').text('');
         });
 
@@ -4476,7 +4870,7 @@ $(document).ready(function() {
     });
 
     $('#newProjectInput').on('input', function() {
-        $(this).css({'border-color': '', 'background': ''});
+        $(this).removeClass('is-invalid');
         $('#newProjectNameError').hide().find('span').text('');
     });
 
@@ -4486,17 +4880,15 @@ $(document).ready(function() {
         var $err = $('#newProjectNameError');
 
         if (!val) {
-            $input.css({'border-color': '#ef4444', 'background': '#fef2f2'});
+            $input.addClass('is-invalid').focus();
             $err.show().find('span').text('Please enter a project name.');
-            $input.focus();
             showToast('Project name is required', true);
             return;
         }
 
         if (val.length > 100) {
-            $input.css({'border-color': '#ef4444', 'background': '#fef2f2'});
+            $input.addClass('is-invalid').focus();
             $err.show().find('span').text('Project name cannot exceed 100 characters.');
-            $input.focus();
             showToast('Project name is too long', true);
             return;
         }
@@ -4513,13 +4905,13 @@ $(document).ready(function() {
                     activeProjectId = res.project.id;
                     activeProjectName = res.project.name;
                     $('#activeProjectDisplay').text(activeProjectName);
-                    $('#newProjectInput').val('').css({'border-color': '', 'background': ''});
+                    $('#newProjectInput').val('').removeClass('is-invalid');
                     $err.hide().find('span').text('');
                     $('#manageProjectModal').removeClass('active');
                     updateEditorProjectHeader();
                     saveNoteToDatabase();
                 } else {
-                    $input.css({'border-color': '#ef4444', 'background': '#fef2f2'});
+                    $input.addClass('is-invalid');
                     $err.show().find('span').text(res.message || 'Failed to add project');
                     showToast(res.message || 'Failed to add project', true);
                 }
@@ -4531,9 +4923,9 @@ $(document).ready(function() {
     });
 
     function clearNewClientErrors() {
-        $('#newClientInput').css({'border-color': '', 'background': ''});
+        $('#newClientInput').removeClass('is-invalid');
         $('#newClientNameError').hide().find('span').text('');
-        $('#newClientEmailInput').css({'border-color': '', 'background': ''});
+        $('#newClientEmailInput').removeClass('is-invalid');
         $('#newClientEmailError').hide().find('span').text('');
     }
 
@@ -4546,12 +4938,12 @@ $(document).ready(function() {
     });
 
     $('#newClientInput').on('input', function() {
-        $(this).css({'border-color': '', 'background': ''});
+        $(this).removeClass('is-invalid');
         $('#newClientNameError').hide().find('span').text('');
     });
 
     $('#newClientEmailInput').on('input', function() {
-        $(this).css({'border-color': '', 'background': ''});
+        $(this).removeClass('is-invalid');
         $('#newClientEmailError').hide().find('span').text('');
     });
 
@@ -4559,7 +4951,7 @@ $(document).ready(function() {
         var emailVal = $(this).val().trim();
         var emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
         if (emailVal && !emailPattern.test(emailVal)) {
-            $(this).css({'border-color': '#ef4444', 'background': '#fef2f2'});
+            $(this).addClass('is-invalid');
             $('#newClientEmailError').show().find('span').text('Please enter a valid email address (e.g. client@company.com)');
         }
     });
@@ -4585,14 +4977,14 @@ $(document).ready(function() {
         var hasError = false;
 
         if (!val) {
-            $('#newClientInput').css({'border-color': '#ef4444', 'background': '#fef2f2'}).focus();
+            $('#newClientInput').addClass('is-invalid').focus();
             $('#newClientNameError').show().find('span').text('Client name cannot be empty');
             hasError = true;
         }
 
         var emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
         if (emailVal && !emailPattern.test(emailVal)) {
-            $('#newClientEmailInput').css({'border-color': '#ef4444', 'background': '#fef2f2'});
+            $('#newClientEmailInput').addClass('is-invalid');
             $('#newClientEmailError').show().find('span').text('Please enter a valid email address (e.g. client@company.com)');
             if (!hasError) {
                 $('#newClientEmailInput').focus();
@@ -4627,18 +5019,18 @@ $(document).ready(function() {
                 } else {
                     var msg = res.message || 'Failed to add client';
                     if (msg.toLowerCase().indexOf('email') !== -1) {
-                        $('#newClientEmailInput').css({'border-color': '#ef4444', 'background': '#fef2f2'}).focus();
+                        $('#newClientEmailInput').addClass('is-invalid').focus();
                         $('#newClientEmailError').show().find('span').text(msg);
                     } else {
-                        $('#newClientInput').css({'border-color': '#ef4444', 'background': '#fef2f2'}).focus();
+                        $('#newClientInput').addClass('is-invalid').focus();
                         $('#newClientNameError').show().find('span').text(msg);
                     }
-                    showToast(msg);
+                    showToast(msg, true);
                 }
             },
             error: function() {
                 $btn.prop('disabled', false).html(origHtml);
-                showToast('Network error while adding client');
+                showToast('Network error while adding client', true);
             }
         });
     });
