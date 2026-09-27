@@ -10,7 +10,7 @@ $currentUser = $this->request->getSession()->read('AuthUser');
 $currentUserId = $currentUser ? (int)$currentUser['id'] : 0;
 ?>
 
-<?= $this->Html->css('chat.css?v=' . (file_exists(WWW_ROOT . 'css' . DS . 'chat.css') ? filemtime(WWW_ROOT . 'css' . DS . 'chat.css') : time())) ?>
+<?= $this->Html->css('messaging.css?v=' . (file_exists(WWW_ROOT . 'css' . DS . 'messaging.css') ? filemtime(WWW_ROOT . 'css' . DS . 'messaging.css') : time())) ?>
 
 <!-- Radiant Ambient Glowing Mesh Orbs -->
 <div class="ambient-glow-orb orb-1"></div>
@@ -110,7 +110,7 @@ $currentUserId = $currentUser ? (int)$currentUser['id'] : 0;
                 <div class="dock-divider"></div>
 
                 <!-- 4. Team Chat (Active) -->
-                <a href="<?= $this->Url->build(['controller' => 'Chats', 'action' => 'index']) ?>" class="dock-item active dock-item-active" id="btnDockChat" data-title="Team Chat" style="text-decoration:none;">
+                <a href="<?= $this->Url->build('/messages') ?>" class="dock-item active dock-item-active" id="btnDockChat" data-title="Team Chat" style="text-decoration:none;">
                     <div class="dock-item-icon">
                         <i class="fa-regular fa-comment-dots"></i>
                     </div>
@@ -855,7 +855,7 @@ $(document).ready(function() {
     // 2. Fetch Requests
     function loadRequests() {
         $.ajax({
-            url: window.APP_BASE + 'team-chat/get-requests',
+            url: window.APP_BASE + 'messages/get-requests',
             type: 'GET',
             dataType: 'json',
             success: function(res) {
@@ -948,7 +948,7 @@ $(document).ready(function() {
         $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i>');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/accept-request',
+            url: window.APP_BASE + 'messages/accept-request',
             type: 'POST',
             data: { request_id: reqId },
             dataType: 'json',
@@ -997,7 +997,7 @@ $(document).ready(function() {
 
     function executeRejectRequest(reqId) {
         $.ajax({
-            url: window.APP_BASE + 'team-chat/reject-request',
+            url: window.APP_BASE + 'messages/reject-request',
             type: 'POST',
             data: { request_id: reqId },
             dataType: 'json',
@@ -1125,7 +1125,7 @@ $(document).ready(function() {
         // Save last opened conversation in localStorage for persistent recall
         localStorage.setItem('hd_last_active_conv_' + CURRENT_USER_ID, convId);
         if (window.history && window.history.replaceState) {
-            window.history.replaceState(null, '', window.APP_BASE + 'chat?c=' + convId);
+            window.history.replaceState(null, '', window.APP_BASE + 'messages?c=' + convId);
         }
 
         $('#chatTypingIndicator').hide();
@@ -1142,7 +1142,7 @@ $(document).ready(function() {
 
         // Fetch Conversation History
         $.ajax({
-            url: window.APP_BASE + 'team-chat/get-messages',
+            url: window.APP_BASE + 'messages/get-list',
             type: 'GET',
             data: { conversation_id: convId },
             dataType: 'json',
@@ -1514,7 +1514,7 @@ $(document).ready(function() {
         $saveBtn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i>');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/edit-message',
+            url: window.APP_BASE + 'messages/edit-msg',
             type: 'POST',
             data: {
                 message_id: msgId,
@@ -1568,7 +1568,7 @@ $(document).ready(function() {
 
     function executeDeleteMessage(msgId) {
         $.ajax({
-            url: window.APP_BASE + 'team-chat/delete-message',
+            url: window.APP_BASE + 'messages/delete-msg',
             type: 'POST',
             data: { message_id: msgId },
             dataType: 'json',
@@ -1728,7 +1728,7 @@ $(document).ready(function() {
     function executeToggleReaction(msgId, reaction) {
         if (!msgId || !reaction) return;
         $.ajax({
-            url: window.APP_BASE + 'team-chat/toggle-reaction',
+            url: window.APP_BASE + 'messages/toggle-reaction',
             type: 'POST',
             data: {
                 message_id: msgId,
@@ -1890,7 +1890,7 @@ $(document).ready(function() {
     function notifyTypingStatus(convId, isTyping) {
         if (!convId) return;
         $.ajax({
-            url: window.APP_BASE + 'team-chat/set-typing',
+            url: window.APP_BASE + 'messages/set-typing',
             type: 'POST',
             data: {
                 conversation_id: convId,
@@ -1928,7 +1928,7 @@ $(document).ready(function() {
         });
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/send-message',
+            url: window.APP_BASE + 'messages/post-msg',
             type: 'POST',
             data: formData,
             processData: false,
@@ -2033,7 +2033,7 @@ $(document).ready(function() {
         isPolling = true;
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/get-updates',
+            url: window.APP_BASE + 'messages/get-updates',
             type: 'GET',
             data: {
                 conversation_id: activeConversationId,
@@ -2267,7 +2267,7 @@ $(document).ready(function() {
         container.html('<div style="text-align:center; padding:16px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Searching...</div>');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/search-users',
+            url: window.APP_BASE + 'messages/search-users',
             type: 'GET',
             data: { q: q },
             dataType: 'json',
@@ -2368,7 +2368,7 @@ $(document).ready(function() {
         $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Sending...');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/send-request',
+            url: window.APP_BASE + 'messages/send-request',
             type: 'POST',
             data: {
                 receiver_id: selectedTargetUserId,
@@ -2462,7 +2462,7 @@ $(document).ready(function() {
         $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Clearing...');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/clear-chat',
+            url: window.APP_BASE + 'messages/clear-history',
             type: 'POST',
             data: { conversation_id: activeConversationId },
             dataType: 'json',
@@ -2508,7 +2508,7 @@ $(document).ready(function() {
         $('#newGroupTeammatesList').html('<div style="text-align:center; color:var(--text-muted); padding:18px; font-size:12px;"><i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i> Loading teammates...</div>');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/get-teammates-for-group',
+            url: window.APP_BASE + 'messages/get-teammates',
             type: 'GET',
             dataType: 'json',
             success: function(res) {
@@ -2603,7 +2603,7 @@ $(document).ready(function() {
         $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Creating...');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/create-group',
+            url: window.APP_BASE + 'messages/create-group',
             type: 'POST',
             data: {
                 title: title,
@@ -2647,7 +2647,7 @@ $(document).ready(function() {
         $('#addMembersTeammatesList').html('<div style="text-align:center; color:var(--text-muted); padding:18px; font-size:12px;"><i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i> Loading teammates...</div>');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/get-teammates-for-group',
+            url: window.APP_BASE + 'messages/get-teammates',
             type: 'GET',
             data: { conversation_id: activeConversationId },
             dataType: 'json',
@@ -2729,7 +2729,7 @@ $(document).ready(function() {
         $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Adding...');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/add-group-members',
+            url: window.APP_BASE + 'messages/add-group-members',
             type: 'POST',
             data: {
                 conversation_id: activeConversationId,
@@ -2777,7 +2777,7 @@ $(document).ready(function() {
         $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Leaving...');
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/leave-group',
+            url: window.APP_BASE + 'messages/leave-group',
             type: 'POST',
             data: { conversation_id: activeConversationId },
             dataType: 'json',

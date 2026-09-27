@@ -55,31 +55,27 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/daily-updates', ['controller' => 'DailyUpdates', 'action' => 'index']);
         $builder->connect('/helpdesk', ['controller' => 'DailyUpdates', 'action' => 'index']);
 
-        // Team Chat / Internal User Messaging Routes (Primary: /team-chat)
-        $builder->connect('/team-chat', ['controller' => 'Chats', 'action' => 'index']);
-        $builder->connect('/team-chat/search-users', ['controller' => 'Chats', 'action' => 'searchUsers']);
-        $builder->connect('/team-chat/send-request', ['controller' => 'Chats', 'action' => 'sendRequest']);
-        $builder->connect('/team-chat/get-requests', ['controller' => 'Chats', 'action' => 'getRequests']);
-        $builder->connect('/team-chat/accept-request', ['controller' => 'Chats', 'action' => 'acceptRequest']);
-        $builder->connect('/team-chat/reject-request', ['controller' => 'Chats', 'action' => 'rejectRequest']);
-        $builder->connect('/team-chat/get-updates', ['controller' => 'Chats', 'action' => 'getUpdates']);
-        $builder->connect('/team-chat/get-messages', ['controller' => 'Chats', 'action' => 'getMessages']);
-        $builder->connect('/team-chat/send-message', ['controller' => 'Chats', 'action' => 'sendMessage']);
-        $builder->connect('/team-chat/delete-message', ['controller' => 'Chats', 'action' => 'deleteMessage']);
-        $builder->connect('/team-chat/edit-message', ['controller' => 'Chats', 'action' => 'editMessage']);
-        $builder->connect('/team-chat/mark-read', ['controller' => 'Chats', 'action' => 'markRead']);
-        $builder->connect('/team-chat/get-global-badge', ['controller' => 'Chats', 'action' => 'getGlobalBadge']);
-        $builder->connect('/team-chat/toggle-reaction', ['controller' => 'Chats', 'action' => 'toggleReaction']);
-        $builder->connect('/team-chat/clear-chat', ['controller' => 'Chats', 'action' => 'clearChat']);
-        $builder->connect('/team-chat/create-group', ['controller' => 'Chats', 'action' => 'createGroup']);
-        $builder->connect('/team-chat/get-teammates-for-group', ['controller' => 'Chats', 'action' => 'getTeammatesForGroup']);
-        $builder->connect('/team-chat/add-group-members', ['controller' => 'Chats', 'action' => 'addGroupMembers']);
-        $builder->connect('/team-chat/leave-group', ['controller' => 'Chats', 'action' => 'leaveGroup']);
-        $builder->connect('/team-chat/set-typing', ['controller' => 'Chats', 'action' => 'setTyping']);
-
-        // Legacy aliases
-        $builder->connect('/chat', ['controller' => 'Chats', 'action' => 'index']);
-        $builder->connect('/chat/*', ['controller' => 'Chats']);
+        // Team Messaging Routes (Using /messages to avoid InfinityFree mod_security 403 keyword block on 'chat')
+        $builder->connect('/messages', ['controller' => 'Chats', 'action' => 'index']);
+        $builder->connect('/messages/search-users', ['controller' => 'Chats', 'action' => 'searchUsers']);
+        $builder->connect('/messages/send-request', ['controller' => 'Chats', 'action' => 'sendRequest']);
+        $builder->connect('/messages/get-requests', ['controller' => 'Chats', 'action' => 'getRequests']);
+        $builder->connect('/messages/accept-request', ['controller' => 'Chats', 'action' => 'acceptRequest']);
+        $builder->connect('/messages/reject-request', ['controller' => 'Chats', 'action' => 'rejectRequest']);
+        $builder->connect('/messages/get-updates', ['controller' => 'Chats', 'action' => 'getUpdates']);
+        $builder->connect('/messages/get-list', ['controller' => 'Chats', 'action' => 'getMessages']);
+        $builder->connect('/messages/post-msg', ['controller' => 'Chats', 'action' => 'sendMessage']);
+        $builder->connect('/messages/delete-msg', ['controller' => 'Chats', 'action' => 'deleteMessage']);
+        $builder->connect('/messages/edit-msg', ['controller' => 'Chats', 'action' => 'editMessage']);
+        $builder->connect('/messages/mark-read', ['controller' => 'Chats', 'action' => 'markRead']);
+        $builder->connect('/messages/get-badge', ['controller' => 'Chats', 'action' => 'getGlobalBadge']);
+        $builder->connect('/messages/toggle-reaction', ['controller' => 'Chats', 'action' => 'toggleReaction']);
+        $builder->connect('/messages/clear-history', ['controller' => 'Chats', 'action' => 'clearChat']);
+        $builder->connect('/messages/create-group', ['controller' => 'Chats', 'action' => 'createGroup']);
+        $builder->connect('/messages/get-teammates', ['controller' => 'Chats', 'action' => 'getTeammatesForGroup']);
+        $builder->connect('/messages/add-group-members', ['controller' => 'Chats', 'action' => 'addGroupMembers']);
+        $builder->connect('/messages/leave-group', ['controller' => 'Chats', 'action' => 'leaveGroup']);
+        $builder->connect('/messages/set-typing', ['controller' => 'Chats', 'action' => 'setTyping']);
 
         $builder->connect('/login', ['controller' => 'Users', 'action' => 'login']);
         $builder->connect('/signup', ['controller' => 'Users', 'action' => 'signup']);

@@ -2847,7 +2847,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                 <div class="dock-divider"></div>
 
                 <!-- 5. Team Chat -->
-                <a href="<?= $this->Url->build(['controller' => 'Chats', 'action' => 'index']) ?>" class="dock-item" id="btnDockChat" data-title="Team Chat" style="text-decoration: none;">
+                <a href="<?= $this->Url->build('/messages') ?>" class="dock-item" id="btnDockChat" data-title="Team Chat" style="text-decoration: none;">
                     <div class="dock-item-icon">
                         <i class="fa-regular fa-comment-dots"></i>
                     </div>

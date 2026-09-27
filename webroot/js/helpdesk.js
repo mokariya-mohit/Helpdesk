@@ -1017,7 +1017,7 @@
 
     // Dock Team Chat Navigation & Global Badge Synchronization
     $(document).on('click', '#btnDockChat', function (e) {
-        var href = $(this).attr('href') || (window.APP_BASE + 'chats');
+        var href = $(this).attr('href') || (window.APP_BASE + 'messages');
         e.preventDefault();
         HDMotion.smoothNavigate(href);
     });
@@ -1226,7 +1226,7 @@
         $input.prop('disabled', true);
 
         $.ajax({
-            url: window.APP_BASE + 'team-chat/send-message',
+            url: window.APP_BASE + 'messages/post-msg',
             type: 'POST',
             data: {
                 conversation_id: convId,
@@ -1290,15 +1290,15 @@
         var isReq = $(this).data('is-req') == 1;
         var convId = $(this).data('conv-id');
         if (isReq || !convId) {
-            window.location.href = window.APP_BASE + 'team-chat?tab=requests';
+            window.location.href = window.APP_BASE + 'messages?tab=requests';
         } else {
-            window.location.href = window.APP_BASE + 'team-chat?c=' + convId;
+            window.location.href = window.APP_BASE + 'messages?c=' + convId;
         }
     });
 
     $(document).on('click', '.btn-hd-teams-view-req', function (e) {
         e.stopPropagation();
-        window.location.href = window.APP_BASE + 'team-chat?tab=requests';
+        window.location.href = window.APP_BASE + 'messages?tab=requests';
     });
 
     function checkAndShowNotifPrompt() {
@@ -1310,7 +1310,7 @@
     function updateGlobalNotifications() {
         if (!window.APP_BASE) return;
         $.ajax({
-            url: window.APP_BASE + 'team-chat/get-global-badge',
+            url: window.APP_BASE + 'messages/get-badge',
             type: 'GET',
             dataType: 'json',
             success: function (res) {
@@ -1397,7 +1397,7 @@
         checkAndShowNotifPrompt();
 
         // Background polling across all non-chat pages (every 3 seconds, regardless of tab visibility)
-        if (!window.location.pathname.includes('/chat')) {
+        if (!window.location.pathname.includes('/messages')) {
             setInterval(function () {
                 updateGlobalNotifications();
             }, 3000);
@@ -1408,9 +1408,9 @@
     $(document).on('click', '#btnHeaderNotification', function (e) {
         e.preventDefault();
         var count = parseInt($('#headerNotificationBadge').text(), 10) || 0;
-        if (!window.location.pathname.includes('/chat')) {
+        if (!window.location.pathname.includes('/messages')) {
             if (count > 0) {
-                window.location.href = window.APP_BASE + 'chat';
+                window.location.href = window.APP_BASE + 'messages';
             } else {
                 if (typeof window.showToast === 'function') {
                     window.showToast('No unread notifications at this time.', 'info');
