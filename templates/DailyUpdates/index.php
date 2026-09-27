@@ -791,47 +791,69 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
         box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5) !important;
     }
 
-    /* Modals & Dialogs: Frosted Glass Floating Style */
+    /* Modals & Dialogs: Apple & Linear Spring Physics */
     .modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.5);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        background: rgba(15, 23, 42, 0.58) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 20px;
-        z-index: 99999 !important;
+        z-index: 100005 !important;
         opacity: 0;
+        visibility: hidden;
         pointer-events: none;
-        transition: all 0.2s ease;
+        transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                    backdrop-filter 0.28s ease !important;
     }
 
     .modal-overlay.active {
-        opacity: 1;
-        pointer-events: auto;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
     }
 
     .modal-card {
-        background: rgba(255, 255, 255, 0.88);
-        backdrop-filter: blur(32px) saturate(190%);
-        -webkit-backdrop-filter: blur(32px) saturate(190%);
-        border: 1.5px solid rgba(255, 255, 255, 0.95);
-        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.94) !important;
+        backdrop-filter: blur(32px) saturate(190%) !important;
+        -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+        border-radius: 28px !important;
         width: 95%;
         max-width: 680px;
         max-height: 88vh;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.25);
+        box-shadow: 0 35px 75px -15px rgba(15, 23, 42, 0.32),
+                    0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+                    0 0 35px -5px rgba(99, 102, 241, 0.2) !important;
         overflow: hidden;
+        transform: scale(0.91) translateY(26px) !important;
+        opacity: 0 !important;
+        filter: blur(2.5px) !important;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.26s ease,
+                    box-shadow 0.3s ease !important;
+        will-change: transform, opacity;
     }
 
     [data-theme="dark"] .modal-card {
-        background: rgba(22, 28, 45, 0.88);
-        border: 1.5px solid rgba(255, 255, 255, 0.12);
-        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+        background: rgba(22, 28, 45, 0.92) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 35px 75px -15px rgba(0, 0, 0, 0.8),
+                    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+                    0 0 45px -5px rgba(99, 102, 241, 0.28) !important;
+    }
+
+    .modal-overlay.active .modal-card {
+        transform: scale(1) translateY(0) !important;
+        opacity: 1 !important;
+        filter: blur(0) !important;
     }
 
     .modal-header {
@@ -1576,8 +1598,14 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
             <button type="button" class="btn" id="btnSyncFromDb">
                 <i class="fa-solid fa-arrows-rotate"></i> Sync Today's Tasks
             </button>
-            <button type="button" class="btn" id="btnResetTasks">
-                <i class="fa-solid fa-rotate-left"></i> Reset Tasks
+            <!-- Notification Icon with Dynamic Badge -->
+            <?php
+                $globalCount = $globalNotificationCount ?? 0;
+                $hasBadge = ($globalCount > 0);
+            ?>
+            <button type="button" class="btn-header-circle" id="btnHeaderNotification" title="Notifications" style="position: relative;">
+                <i class="fa-regular fa-bell"></i>
+                <span class="header-notification-badge <?= $hasBadge ? 'show' : 'd-none' ?>" id="headerNotificationBadge" data-count="<?= $globalCount ?>" style="<?= $hasBadge ? 'display: inline-flex;' : 'display: none;' ?>"><?= $hasBadge ? ($globalCount > 99 ? '99+' : $globalCount) : '' ?></span>
             </button>
 
             <?php if (!empty($currentUser)): ?>
@@ -1717,7 +1745,7 @@ $this->assign('meta_keywords', 'daily work update, email generator, client commu
 
     <!-- Footer Copyright matching Tasks theme -->
     <footer style="text-align:center; font-size:11px; color:var(--text-muted); padding:6px 0 2px 0; font-weight:500; opacity:0.85; flex-shrink:0;">
-        &copy; <?= date('Y') ?> Mohit Mokariya. All Rights Reserved. Powered by CakePHP 5 & MySQL Database.
+        &copy; <?= date('Y') ?> Mohit Mokariya. All Rights Reserved.
     </footer>
 </div>
 

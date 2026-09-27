@@ -44,6 +44,19 @@ class UsersTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->hasMany('SentChatRequests', [
+            'className' => 'ChatRequests',
+            'foreignKey' => 'sender_id',
+        ]);
+        $this->hasMany('ReceivedChatRequests', [
+            'className' => 'ChatRequests',
+            'foreignKey' => 'receiver_id',
+        ]);
+        $this->hasMany('ChatConversationUsers', [
+            'className' => 'ChatConversationUsers',
+            'foreignKey' => 'user_id',
+        ]);
     }
 
     /**

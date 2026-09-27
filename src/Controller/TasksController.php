@@ -552,20 +552,77 @@ class TasksController extends AppController
     }
 
     /**
-     * AJAX: Save Gemini API Key to User Profile in MySQL Database
+     * AJAX: Save AI API Key (Gemini / ChatGPT / Free Mode) to User Profile in MySQL Database
      */
     public function saveGeminiKey()
     {
         $this->request->allowMethod(['post']);
         $userId = $this->getCurrentUserId();
         $apiKey = trim(trim((string)$this->request->getData('api_key'), "\"'` \t\n\r"));
+        $user = $this->Users->get($userId);
 
-        if (empty($apiKey)) {
+        // Case 1: Free AI Mode (No API key needed)
+        if (empty($apiKey) || strtoupper($apiKey) === 'FREE') {
+            $user->api_key = null;
+            if ($this->Users->save($user)) {
+                $sessionUser = $this->request->getSession()->read('Auth.User');
+                if ($sessionUser) {
+                    $sessionUser['api_key'] = null;
+                    $this->request->getSession()->write('Auth.User', $sessionUser);
+                }
+                return $this->response->withType('application/json')
+                    ->withStringBody(json_encode([
+                        'success' => true,
+                        'is_free' => true,
+                        'provider' => 'free',
+                        'message' => 'Free AI Engine enabled! No API key required.',
+                        'api_key' => '',
+                    ]));
+            }
             return $this->response->withType('application/json')
-                ->withStringBody(json_encode(['success' => false, 'message' => 'Please enter a valid API key.']));
+                ->withStringBody(json_encode(['success' => false, 'message' => 'Failed to update database.']));
         }
 
-        // Fast validation with Google API before saving
+        // Case 2: OpenAI / ChatGPT API Key (starts with sk-)
+        if (str_starts_with($apiKey, 'sk-')) {
+            $chTest = curl_init('https://api.openai.com/v1/models');
+            curl_setopt($chTest, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($chTest, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($chTest, CURLOPT_TIMEOUT, 8);
+            curl_setopt($chTest, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $apiKey,
+                'Content-Type: application/json',
+            ]);
+            $testResp = curl_exec($chTest);
+            $httpCode = curl_getinfo($chTest, CURLINFO_HTTP_CODE);
+            curl_close($chTest);
+
+            if ($httpCode === 401 || ($testResp && str_contains($testResp, 'invalid_api_key'))) {
+                return $this->response->withType('application/json')
+                    ->withStringBody(json_encode([
+                        'success' => false,
+                        'message' => 'Invalid OpenAI ChatGPT API Key. Please verify and enter a valid key from platform.openai.com.',
+                    ]));
+            }
+
+            $user->api_key = \App\Model\Entity\User::encryptString($apiKey);
+            if ($this->Users->save($user)) {
+                $sessionUser = $this->request->getSession()->read('Auth.User');
+                if ($sessionUser) {
+                    $sessionUser['api_key'] = $user->api_key;
+                    $this->request->getSession()->write('Auth.User', $sessionUser);
+                }
+                return $this->response->withType('application/json')
+                    ->withStringBody(json_encode([
+                        'success' => true,
+                        'provider' => 'openai',
+                        'message' => 'OpenAI ChatGPT API Key validated and saved to database!',
+                        'api_key' => $apiKey,
+                    ]));
+            }
+        }
+
+        // Case 3: Google Gemini API Key
         $testUrl = 'https://generativelanguage.googleapis.com/v1beta/models?key=' . urlencode($apiKey);
         $chTest = curl_init($testUrl);
         curl_setopt($chTest, CURLOPT_RETURNTRANSFER, true);
@@ -588,7 +645,6 @@ class TasksController extends AppController
             }
         }
 
-        $user = $this->Users->get($userId);
         $user->api_key = \App\Model\Entity\User::encryptString($apiKey);
 
         if ($this->Users->save($user)) {
@@ -600,7 +656,8 @@ class TasksController extends AppController
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode([
                     'success' => true,
-                    'message' => 'Gemini API Key validated and saved to database!',
+                    'provider' => 'gemini',
+                    'message' => 'Google Gemini API Key validated and saved to database!',
                     'api_key' => $apiKey,
                 ]));
         }
@@ -610,7 +667,7 @@ class TasksController extends AppController
     }
 
     /**
-     * AJAX: Gemini AI Grammar & Sentence Polish (Backend Proxy)
+     * AJAX: Google Gemini AI Grammar, Gujarati-to-English Translation & Task Polish
      */
     public function aiPolish()
     {
@@ -639,40 +696,40 @@ class TasksController extends AppController
                 ]));
         }
 
-        $promptText = "You are a professional daily work task text editor.\n\n" .
+        $promptText = "You are a professional daily work task editor.\n\n" .
             "STRICT RULES:\n" .
             "1. EXACT FORMAT PRESERVATION (CRITICAL):\n" .
-            "   - Preserve the EXACT line-by-line structure, bullet markers, and indentation of the input.\n" .
-            "   - If a line starts with '- ', keep '- '. If it starts with '1. ', keep '1. '. If it has indentation/sub-points (spaces/tabs), keep the exact same indentation.\n" .
+            "   - Preserve the EXACT line-by-line structure, bullet markers ('-', '*', '1.'), and indentation of the input.\n" .
             "   - If there is a date or project line at the top (e.g. 'DD-MM-YYYY ProjectName'), keep it untouched.\n" .
             "   - If there are category headers (e.g. 'Backend:', 'Frontend:', 'Design:'), keep them exactly as headers ending with a colon.\n" .
             "   - Do NOT add new sections, do NOT combine lines, and do NOT change the layout.\n\n" .
-            "2. TRANSLATE GUJARATI / GUJLISH TO SIMPLE ENGLISH:\n" .
-            "   - If any task or note is written in Gujarati script (ગુજરાતી) or Romanized Gujarati / Gujlish / Hinglish (e.g. 'aa bug solve karyo', 'api ma issue hato te fix karyo', 'design complete kari'), translate it into simple, clean, natural English (e.g. 'Fixed the bug', 'Resolved the issue in API', 'Completed the design').\n\n" .
+            "2. TRANSLATE GUJARATI / GUJLISH TO NATURAL HUMAN ENGLISH:\n" .
+            "   - If any task or note is written in Gujarati script (ગુજરાતી) or Romanized Gujarati / Gujlish / Hinglish (e.g. 'maro pelo task', 'aa bug solve karyo', 'api ma issue hato te fix karyo', 'design complete kari'), translate it into simple, natural, humanized English task points (e.g. 'My first task', 'Fixed the bug', 'Resolved the issue in API', 'Completed the design').\n\n" .
             "3. ENGLISH GRAMMAR, SPELLING & PUNCTUATION:\n" .
-            "   - For English text, check and correct all spelling mistakes, grammatical errors, commas (,), periods (.), and proper capitalization.\n" .
-            "   - Use simple, direct, professional everyday English. Do NOT use fancy or artificial corporate buzzwords.\n\n" .
-            "4. NO EXTRA TEXT / NO COMMENTARY / NO HEADINGS:\n" .
-            "   - Do NOT add any greeting, intro, title, summary, note, checklist, or conversational remark.\n" .
+            "   - Check and correct all spelling mistakes, grammatical errors, commas (,), periods (.), and proper capitalization.\n" .
+            "   - Use simple, natural, everyday English. Do NOT sound robotic or use artificial corporate buzzwords.\n\n" .
+            "4. NO EXTRA TEXT / NO EXPLANATIONS / NO DEFINITIONS (CRITICAL):\n" .
+            "   - Do NOT output word translations or breakdowns (e.g. absolutely DO NOT output \"word\" = meaning).\n" .
+            "   - Do NOT output any headings like 'Translation:', 'Output:', 'Task 1:', 'Input:'.\n" .
+            "   - Do NOT add any greeting, intro, summary, note, checklist, or conversational remark.\n" .
             "   - Output ONLY the polished task text directly.\n\n" .
             "Input Content to Polish:\n" . $content;
 
-        // 1. Try known popular models first
+        // 1. Prioritize reliable Google Gemini production models
         $candidateModels = [
             'gemini-1.5-flash',
             'gemini-1.5-flash-latest',
             'gemini-2.0-flash',
-            'gemini-2.0-flash-exp',
-            'gemini-1.5-pro-latest',
+            'gemini-1.5-pro',
             'gemini-pro',
         ];
 
-        // 2. Discover available models directly from user's account if needed
+        // 2. Discover available models from user account (append to candidateModels, strictly exclude gemma / embeddings)
         $listUrl = 'https://generativelanguage.googleapis.com/v1beta/models?key=' . urlencode($apiKey);
         $chList = curl_init($listUrl);
         curl_setopt($chList, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($chList, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($chList, CURLOPT_TIMEOUT, 10);
+        curl_setopt($chList, CURLOPT_TIMEOUT, 6);
         $listResp = curl_exec($chList);
         curl_close($chList);
 
@@ -683,11 +740,15 @@ class TasksController extends AppController
                 foreach ($listData['models'] as $m) {
                     if (!empty($m['supportedGenerationMethods']) && in_array('generateContent', $m['supportedGenerationMethods'])) {
                         $mName = preg_replace('#^models/#', '', $m['name']);
-                        $discovered[] = $mName;
+                        // ONLY genuine Gemini models, strictly excluding gemma or embeddings
+                        if (str_starts_with($mName, 'gemini-') && !str_contains($mName, 'embedding') && !str_contains($mName, 'imagen')) {
+                            $discovered[] = $mName;
+                        }
                     }
                 }
                 if (!empty($discovered)) {
-                    $candidateModels = array_values(array_unique(array_merge($discovered, $candidateModels)));
+                    // Append discovered models to the end so gemini-1.5-flash stays first
+                    $candidateModels = array_values(array_unique(array_merge($candidateModels, $discovered)));
                 }
             } elseif (!empty($listData['error']['message'])) {
                 $errMsg = $listData['error']['message'];
@@ -696,7 +757,7 @@ class TasksController extends AppController
                         ->withStringBody(json_encode([
                             'success' => false,
                             'is_key_error' => true,
-                            'message' => 'Invalid Gemini API Key. Please check and enter a valid API key from Google AI Studio.',
+                            'message' => 'Invalid Google Gemini API Key. Please check and enter a valid API key from Google AI Studio.',
                         ]));
                 }
             }
@@ -710,7 +771,7 @@ class TasksController extends AppController
             $payload = [
                 'system_instruction' => [
                     'parts' => [
-                        ['text' => 'You are a precise work task editor. Translate any Gujarati/Gujlish to simple English, correct English spelling, grammar, and commas/periods, and preserve the EXACT original layout, bullets, and indentation line by line. Output ONLY the polished task notes with zero extra text or commentary.']
+                        ['text' => 'You are a humanized task editor. Convert the user\'s daily work notes into clear, natural, humanized English task points. Translate any Gujarati or Gujlish directly into natural English. Strictly preserve the original line structure, bullet markers, and indentation. Absolutely NO word definitions (do NOT output word = meaning), no translation notes, and no prefixes like Output: or Translation:. Output ONLY the polished task lines.']
                     ]
                 ],
                 'contents' => [
@@ -771,12 +832,12 @@ class TasksController extends AppController
         return $this->response->withType('application/json')
             ->withStringBody(json_encode([
                 'success' => false,
-                'message' => $lastError,
+                'message' => 'AI Polish failed: ' . $lastError,
             ]));
     }
 
     /**
-     * Clean and strip any conversational thoughts, rules, or metadata from AI response
+     * Clean and strip any conversational thoughts, word definitions, or meta prefixes from AI response
      */
     private function cleanAiOutput(string $text): string
     {
@@ -784,15 +845,21 @@ class TasksController extends AppController
         $text = preg_replace('/^```[a-z]*\s*\n/i', '', $text);
         $text = preg_replace('/\n\s*```$/i', '', $text);
 
-        // 2. Filter out internal thought/meta lines & checklists
+        // 2. Filter out internal thought/meta lines, checklists, and word definitions
         $lines = explode("\n", $text);
         $cleanLines = [];
         $thoughtPattern = '/^\s*(\*|-)?\s*(Input:|Task:|Goal:|Constraints:|Rules:|Date:|Header:|Category:|Task\s+\d+:|Role:|Self-Correction:|The input|I will|No markdown|No explanations|Only the text|Wait|Since|Actually|Note:|Note\s*\(|Checklist|Self-check|Review:|Summary:)/i';
         $checklistAnswerPattern = '/^\s*[\*\-]?\s*.*?\?\s*(Yes|No|Done|Correct|Passed|True|N\/A|N\/a)\.?\s*$/i';
         $checklistKeywordPattern = '/^\s*[\*\-]?\s*(Simple English|Corrected Gujarati|Preserved formatting|No extra text|Meaning preserved|Grammar corrected|Formatting preserved)\b/i';
+        $definitionPattern = '/^\s*[\*\-]?\s*"?[a-zA-Z0-9_\x{0A80}-\x{0AFF}\s\-]+"?' . '\s*=\s*/u';
 
         foreach ($lines as $line) {
             $trimmed = trim($line);
+
+            // Filter out word definition lines like: * "maro" = my
+            if (preg_match($definitionPattern, $trimmed)) {
+                continue;
+            }
 
             // Filter out thought or checklist patterns
             if (preg_match($thoughtPattern, $trimmed)) {
@@ -809,6 +876,12 @@ class TasksController extends AppController
             }
             if (preg_match('/^\s*\((No markdown|No chat|No explanations|Already professional)/i', $trimmed)) {
                 continue;
+            }
+
+            // If line starts with "Output: ..." or "* Output: ...", unwrap it
+            if (preg_match('/^\s*[\*\-]?\s*(Output|Translation):\s*"?([^"]*)"?$/i', $line, $outMatch)) {
+                $line = '* ' . trim($outMatch[2]);
+                $trimmed = trim($line);
             }
 
             // Remove leading bullet erroneously attached to separator line (e.g. "* -------------------" -> "-------------------")
@@ -852,36 +925,5 @@ class TasksController extends AppController
         }
 
         return $cleaned;
-    }
-
-    /**
-     * Clean raw work note text to extract only task bullet points (preserving all user indentation)
-     */
-    private function extractTaskLines(?string $text): string
-    {
-        if (empty($text) || trim($text) === '') {
-            return '';
-        }
-
-        $text = str_replace(["\r\n", "\r"], "\n", $text);
-        $lines = explode("\n", $text);
-        $startIndex = 0;
-
-        if (count($lines) > 0 && preg_match('/^\d{2}-\d{2}-\d{4}/', trim($lines[0]))) {
-            $startIndex = 1;
-            if (count($lines) > 1 && preg_match('/^[-=]{3,}/', trim($lines[1]))) {
-                $startIndex = 2;
-            }
-        }
-
-        $extracted = array_slice($lines, $startIndex);
-        while (!empty($extracted) && trim($extracted[0]) === '') {
-            array_shift($extracted);
-        }
-        while (!empty($extracted) && trim(end($extracted)) === '') {
-            array_pop($extracted);
-        }
-
-        return implode("\n", $extracted);
     }
 }

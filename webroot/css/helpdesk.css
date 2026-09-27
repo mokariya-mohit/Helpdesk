@@ -448,53 +448,176 @@ a:hover {
 }
 
 
-/* Global Modal System */
+/* ==========================================================================
+   Global Motion System: Vercel/Linear Top Progress Bar & Smooth Transitions
+   ========================================================================== */
+.hd-top-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 25%, #ec4899 50%, #06b6d4 75%, #4f46e5 100%);
+    background-size: 200% 100%;
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.9), 0 0 6px rgba(236, 72, 153, 0.7);
+    z-index: 2147483647 !important;
+    pointer-events: none;
+    opacity: 0;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    animation: hdShimmerSweep 1.8s infinite linear;
+}
+
+.hd-top-loader.active {
+    opacity: 1;
+}
+
+@keyframes hdShimmerSweep {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+/* Fluid Page Entrance & Exit Transitions */
+@keyframes hdPageEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.995);
+        filter: blur(1px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+.app-main-layout,
+.chat-main-container,
+.updates-main-container {
+    animation: hdPageEntrance 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hd-page-exiting {
+    opacity: 0.88 !important;
+    transform: translateY(-4px) scale(0.994) !important;
+    filter: blur(1px) !important;
+    transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.22s ease !important;
+    pointer-events: none !important;
+}
+
+/* ==========================================================================
+   Global Modal System: Apple & Linear Spring Physics & Frosted Blur
+   ========================================================================== */
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999 !important;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
+    background: rgba(15, 23, 42, 0.58) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 100005 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+        backdrop-filter 0.28s ease !important;
     padding: 16px;
 }
 
 .modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
 }
 
 .modal-card {
-    background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(32px) saturate(190%);
-    -webkit-backdrop-filter: blur(32px) saturate(190%);
-    border: 1.5px solid rgba(255, 255, 255, 0.95);
-    border-radius: 28px;
-    box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.25);
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(32px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 35px 75px -15px rgba(15, 23, 42, 0.32),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 0 35px -5px rgba(99, 102, 241, 0.2) !important;
     width: 100%;
     max-width: 560px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transform: scale(0.96) translateY(8px);
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    transform: scale(0.91) translateY(26px) !important;
+    opacity: 0 !important;
+    filter: blur(2.5px) !important;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.26s ease,
+        box-shadow 0.3s ease !important;
     max-height: 88vh;
+    will-change: transform, opacity;
 }
 
 [data-theme="dark"] .modal-card {
-    background: rgba(22, 28, 45, 0.92);
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+    background: rgba(22, 28, 45, 0.92) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 35px 75px -15px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+        0 0 45px -5px rgba(99, 102, 241, 0.28) !important;
 }
 
 .modal-overlay.active .modal-card {
-    transform: scale(1) translateY(0);
+    transform: scale(1) translateY(0) !important;
+    opacity: 1 !important;
+    filter: blur(0) !important;
+}
+
+/* Staggered Content Reveal for Modal Children */
+@keyframes hdModalItemSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-overlay.active .modal-header {
+    animation: hdModalItemSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both;
+}
+
+.modal-overlay.active .modal-body>* {
+    animation: hdModalItemSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.modal-overlay.active .modal-body>*:nth-child(1) {
+    animation-delay: 0.06s;
+}
+
+.modal-overlay.active .modal-body>*:nth-child(2) {
+    animation-delay: 0.11s;
+}
+
+.modal-overlay.active .modal-body>*:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.modal-overlay.active .modal-body>*:nth-child(4) {
+    animation-delay: 0.21s;
+}
+
+.modal-overlay.active .modal-footer {
+    animation: hdModalItemSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
 .modal-header {
@@ -2861,7 +2984,7 @@ iframe#debug-kit-toolbar {
 }
 
 /* ==========================================================================
-   Collapsible Animated Work Logs Drawer
+   Collapsible Animated Work Logs Drawer: Spring Physics & Stagger
    ========================================================================== */
 .work-logs-drawer {
     width: 0 !important;
@@ -2870,10 +2993,12 @@ iframe#debug-kit-toolbar {
     overflow: hidden !important;
     pointer-events: none !important;
     margin-right: -14px !important;
-    transition: width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-        max-width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.22s ease,
-        margin-right 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform: translateX(-16px) scale(0.97) !important;
+    transition: width 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+        max-width 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+        opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+        margin-right 0.38s cubic-bezier(0.34, 1.25, 0.64, 1) !important;
     display: flex !important;
     flex-direction: column !important;
     flex-shrink: 0 !important;
@@ -2881,17 +3006,48 @@ iframe#debug-kit-toolbar {
     border-radius: var(--radius-xl, 24px) !important;
     border-bottom-left-radius: var(--radius-xl, 24px) !important;
     border-bottom-right-radius: var(--radius-xl, 24px) !important;
+    will-change: width, transform, opacity;
 }
 
 .work-logs-drawer.open {
     width: 320px !important;
     max-width: 320px !important;
     opacity: 1 !important;
+    transform: translateX(0) scale(1) !important;
     pointer-events: auto !important;
     margin-right: 0 !important;
     border-radius: var(--radius-xl, 24px) !important;
     border-bottom-left-radius: var(--radius-xl, 24px) !important;
     border-bottom-right-radius: var(--radius-xl, 24px) !important;
+}
+
+/* Stagger animations for elements inside drawer */
+@keyframes hdDrawerItemReveal {
+    0% {
+        opacity: 0;
+        transform: translateX(-12px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.work-logs-drawer.open .sidebar-header {
+    animation: hdDrawerItemReveal 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both;
+}
+
+.work-logs-drawer.open .month-filter-bar {
+    animation: hdDrawerItemReveal 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+}
+
+.work-logs-drawer.open .search-box {
+    animation: hdDrawerItemReveal 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.work-logs-drawer.open .log-list {
+    animation: hdDrawerItemReveal 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
 }
 
 @media (max-width: 1200px) {
@@ -3197,4 +3353,419 @@ iframe#debug-kit-toolbar {
 [data-theme="dark"] .settings-modal-footer {
     background: rgba(15, 23, 42, 0.5) !important;
     border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Dock Counter Badge for Team Chat and Notifications */
+.dock-counter-badge,
+#dockChatBadge {
+    display: none !important;
+}
+
+/* Top Header Notification Badge - Perfect Borderless Round Circle */
+.header-notification-badge {
+    position: absolute !important;
+    top: -2px !important;
+    right: -2px !important;
+    background: #ef4444 !important;
+    color: #ffffff !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    letter-spacing: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.5) !important;
+    display: none !important;
+    pointer-events: none !important;
+    z-index: 15 !important;
+    box-sizing: border-box !important;
+    transform-origin: center center !important;
+    animation: pulseBadge 2s infinite ease-in-out !important;
+}
+
+.header-notification-badge.show {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    line-height: 1 !important;
+}
+
+.header-notification-badge:empty,
+.header-notification-badge.d-none,
+.header-notification-badge[data-count="0"],
+.header-notification-badge[style*="display: none"] {
+    display: none !important;
+}
+
+@keyframes pulseBadge {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.12);
+    }
+}
+
+/* Desktop Notification Permission Banner / Prompt */
+.desktop-notif-prompt {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    max-width: 380px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(226, 232, 240, 0.95);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.16);
+    z-index: 99999;
+    animation: slideUpPrompt 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-theme="dark"] .desktop-notif-prompt {
+    background: rgba(21, 28, 44, 0.96);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.desktop-notif-prompt-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+
+.desktop-notif-prompt-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.desktop-notif-prompt-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-main, #0f172a);
+    margin-bottom: 3px;
+    font-family: 'Outfit', sans-serif;
+}
+
+[data-theme="dark"] .desktop-notif-prompt-title {
+    color: #f1f5f9;
+}
+
+.desktop-notif-prompt-desc {
+    font-size: 12px;
+    color: var(--text-muted, #64748b);
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+[data-theme="dark"] .desktop-notif-prompt-desc {
+    color: #94a3b8;
+}
+
+.desktop-notif-prompt-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-notif-enable {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-notif-enable:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.45);
+}
+
+.btn-notif-later {
+    background: transparent;
+    color: var(--text-muted, #64748b);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .btn-notif-later {
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #94a3b8;
+}
+
+.btn-notif-later:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+@keyframes slideUpPrompt {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ==========================================================================
+   Microsoft Teams-Style In-App Toast Notification with Quick Reply
+   ========================================================================== */
+.hd-teams-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 350px;
+    max-width: calc(100vw - 32px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(226, 232, 240, 0.95);
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: 0 16px 42px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(99, 102, 241, 0.08);
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: slideInTeamsToast 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hd-teams-toast:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.24);
+}
+
+[data-theme="dark"] .hd-teams-toast {
+    background: rgba(17, 24, 39, 0.96);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(99, 102, 241, 0.15);
+}
+
+.hd-teams-toast-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+    padding-bottom: 8px;
+}
+
+[data-theme="dark"] .hd-teams-toast-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.hd-teams-toast-brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted, #64748b);
+}
+
+.hd-teams-brand-badge {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-hd-teams-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #94a3b8);
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s ease;
+}
+
+.btn-hd-teams-close:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.hd-teams-toast-body {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hd-teams-toast-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid rgba(99, 102, 241, 0.4);
+    flex-shrink: 0;
+}
+
+.hd-teams-toast-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.hd-teams-toast-sender {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-main, #0f172a);
+    font-family: 'Outfit', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+[data-theme="dark"] .hd-teams-toast-sender {
+    color: #f8fafc;
+}
+
+.hd-teams-toast-snippet {
+    font-size: 12px;
+    color: var(--text-muted, #64748b);
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+}
+
+[data-theme="dark"] .hd-teams-toast-snippet {
+    color: #94a3b8;
+}
+
+.hd-teams-toast-reply-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(241, 245, 249, 0.85);
+    border: 1.5px solid rgba(226, 232, 240, 0.95);
+    border-radius: 10px;
+    padding: 3px 4px 3px 10px;
+    transition: all 0.18s ease;
+}
+
+[data-theme="dark"] .hd-teams-toast-reply-box {
+    background: rgba(30, 41, 59, 0.75);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.hd-teams-toast-reply-box:focus-within {
+    border-color: var(--primary, #6366f1);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+[data-theme="dark"] .hd-teams-toast-reply-box:focus-within {
+    background: rgba(30, 41, 59, 0.95);
+}
+
+.hd-teams-reply-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 12.5px;
+    font-family: inherit;
+    color: var(--text-main, #0f172a);
+    padding: 4px 0;
+}
+
+[data-theme="dark"] .hd-teams-reply-input {
+    color: #f1f5f9;
+}
+
+.btn-hd-teams-send {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    border: none;
+    border-radius: 7px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.btn-hd-teams-send:hover {
+    transform: scale(1.05);
+}
+
+.hd-teams-reply-success {
+    width: 100%;
+    padding: 6px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #10b981;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+@keyframes slideInTeamsToast {
+    from {
+        opacity: 0;
+        transform: translateX(40px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
 }

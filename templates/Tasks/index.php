@@ -1320,56 +1320,86 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         gap: 8px;
         text-decoration: none;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    box-shadow 0.25s ease,
+                    filter 0.2s ease !important;
     }
 
     #btnContinueToEmail:hover {
-        transform: none !important;
-        filter: brightness(1.08);
-        box-shadow: 0 8px 26px rgba(79, 70, 229, 0.6) !important;
+        transform: translateY(-2px) scale(1.03) !important;
+        filter: brightness(1.1);
+        box-shadow: 0 10px 28px rgba(79, 70, 229, 0.65) !important;
     }
 
-    /* Modals: Frosted Floating Dialogs */
+    #btnContinueToEmail:active,
+    #btnContinueToEmail.btn-submitting {
+        transform: translateY(0) scale(0.98) !important;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4) !important;
+    }
+
+    /* Modals: Apple & Linear Spring Floating Dialogs */
     .modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.5);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        background: rgba(15, 23, 42, 0.58) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 20px;
         z-index: 100005 !important;
         opacity: 0;
+        visibility: hidden;
         pointer-events: none;
-        transition: all 0.2s ease;
+        transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                    backdrop-filter 0.28s ease !important;
     }
 
     .modal-overlay.active {
-        opacity: 1;
-        pointer-events: auto;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
     }
 
     .modal-card {
-        background: rgba(255, 255, 255, 0.88);
-        backdrop-filter: blur(32px) saturate(190%);
-        -webkit-backdrop-filter: blur(32px) saturate(190%);
-        border: 1.5px solid rgba(255, 255, 255, 0.95);
-        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.94) !important;
+        backdrop-filter: blur(32px) saturate(190%) !important;
+        -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+        border-radius: 28px !important;
         width: 100%;
         max-width: 680px;
         max-height: 85vh;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.25);
+        box-shadow: 0 35px 75px -15px rgba(15, 23, 42, 0.32),
+                    0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+                    0 0 35px -5px rgba(99, 102, 241, 0.2) !important;
         overflow: hidden;
+        transform: scale(0.91) translateY(26px) !important;
+        opacity: 0 !important;
+        filter: blur(2.5px) !important;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.26s ease,
+                    box-shadow 0.3s ease !important;
+        will-change: transform, opacity;
     }
 
     [data-theme="dark"] .modal-card {
-        background: rgba(22, 28, 45, 0.88);
-        border: 1.5px solid rgba(255, 255, 255, 0.12);
-        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+        background: rgba(22, 28, 45, 0.92) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 35px 75px -15px rgba(0, 0, 0, 0.8),
+                    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+                    0 0 45px -5px rgba(99, 102, 241, 0.28) !important;
+    }
+
+    .modal-overlay.active .modal-card {
+        transform: scale(1) translateY(0) !important;
+        opacity: 1 !important;
+        filter: blur(0) !important;
     }
 
     .modal-header {
@@ -2245,10 +2275,12 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         overflow: hidden !important;
         pointer-events: none !important;
         margin-right: -14px !important;
-        transition: width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-            max-width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-            opacity 0.22s ease,
-            margin-right 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        transform: translateX(-16px) scale(0.97) !important;
+        transition: width 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+            max-width 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+            opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+            margin-right 0.38s cubic-bezier(0.34, 1.25, 0.64, 1) !important;
         display: flex !important;
         flex-direction: column !important;
         flex-shrink: 0 !important;
@@ -2256,12 +2288,14 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         border-radius: var(--radius-xl, 24px) !important;
         border-bottom-left-radius: var(--radius-xl, 24px) !important;
         border-bottom-right-radius: var(--radius-xl, 24px) !important;
+        will-change: width, transform, opacity;
     }
 
     .work-logs-drawer.open {
         width: 320px !important;
         max-width: 320px !important;
         opacity: 1 !important;
+        transform: translateX(0) scale(1) !important;
         pointer-events: auto !important;
         margin-right: 0 !important;
         border-radius: var(--radius-xl, 24px) !important;
@@ -2746,9 +2780,14 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         </div>
 
         <div class="header-right-cluster">
-            <!-- Notification Icon (Visual Placeholder) -->
-            <button type="button" class="btn-header-circle" id="btnHeaderNotification" title="Notifications">
+            <!-- Notification Icon with Dynamic Badge -->
+            <?php
+                $globalCount = $globalNotificationCount ?? 0;
+                $hasBadge = ($globalCount > 0);
+            ?>
+            <button type="button" class="btn-header-circle" id="btnHeaderNotification" title="Notifications" style="position: relative;">
                 <i class="fa-regular fa-bell"></i>
+                <span class="header-notification-badge <?= $hasBadge ? 'show' : 'd-none' ?>" id="headerNotificationBadge" data-count="<?= $globalCount ?>" style="<?= $hasBadge ? 'display: inline-flex;' : 'display: none;' ?>"><?= $hasBadge ? ($globalCount > 99 ? '99+' : $globalCount) : '' ?></span>
             </button>
 
             <!-- Settings Menu Gear Icon (Opens Gemini & SMTP Settings Modal) -->
@@ -2805,23 +2844,15 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                     <span class="dock-label-tooltip">Clients</span>
                 </div>
 
-                <!-- 4. Daily Updates Generator -->
-                <!-- <a href="<?= $this->Url->build(['controller' => 'DailyUpdates', 'action' => 'index', 'plugin' => false]) ?>" class="dock-item" id="btnDockDailyUpdates" data-title="Daily Updates" style="text-decoration:none;">
-                    <div class="dock-item-icon">
-                        <i class="fa-solid fa-file-invoice"></i>
-                    </div>
-                    <span class="dock-label-tooltip">Daily Updates</span>
-                </a> -->
-
                 <div class="dock-divider"></div>
 
-                <!-- 5. Team Chat Placeholder -->
-                <div class="dock-item" id="btnDockChat" role="button" tabindex="0" data-title="Team Chat">
+                <!-- 5. Team Chat -->
+                <a href="<?= $this->Url->build(['controller' => 'Chats', 'action' => 'index']) ?>" class="dock-item" id="btnDockChat" data-title="Team Chat" style="text-decoration: none;">
                     <div class="dock-item-icon">
                         <i class="fa-regular fa-comment-dots"></i>
                     </div>
                     <span class="dock-label-tooltip">Team Chat</span>
-                </div>
+                </a>
 
                 <!-- 6. Logout Trigger with Custom Confirmation -->
                 <div class="dock-item" id="btnDockLogout" role="button" tabindex="0" data-title="Logout" data-url="<?= $this->Url->build(['controller' => 'Users', 'action' => 'logout', 'plugin' => false]) ?>">
@@ -2963,7 +2994,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     <!-- Footer Copyright -->
     <footer style="text-align:center; font-size:11px; color:var(--text-muted); padding:4px 0; font-weight:500; opacity:0.85; flex-shrink:0;">
-        &copy; <?= date('Y') ?> Mohit Mokariya. All Rights Reserved. Powered by CakePHP 5 & MySQL Database.
+        &copy; <?= date('Y') ?> Mohit Mokariya. All Rights Reserved.
     </footer>
 </div>
 
@@ -3089,21 +3120,23 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     </div>
 </div>
 
-<!-- Gemini AI API Key Settings Modal -->
+<!-- Google Gemini AI Configuration Modal -->
 <div id="geminiKeyModal" class="modal-overlay">
     <div class="modal-card" style="max-width: 480px;">
         <div class="modal-header">
             <div class="modal-title" style="display:flex; align-items:center; gap:8px;">
                 <i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i>
-                <span>Gemini AI Configuration</span>
+                <span>Google Gemini AI API Key</span>
             </div>
             <button type="button" id="btnCloseGeminiKeyModal" class="btn-close-modal">&times;</button>
         </div>
         <div class="modal-body" style="padding: 20px; display:flex; flex-direction:column; gap:14px;">
             <div id="geminiKeyErrorMsg" style="display:none; padding:8px 12px; background:#fee2e2; border:1px solid #fca5a5; border-radius:6px; color:#b91c1c; font-size:12px; line-height:1.4;"></div>
+            
             <p style="font-size:12px; color:var(--text-muted); line-height:1.5;">
-                Enter your <strong>Google Gemini API Key</strong> to enable AI Grammar Polish, Sentence Correction, and Professional Phrasing.
+                Enter your <strong>Google Gemini API Key</strong> to enable AI Grammar Polish, Sentence Correction, and Gujarati to English Translation.
             </p>
+
             <div>
                 <label style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:6px;">Gemini API Key</label>
                 <div style="position:relative; display:flex; align-items:center;">
@@ -3113,14 +3146,14 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                     </button>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size:11px; color:#4f46e5; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size:11px; color:#4f46e5; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:600;">
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Get free Gemini API Key
                     </a>
                 </div>
             </div>
 
             <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:6px;">
-                <button type="button" id="btnSaveGeminiKey" class="btn btn-primary" style="padding:6px 16px;">
+                <button type="button" id="btnSaveGeminiKey" class="btn btn-primary" style="padding:7px 18px; font-size:12px;">
                     <i class="fa-solid fa-save"></i> Save Key & Continue
                 </button>
             </div>
@@ -3128,7 +3161,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     </div>
 </div>
 
-<!-- Gemini AI Polish Preview Modal -->
+<!-- AI Polish Preview Modal -->
 <div id="aiPolishModal" class="modal-overlay">
     <div class="modal-card" style="max-width: 980px; width: 94%; max-height: 92vh; display: flex; flex-direction: column;">
         <div class="modal-header" style="flex-shrink: 0;">
@@ -3140,9 +3173,12 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         </div>
         <div class="modal-body" style="padding: 20px; display:flex; flex-direction:column; flex: 1; min-height: 0; gap: 12px; overflow-y: auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-shrink: 0;">
-                <span style="font-size:13px; color:var(--text-muted); font-weight:600;">Grammar & sentences improved professionally:</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:13px; color:var(--text-muted); font-weight:600;">Grammar & sentences improved professionally:</span>
+                    <span id="aiModelBadge" style="font-size:11px; padding:2px 8px; border-radius:12px; background:rgba(79, 70, 229, 0.1); color:#4f46e5; border:1px solid rgba(79, 70, 229, 0.2); font-weight:700;"></span>
+                </div>
                 <button type="button" id="btnChangeAiKey" style="background:none; border:none; font-size:11px; color:var(--primary); cursor:pointer; text-decoration:underline;">
-                    <i class="fa-solid fa-gear"></i> Change API Key
+                    <i class="fa-solid fa-key"></i> Change Gemini Key
                 </button>
             </div>
             <textarea id="aiPolishedTextarea" class="editor-textarea" style="flex: 1; min-height: 520px; max-height: 70vh; font-size: 14px; line-height: 1.65; border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 16px; resize: vertical; overflow-y: auto;"></textarea>
@@ -3310,7 +3346,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     </div>
 </div>
 
-<!-- Dedicated System Settings Modal (Google Gemini AI & Google SMTP) -->
+<!-- Dedicated System Settings Modal (AI Engine & Google SMTP) -->
 <div id="settingsModal" class="modal-overlay">
     <div class="modal-card settings-modal-card">
         <div class="settings-modal-header">
@@ -3320,7 +3356,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                 </div>
                 <div>
                     <span class="settings-title-text">System Settings</span>
-                    <span class="settings-subtitle-text">Configure Google Gemini AI & Google SMTP Integration</span>
+                    <span class="settings-subtitle-text">Configure AI Engine (Gemini / ChatGPT / Free AI) & Google SMTP</span>
                 </div>
             </div>
             <button type="button" class="btn-close-modal" id="btnCloseSettingsModal" title="Close">&times;</button>
@@ -3339,22 +3375,22 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         <div class="settings-modal-body">
             <div id="settingsAlert" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; margin-bottom: 12px;"></div>
 
-            <!-- Tab Pane 1: Gemini AI -->
+            <!-- Tab Pane 1: Google Gemini AI -->
             <div class="settings-tab-pane active" id="geminiTab">
                 <div class="settings-pane-card">
                     <div class="settings-pane-header">
                         <div class="settings-pane-title">
-                            <i class="fa-solid fa-wand-magic-sparkles" style="color: #6366f1;"></i> Google Gemini AI API
+                            <i class="fa-solid fa-wand-magic-sparkles" style="color: #6366f1;"></i> Google Gemini AI API Key
                         </div>
                         <span class="settings-badge-encrypted">
                             <i class="fa-solid fa-shield-halved"></i> Encrypted in MySQL
                         </span>
                     </div>
                     <p class="settings-pane-desc">
-                        Gemini AI powers <strong>AI Polish</strong>, grammar correction, and professional phrasing for your work notes and daily emails.
+                        Powers <strong>AI Polish</strong>, grammar correction, and Gujarati to English translation using Google Gemini AI.
                     </p>
                     <div style="margin-bottom: 12px;">
-                        <label for="settingsGeminiKey" class="profile-field-label">Gemini API Key :</label>
+                        <label for="settingsGeminiKey" class="profile-field-label">Google Gemini API Key :</label>
                         <div style="position: relative;">
                             <input type="password" id="settingsGeminiKey" class="profile-input-field" placeholder="AIzaSy... (leave blank to keep current key)" style="padding-right: 36px;">
                             <button type="button" class="btn-toggle-password" data-target="#settingsGeminiKey" title="Show/Hide Key">
@@ -4813,8 +4849,12 @@ $(document).ready(function() {
         e.preventDefault();
         var $btn = $(this);
         var originalHtml = $btn.html();
-        $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Saving...');
+        $btn.prop('disabled', true).addClass('btn-submitting').html('<i class="fa-solid fa-spinner fa-spin"></i> Saving...');
         
+        if (window.HDMotion) {
+            window.HDMotion.startTopLoader();
+        }
+
         saveNoteToDatabase(function() {
             var url = window.APP_BASE + 'daily-updates?project_id=' + activeProjectId + '&date=' + currentDateIso;
             if (activeProjectName) {
@@ -4823,7 +4863,11 @@ $(document).ready(function() {
             if (activeClientName) {
                 url += '&client_name=' + encodeURIComponent(activeClientName);
             }
-            window.location.href = url;
+            if (window.HDMotion) {
+                window.HDMotion.smoothNavigate(url);
+            } else {
+                window.location.href = url;
+            }
         });
     });
 
@@ -5098,8 +5142,7 @@ $(document).ready(function() {
         }, 300);
     });
 
-    // --- Gemini AI Grammar & Sentence Polish ---
-    // --- Gemini AI Key Database Storage (MySQL users table) ---
+    // --- AI Polish Engine (Google Gemini AI) ---
     var userDatabaseApiKey = <?= json_encode($userApiKey ?? '') ?>;
     try {
         localStorage.removeItem('gemini_api_key');
@@ -5122,7 +5165,7 @@ $(document).ready(function() {
         }
     });
 
-    // Open API Key modal
+    // Open Gemini API Key modal
     $('#btnChangeAiKey').click(function() {
         $('#aiPolishModal').removeClass('active');
         $('#geminiKeyErrorMsg').hide().text('');
@@ -5136,10 +5179,11 @@ $(document).ready(function() {
         }
     });
 
+    // Save Gemini API Key button
     $('#btnSaveGeminiKey').click(function() {
         var key = $('#geminiApiKeyInput').val().trim();
         if (!key) {
-            $('#geminiKeyErrorMsg').text('Please enter a valid Gemini API Key.').show();
+            $('#geminiKeyErrorMsg').text('Please enter a valid Google Gemini API Key.').show();
             return;
         }
 
@@ -5158,10 +5202,10 @@ $(document).ready(function() {
                 if (res.success) {
                     userDatabaseApiKey = key;
                     $('#geminiKeyModal').removeClass('active');
-                    showToast('Gemini API Key validated & saved to database!');
+                    showToast('Google Gemini API Key validated & saved to database!');
                     runAiPolish();
                 } else {
-                    $('#geminiKeyErrorMsg').text(res.message || 'Invalid API Key. Please check and try again.').show();
+                    $('#geminiKeyErrorMsg').text(res.message || 'Invalid Gemini API Key. Please check and try again.').show();
                 }
             },
             error: function(xhr) {
@@ -5242,16 +5286,7 @@ $(document).ready(function() {
 
         var btn = $('#btnAiPolish');
         var origHtml = btn.html();
-        btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Polishing...');
-
-        var promptText = "You are an expert technical editor for daily engineering updates and standups.\n" +
-            "Please review and improve the following daily task notes.\n" +
-            "Goals:\n" +
-            "1. Fix all grammar, spelling, verb tense, and awkward phrasing errors.\n" +
-            "2. Ensure each bullet point sounds professional, concise, clear, and action-oriented (e.g. 'Implemented...', 'Fixed...', 'Resolved...', 'Configured...').\n" +
-            "3. PRESERVE the exact structure, headers (e.g. 'DD-MM-YYYY ProjectName', 'Backend:', 'Frontend:'), URLs, ticket IDs, and technical terminology exactly.\n" +
-            "4. Do NOT add any conversational intro, outro, or markdown code fence blocks. Output ONLY the polished plain text.\n\n" +
-            "Input Tasks Note:\n" + content;
+        btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Polishing with Gemini AI...');
 
         $.ajax({
             url: window.APP_BASE + 'tasks/ai-polish',
@@ -5265,6 +5300,15 @@ $(document).ready(function() {
                 btn.prop('disabled', false).html(origHtml);
                 if (res.success && res.polished) {
                     $('#aiPolishedTextarea').val(res.polished);
+                    if (res.model_used) {
+                        $('#aiModelBadge').text(res.model_used).css({
+                            'color': '#4f46e5',
+                            'background': 'rgba(79, 70, 229, 0.1)',
+                            'border': '1px solid rgba(79, 70, 229, 0.25)'
+                        }).show();
+                    } else {
+                        $('#aiModelBadge').hide();
+                    }
                     $('#aiPolishModal').addClass('active');
                     setTimeout(function() {
                         var ta = document.getElementById('aiPolishedTextarea');
@@ -5276,13 +5320,18 @@ $(document).ready(function() {
                         }
                     }, 40);
                     showToast('AI Polish complete! Review & apply.');
+                } else if (res.is_key_error) {
+                    $('#geminiKeyErrorMsg').text(res.message || 'Invalid Gemini API Key. Please update your key.').show();
+                    $('#geminiApiKeyInput').val(userDatabaseApiKey);
+                    $('#geminiKeyModal').addClass('active');
+                    showToast(res.message || 'Please check your Gemini API key.');
                 } else {
                     showToast(res.message || 'Failed to polish text with AI');
                 }
             },
             error: function(xhr) {
                 btn.prop('disabled', false).html(origHtml);
-                showToast('Server error communicating with Gemini API.');
+                showToast('Server error communicating with Gemini AI.');
             }
         });
     }
@@ -5454,7 +5503,7 @@ $(document).ready(function() {
                     var u = res.user;
                     if (u.api_key) {
                         $('#settingsGeminiKey').val(u.api_key);
-                        $('#settingsGeminiStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured</span>');
+                        $('#settingsGeminiStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured (Google Gemini)</span>');
                     } else {
                         $('#settingsGeminiStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');
                     }
@@ -5488,6 +5537,16 @@ $(document).ready(function() {
     $('#settingsModal').click(function(e) {
         if (e.target === this) {
             closeSettingsModal();
+        }
+    });
+
+    // Detect AI key on settings input
+    $('#settingsGeminiKey').on('input', function() {
+        var val = $(this).val().trim();
+        if (val) {
+            $('#settingsGeminiStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Ready to Save</span>');
+        } else {
+            $('#settingsGeminiStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');
         }
     });
 
@@ -5528,7 +5587,7 @@ $(document).ready(function() {
 
                     if (res.has_api_key) {
                         userDatabaseApiKey = res.api_key || apiKey;
-                        $('#settingsGeminiStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured</span>');
+                        $('#settingsGeminiStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured (Google Gemini)</span>');
                     } else {
                         userDatabaseApiKey = '';
                         $('#settingsGeminiStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');

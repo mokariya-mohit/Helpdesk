@@ -66,9 +66,6 @@ $pageTitle = $this->fetch('title', 'Helpdesk - Daily Work Notepad & Update Gener
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
-    <!-- Global Application JavaScript Library with Auto Cache-Busting -->
-    <?= $this->Html->script('helpdesk.js?v=' . $jsVer) ?>
-
     <script>
         window.APP_BASE = '<?= $this->Url->build('/') ?>';
         window.CSRF_TOKEN = '<?= $this->request->getAttribute('csrfToken') ?>';
@@ -101,11 +98,24 @@ $pageTitle = $this->fetch('title', 'Helpdesk - Daily Work Notepad & Update Gener
         });
     </script>
 
+    <!-- Global Application JavaScript Library with Auto Cache-Busting -->
+    <?= $this->Html->script('helpdesk.js?v=' . $jsVer) ?>
+
+    <!-- Native View Transitions API for modern Chromium browsers -->
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
+
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 </head>
 <body>
+    <!-- Top Glowing Iridescent Progress Bar (Vercel/Linear Style) -->
+    <div id="hdGlobalProgressBar" class="hd-top-loader" aria-hidden="true"></div>
+
     <?= $this->fetch('content') ?>
 </body>
 </html>

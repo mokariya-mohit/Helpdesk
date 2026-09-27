@@ -582,6 +582,12 @@
 
     // 8. Global UI Controller on Document Ready
     $(document).ready(function () {
+        // Complete Top Shimmer Loader & Process Query/Hash Triggers
+        if (window.HDMotion) {
+            window.HDMotion.finishTopLoader();
+            window.HDMotion.checkUrlParamsToOpenModals();
+        }
+
         // Universal User Profile Popover Menu
         var $userBtn = $('#btnUserMenuToggle, #btnUserPill');
         var $userPopover = $('#userPopoverMenu');
@@ -847,12 +853,117 @@
     };
 
     // ==========================================================================
-    // 11. Top Header & Dock Universal Interactions
+    // 11. HDMotion: Linear/Apple Top Progress Bar & Smooth Motion Architecture
     // ==========================================================================
-    // Work Logs Drawer Slide In/Out
+    var HDMotion = {
+        loaderTimer: null,
+        loaderWidth: 0,
+
+        startTopLoader: function () {
+            var $loader = $('#hdGlobalProgressBar');
+            if (!$loader.length) {
+                $loader = $('<div id="hdGlobalProgressBar" class="hd-top-loader" aria-hidden="true"></div>');
+                $('body').prepend($loader);
+            }
+            if (this.loaderTimer) {
+                clearInterval(this.loaderTimer);
+            }
+            $loader.removeClass('hd-page-exiting').addClass('active').css({ width: '0%', opacity: 1 });
+            this.loaderWidth = 12;
+            $loader.css('width', this.loaderWidth + '%');
+
+            var self = this;
+            this.loaderTimer = setInterval(function () {
+                if (self.loaderWidth < 80) {
+                    self.loaderWidth += (80 - self.loaderWidth) * 0.15 + 1;
+                    $loader.css('width', self.loaderWidth + '%');
+                } else if (self.loaderWidth < 92) {
+                    self.loaderWidth += 0.5;
+                    $loader.css('width', self.loaderWidth + '%');
+                }
+            }, 60);
+        },
+
+        finishTopLoader: function () {
+            var $loader = $('#hdGlobalProgressBar');
+            if (this.loaderTimer) {
+                clearInterval(this.loaderTimer);
+                this.loaderTimer = null;
+            }
+            if ($loader.length && $loader.hasClass('active')) {
+                $loader.css({ width: '100%', opacity: 1 });
+                setTimeout(function () {
+                    $loader.css('opacity', 0);
+                    setTimeout(function () {
+                        $loader.removeClass('active').css({ width: '0%' });
+                    }, 250);
+                }, 180);
+            }
+        },
+
+        smoothNavigate: function (targetUrl) {
+            if (!targetUrl || targetUrl === '#' || targetUrl.indexOf('javascript:') === 0) {
+                return;
+            }
+
+            var currentPath = window.location.pathname + window.location.search;
+            var targetPath = targetUrl.replace(window.location.origin, '');
+            if (targetPath.indexOf('#') === 0) {
+                window.location.hash = targetPath;
+                return;
+            }
+
+            this.startTopLoader();
+            $('body').addClass('hd-page-exiting');
+
+            setTimeout(function () {
+                window.location.href = targetUrl;
+            }, 140);
+        },
+
+        checkUrlParamsToOpenModals: function () {
+            var search = window.location.search || '';
+            var hash = window.location.hash || '';
+
+            if (search.indexOf('open=projects') !== -1 || hash === '#projects') {
+                var $p = $('#manageProjectModal');
+                if ($p.length) {
+                    setTimeout(function () {
+                        $p.addClass('active');
+                        $('#newProjectInput').val('').focus();
+                    }, 120);
+                }
+            } else if (search.indexOf('open=clients') !== -1 || hash === '#clients') {
+                var $c = $('#manageClientModal');
+                if ($c.length) {
+                    setTimeout(function () {
+                        $c.addClass('active');
+                        $('#newClientInput').val('').focus();
+                    }, 120);
+                }
+            } else if (search.indexOf('open=worklogs') !== -1 || hash === '#worklogs') {
+                var $w = $('#workLogsDrawer');
+                if ($w.length) {
+                    setTimeout(function () {
+                        $w.addClass('open');
+                    }, 120);
+                }
+            }
+        }
+    };
+    window.HDMotion = HDMotion;
+
+    // Work Logs Drawer Slide In/Out with Motion Primitives
     $(document).on('click', '#btnDockWorkLogs', function (e) {
-        e.preventDefault();
-        $('#workLogsDrawer').toggleClass('open');
+        if ($('#workLogsDrawer').length) {
+            e.preventDefault();
+            $('#workLogsDrawer').toggleClass('open');
+        } else if ($(this).is('a')) {
+            e.preventDefault();
+            HDMotion.smoothNavigate($(this).attr('href'));
+        } else {
+            HDMotion.smoothNavigate(window.APP_BASE + '?open=worklogs');
+        }
     });
 
     $(document).on('click', '#btnCloseWorkLogsDrawer', function (e) {
@@ -878,33 +989,445 @@
 
     // Dock Projects & Clients Triggers
     $(document).on('click', '#btnDockProjects', function (e) {
-        e.preventDefault();
         var $pModal = $('#manageProjectModal');
         if ($pModal.length) {
+            e.preventDefault();
             $pModal.addClass('active');
             $('#newProjectInput').val('').focus();
+        } else if ($(this).is('a')) {
+            e.preventDefault();
+            HDMotion.smoothNavigate($(this).attr('href'));
+        } else {
+            HDMotion.smoothNavigate(window.APP_BASE + '?open=projects');
         }
     });
-
     $(document).on('click', '#btnDockClients', function (e) {
-        e.preventDefault();
         var $cModal = $('#manageClientModal');
         if ($cModal.length) {
+            e.preventDefault();
             $cModal.addClass('active');
             $('#newClientInput').val('').focus();
+        } else if ($(this).is('a')) {
+            e.preventDefault();
+            HDMotion.smoothNavigate($(this).attr('href'));
+        } else {
+            HDMotion.smoothNavigate(window.APP_BASE + '?open=clients');
         }
     });
 
-    // Dock Chat Placeholder
+    // Dock Team Chat Navigation & Global Badge Synchronization
     $(document).on('click', '#btnDockChat', function (e) {
+        var href = $(this).attr('href') || (window.APP_BASE + 'chats');
         e.preventDefault();
-        window.showToast('Team Chat is coming soon in the next release!', 'info');
+        HDMotion.smoothNavigate(href);
     });
 
-    // Header Notification Placeholder
+    // Global Internal Navigation Links Auto-Intercept
+    $(document).on('click', 'a[href]', function (e) {
+        var href = $(this).attr('href');
+        var target = $(this).attr('target');
+        if (!href || href === '#' || href.indexOf('javascript:') === 0 || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0) {
+            return;
+        }
+        if (target && target === '_blank') {
+            return;
+        }
+        if ($(this).attr('download') !== undefined) {
+            return;
+        }
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.which === 2) {
+            return; // Allow opening in new tab
+        }
+
+        var isInternal = false;
+        try {
+            var urlObj = new URL(href, window.location.href);
+            if (urlObj.origin === window.location.origin) {
+                if (urlObj.pathname === window.location.pathname && urlObj.search === window.location.search && urlObj.hash) {
+                    return; // same page hash
+                }
+                isInternal = true;
+            }
+        } catch (err) {
+            if (href.indexOf('/') === 0 || href.indexOf('./') === 0 || href.indexOf('?') === 0) {
+                isInternal = true;
+            }
+        }
+
+        if (isInternal) {
+            e.preventDefault();
+            HDMotion.smoothNavigate(href);
+        }
+    });
+
+    // Browser bfcache restore handler
+    window.addEventListener('pageshow', function () {
+        $('body').removeClass('hd-page-exiting');
+        if (window.HDMotion) {
+            window.HDMotion.finishTopLoader();
+        }
+    });
+
+    // =========================================================================
+    // Native Desktop / Web Notifications & Microsoft Teams Sound System
+    // =========================================================================
+    var hdNotificationSoundEnabled = true;
+
+    function playNotificationSound() {
+        if (!hdNotificationSoundEnabled) return;
+        try {
+            var AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            var ctx = new AudioCtx();
+            if (ctx.state === 'suspended') {
+                ctx.resume();
+            }
+            var now = ctx.currentTime;
+
+            // Dual-tone harmonic chime (Microsoft Teams inspired)
+            // Tone 1: D5 (587.33 Hz)
+            var osc1 = ctx.createOscillator();
+            var gain1 = ctx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(587.33, now);
+            gain1.gain.setValueAtTime(0.18, now);
+            gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.35);
+
+            // Tone 2: A5 (880 Hz) staggered chime
+            var osc2 = ctx.createOscillator();
+            var gain2 = ctx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(880, now + 0.11);
+            gain2.gain.setValueAtTime(0.22, now + 0.11);
+            gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.start(now + 0.11);
+            osc2.stop(now + 0.55);
+        } catch (e) {
+            // Audio context not allowed or not supported
+        }
+    }
+    window.playNotificationSound = playNotificationSound;
+
+    function requestDesktopNotificationPermission(callback) {
+        if (!('Notification' in window)) {
+            if (callback) callback(false);
+            return;
+        }
+        if (Notification.permission === 'granted') {
+            if (callback) callback(true);
+            return;
+        }
+        if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(function (permission) {
+                var granted = (permission === 'granted');
+                if (granted) {
+                    playNotificationSound();
+                    $('#desktopNotifPrompt').fadeOut(250, function () { $(this).remove(); });
+                    if (typeof window.showToast === 'function') {
+                        window.showToast('Desktop notifications enabled!', 'success');
+                    }
+                }
+                if (callback) callback(granted);
+            }).catch(function () {
+                if (callback) callback(false);
+            });
+        } else {
+            if (callback) callback(false);
+        }
+    }
+    window.requestDesktopNotificationPermission = requestDesktopNotificationPermission;
+
+    function showDesktopNotification(title, options, clickCallback) {
+        // Disabled per user preference: only the custom Helpdesk in-app popup notification is displayed (no Chrome OS native notification)
+        return null;
+    }
+    window.showDesktopNotification = showDesktopNotification;
+
+    // Microsoft Teams-Style In-App Helpdesk Toast with Inline Quick Reply
+    function showInAppTeamsToast(msgData) {
+        if (!msgData) return;
+
+        // Dismiss any existing toast
+        $('.hd-teams-toast').remove();
+
+        var avatar = msgData.sender_avatar || (window.APP_BASE + 'webroot/img/avatar-male.svg');
+        var name = $('<div>').text(msgData.sender_name || 'Teammate').html();
+        var preview = $('<div>').text(msgData.message || (msgData.attachment_name ? '📎 ' + msgData.attachment_name : 'Sent a message')).html();
+        var isRequest = !msgData.conversation_id || msgData.is_request;
+
+        var toastHtml = '' +
+            '<div class="hd-teams-toast" data-conv-id="' + (msgData.conversation_id || 0) + '" data-is-req="' + (isRequest ? '1' : '0') + '">' +
+            '  <div class="hd-teams-toast-header">' +
+            '    <div class="hd-teams-toast-brand">' +
+            '      <span class="hd-teams-brand-badge"><i class="fa-solid fa-headset"></i> HELPDESK</span>' +
+            '      <span class="hd-teams-channel">&bull; ' + (isRequest ? 'Chat Request' : 'Team Chat') + '</span>' +
+            '    </div>' +
+            '    <button type="button" class="btn-hd-teams-close" title="Dismiss"><i class="fa-solid fa-xmark"></i></button>' +
+            '  </div>' +
+            '  <div class="hd-teams-toast-body">' +
+            '    <img src="' + avatar + '" class="hd-teams-toast-avatar" alt="' + name + '">' +
+            '    <div class="hd-teams-toast-details">' +
+            '      <div class="hd-teams-toast-sender">' + name + '</div>' +
+            '      <div class="hd-teams-toast-snippet">' + preview + '</div>' +
+            '    </div>' +
+            '  </div>';
+
+        if (!isRequest) {
+            toastHtml += '' +
+                '  <div class="hd-teams-toast-reply-box">' +
+                '    <input type="text" class="hd-teams-reply-input" placeholder="Type a reply..." maxlength="4000" />' +
+                '    <button type="button" class="btn-hd-teams-send" title="Send Reply"><i class="fa-solid fa-paper-plane"></i></button>' +
+                '  </div>';
+        } else {
+            toastHtml += '' +
+                '  <div style="padding: 6px 14px 12px; display: flex; justify-content: flex-end;">' +
+                '    <button type="button" class="btn-hd-teams-view-req" style="padding: 6px 14px; background: var(--primary, #6366f1); color: #fff; border: none; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer;">View Request</button>' +
+                '  </div>';
+        }
+
+        toastHtml += '</div>';
+
+        var $toast = $(toastHtml);
+        $('body').append($toast);
+
+        var autoDismissTimer = setTimeout(function () {
+            $toast.fadeOut(300, function () { $(this).remove(); });
+        }, 12000);
+
+        $toast.on('mouseenter', function () {
+            clearTimeout(autoDismissTimer);
+        });
+
+        $toast.on('mouseleave', function () {
+            if (!$toast.find('.hd-teams-reply-input').is(':focus')) {
+                autoDismissTimer = setTimeout(function () {
+                    $toast.fadeOut(300, function () { $(this).remove(); });
+                }, 6000);
+            }
+        });
+    }
+    window.showInAppTeamsToast = showInAppTeamsToast;
+
+    // Send Quick Reply directly from Toast
+    function executeTeamsQuickReply($toast) {
+        var convId = $toast.data('conv-id');
+        var $input = $toast.find('.hd-teams-reply-input');
+        var $btn = $toast.find('.btn-hd-teams-send');
+        var text = ($input.val() || '').trim();
+        if (!text || !convId) return;
+
+        $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i>');
+        $input.prop('disabled', true);
+
+        $.ajax({
+            url: window.APP_BASE + 'team-chat/send-message',
+            type: 'POST',
+            data: {
+                conversation_id: convId,
+                message: text
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (res && res.success) {
+                    $toast.find('.hd-teams-toast-reply-box').html('<div class="hd-teams-reply-success"><i class="fa-solid fa-circle-check"></i> Reply sent!</div>');
+                    if (typeof window.showToast === 'function') {
+                        window.showToast('Reply sent successfully', 'success');
+                    }
+                    setTimeout(function () {
+                        $toast.fadeOut(300, function () { $(this).remove(); });
+                    }, 1200);
+
+                    if (typeof window.appendIncomingMessage === 'function') {
+                        window.appendIncomingMessage(res.message);
+                    }
+                } else {
+                    $btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane"></i>');
+                    $input.prop('disabled', false);
+                    if (typeof window.showToast === 'function') {
+                        window.showToast(res.message || 'Could not send reply', 'error');
+                    }
+                }
+            },
+            error: function (xhr) {
+                $btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane"></i>');
+                $input.prop('disabled', false);
+                var err = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Failed to send reply';
+                if (typeof window.showToast === 'function') {
+                    window.showToast(err, 'error');
+                }
+            }
+        });
+    }
+
+    $(document).on('click', '.btn-hd-teams-send', function (e) {
+        e.stopPropagation();
+        var $toast = $(this).closest('.hd-teams-toast');
+        executeTeamsQuickReply($toast);
+    });
+
+    $(document).on('keydown', '.hd-teams-reply-input', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            var $toast = $(this).closest('.hd-teams-toast');
+            executeTeamsQuickReply($toast);
+        }
+    });
+
+    $(document).on('click', '.btn-hd-teams-close', function (e) {
+        e.stopPropagation();
+        $(this).closest('.hd-teams-toast').fadeOut(200, function () { $(this).remove(); });
+    });
+
+    $(document).on('click', '.hd-teams-toast', function (e) {
+        if ($(e.target).closest('.hd-teams-toast-reply-box, .btn-hd-teams-close, .btn-hd-teams-view-req').length) return;
+        var isReq = $(this).data('is-req') == 1;
+        var convId = $(this).data('conv-id');
+        if (isReq || !convId) {
+            window.location.href = window.APP_BASE + 'team-chat?tab=requests';
+        } else {
+            window.location.href = window.APP_BASE + 'team-chat?c=' + convId;
+        }
+    });
+
+    $(document).on('click', '.btn-hd-teams-view-req', function (e) {
+        e.stopPropagation();
+        window.location.href = window.APP_BASE + 'team-chat?tab=requests';
+    });
+
+    function checkAndShowNotifPrompt() {
+        // Disabled per user preference: user only wants the Helpdesk in-app popup (no Chrome native permission prompt)
+    }
+
+    var hasInitializedNotifBaseline = false;
+
+    function updateGlobalNotifications() {
+        if (!window.APP_BASE) return;
+        $.ajax({
+            url: window.APP_BASE + 'team-chat/get-global-badge',
+            type: 'GET',
+            dataType: 'json',
+            success: function (res) {
+                if (res && res.success) {
+                    var total = parseInt(res.total, 10) || 0;
+                    var $headerBadge = $('#headerNotificationBadge');
+                    if (total > 0) {
+                        $headerBadge.text(total > 99 ? '99+' : total)
+                            .attr('data-count', total)
+                            .removeClass('d-none')
+                            .addClass('show')
+                            .css('display', 'inline-flex');
+                    } else {
+                        $headerBadge.empty()
+                            .attr('data-count', '0')
+                            .removeClass('show')
+                            .addClass('d-none')
+                            .css('display', 'none');
+                    }
+                    // Count should ONLY show on top header, NOT on left dock
+                    $('#dockChatBadge').empty().attr('data-count', '0').removeClass('show').addClass('d-none').css('display', 'none');
+
+                    // Scoped storage per user to prevent cross-account baseline overwrites during multi-window testing
+                    var userId = res.user_id || 0;
+                    var storageKeyMsg = 'hd_last_msg_' + userId;
+                    var storageKeyReq = 'hd_last_req_' + userId;
+                    var lastNotifiedMsgId = parseInt(sessionStorage.getItem(storageKeyMsg) || '0', 10);
+                    var lastNotifiedReqId = parseInt(sessionStorage.getItem(storageKeyReq) || '0', 10);
+
+                    // Helpdesk Toast & Audio Chime Handling
+                    if (!hasInitializedNotifBaseline) {
+                        // First load: baseline current IDs so we don't alert for existing messages
+                        hasInitializedNotifBaseline = true;
+                        if (res.latest_unread_msg && res.latest_unread_msg.id) {
+                            if (lastNotifiedMsgId === 0) {
+                                lastNotifiedMsgId = res.latest_unread_msg.id;
+                                sessionStorage.setItem(storageKeyMsg, lastNotifiedMsgId);
+                            }
+                        }
+                        if (res.latest_pending_request && res.latest_pending_request.id) {
+                            if (lastNotifiedReqId === 0) {
+                                lastNotifiedReqId = res.latest_pending_request.id;
+                                sessionStorage.setItem(storageKeyReq, lastNotifiedReqId);
+                            }
+                        }
+                    } else {
+                        // New Incoming Message Notification -> Show ONLY Helpdesk in-app toast
+                        if (res.latest_unread_msg && res.latest_unread_msg.id > lastNotifiedMsgId) {
+                            lastNotifiedMsgId = res.latest_unread_msg.id;
+                            sessionStorage.setItem(storageKeyMsg, lastNotifiedMsgId);
+
+                            playNotificationSound();
+
+                            // Show In-App Helpdesk Toast with Quick Reply (NO Chrome OS notification)
+                            showInAppTeamsToast(res.latest_unread_msg);
+                        }
+
+                        // New Chat Request Notification -> Show ONLY Helpdesk in-app toast
+                        if (res.latest_pending_request && res.latest_pending_request.id > lastNotifiedReqId) {
+                            lastNotifiedReqId = res.latest_pending_request.id;
+                            sessionStorage.setItem(storageKeyReq, lastNotifiedReqId);
+
+                            playNotificationSound();
+
+                            // Show In-App Helpdesk Toast for Chat Request (NO Chrome OS notification)
+                            showInAppTeamsToast({
+                                conversation_id: 0,
+                                is_request: true,
+                                sender_name: res.latest_pending_request.sender_name,
+                                sender_avatar: res.latest_pending_request.sender_avatar,
+                                message: res.latest_pending_request.sender_name + ' sent you a chat request.',
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    window.updateGlobalNotifications = updateGlobalNotifications;
+
+    $(function () {
+        updateGlobalNotifications();
+        checkAndShowNotifPrompt();
+
+        // Background polling across all non-chat pages (every 3 seconds, regardless of tab visibility)
+        if (!window.location.pathname.includes('/chat')) {
+            setInterval(function () {
+                updateGlobalNotifications();
+            }, 3000);
+        }
+    });
+
+    // Header Notification: Click opens chat or alerts
     $(document).on('click', '#btnHeaderNotification', function (e) {
         e.preventDefault();
-        window.showToast('No unread notifications at this time.', 'info');
+        var count = parseInt($('#headerNotificationBadge').text(), 10) || 0;
+        if (!window.location.pathname.includes('/chat')) {
+            if (count > 0) {
+                window.location.href = window.APP_BASE + 'chat';
+            } else {
+                if (typeof window.showToast === 'function') {
+                    window.showToast('No unread notifications at this time.', 'info');
+                }
+            }
+        } else {
+            var reqCount = parseInt($('#requestsTabBadge').text(), 10) || 0;
+            if (reqCount > 0) {
+                $('#tabBtnRequests').click();
+            } else if (count > 0) {
+                $('#tabBtnChats').click();
+            } else {
+                if (typeof window.showToast === 'function') {
+                    window.showToast('No unread notifications at this time.', 'info');
+                }
+            }
+        }
     });
 
     // Dock Logout with Custom Confirmation Modal
