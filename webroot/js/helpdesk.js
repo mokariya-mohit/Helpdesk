@@ -1568,24 +1568,36 @@
                             res.projects.forEach(function (p) {
                                 var safeName = $('<div>').text(p.name).html();
                                 html += '<div class="modal-project-item" data-id="' + p.id + '" data-name="' + safeName + '">';
-                                html += '  <div class="proj-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%;">';
-                                html += '    <div style="display:flex; align-items:center; gap:8px;">';
-                                html += '      <i class="fa-solid fa-folder" style="color:#6366f1;"></i>';
-                                html += '      <span class="proj-item-name" style="font-weight:600; font-size:13px;">' + safeName + '</span>';
+                                
+                                // View Mode
+                                html += '  <div class="proj-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px;">';
+                                html += '    <span class="modal-project-name">';
+                                html += '      <div class="modal-item-avatar-proj"><i class="fa-solid fa-folder"></i></div>';
+                                html += '      <span class="proj-name-text">' + safeName + '</span>';
                                 if (p.is_default) {
-                                    html += '      <span style="font-size:10px; background:rgba(99,102,241,0.15); color:#6366f1; padding:2px 6px; border-radius:4px; font-weight:700;">DEFAULT</span>';
+                                    html += '  <span class="modal-badge-default"><i class="fa-solid fa-check" style="font-size:9px;"></i> Default</span>';
+                                }
+                                html += '    </span>';
+                                html += '    <div style="display:flex; align-items:center; gap:6px;">';
+                                html += '      <button type="button" class="btn-action-icon btn-start-edit-proj" data-id="' + p.id + '" title="Rename Project"><i class="fa-solid fa-pen"></i></button>';
+                                if (!p.is_default) {
+                                    html += '    <button type="button" class="btn-action-icon delete btn-delete-proj" data-id="' + p.id + '" title="Delete Project"><i class="fa-solid fa-trash"></i></button>';
                                 }
                                 html += '    </div>';
+                                html += '  </div>';
+
+                                // Inline Edit Mode
+                                html += '  <div class="proj-edit-mode" style="display:none; align-items:center; justify-content:space-between; width:100%; gap:8px;">';
+                                html += '    <div style="display:flex; align-items:center; gap:8px; flex:1;">';
+                                html += '      <div class="modal-item-avatar-proj"><i class="fa-solid fa-folder"></i></div>';
+                                html += '      <input type="text" class="proj-inline-input" value="' + safeName + '" placeholder="Project name" style="flex:1;">';
+                                html += '    </div>';
                                 html += '    <div style="display:flex; align-items:center; gap:6px;">';
-                                html += '      <button type="button" class="btn-start-edit-proj" data-id="' + p.id + '" title="Rename Project" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px 6px;"><i class="fa-solid fa-pen-to-square"></i></button>';
-                                html += '      <button type="button" class="btn-delete-proj" data-id="' + p.id + '" title="Delete Project" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:4px 6px;"><i class="fa-solid fa-trash-can"></i></button>';
+                                html += '      <button type="button" class="btn btn-primary btn-save-inline-proj" data-id="' + p.id + '" style="padding:6px 14px; font-size:12px; font-weight:700;"><i class="fa-solid fa-check"></i> Save</button>';
+                                html += '      <button type="button" class="btn-action-icon btn-cancel-inline-proj" title="Cancel"><i class="fa-solid fa-xmark"></i></button>';
                                 html += '    </div>';
                                 html += '  </div>';
-                                html += '  <div class="proj-edit-mode" style="display:none; align-items:center; gap:8px; width:100%;">';
-                                html += '    <input type="text" class="proj-inline-input modal-form-input" value="' + safeName + '" style="flex:1; padding:6px 10px; font-size:12px;">';
-                                html += '    <button type="button" class="btn-save-inline-proj btn btn-primary" data-id="' + p.id + '" style="padding:6px 12px; font-size:12px;"><i class="fa-solid fa-check"></i></button>';
-                                html += '    <button type="button" class="btn-cancel-inline-proj" style="padding:6px 10px; font-size:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>';
-                                html += '  </div>';
+
                                 html += '</div>';
                             });
                         }
@@ -1622,36 +1634,47 @@
                     if (res && res.success && res.clients) {
                         var html = '';
                         if (res.clients.length === 0) {
-                            html = '<div style="text-align:center; padding:16px; color:var(--text-muted); font-size:12px;">No clients created yet.</div>';
+                            html = '<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:12px;">No clients created yet.</div>';
                         } else {
                             res.clients.forEach(function (c) {
                                 var safeName = $('<div>').text(c.name).html();
                                 var safeEmail = c.email ? $('<div>').text(c.email).html() : '';
-                                html += '<div class="modal-project-item" data-id="' + c.id + '" data-name="' + safeName + '" data-email="' + safeEmail + '">';
-                                html += '  <div class="client-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%;">';
-                                html += '    <div style="display:flex; flex-direction:column; gap:2px;">';
-                                html += '      <div style="display:flex; align-items:center; gap:8px;">';
-                                html += '        <i class="fa-solid fa-user-tie" style="color:#0284c7;"></i>';
-                                html += '        <span class="client-item-name" style="font-weight:600; font-size:13px;">' + safeName + '</span>';
+                                html += '<div class="modal-project-item client-card-item" data-id="' + c.id + '" data-name="' + safeName + '" data-email="' + safeEmail + '">';
+                                
+                                // View Mode
+                                html += '  <div class="client-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px;">';
+                                html += '    <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:0;">';
+                                html += '      <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:var(--text-headline); min-width:0;">';
+                                html += '        <div class="modal-item-avatar-client"><i class="fa-solid fa-user-tie"></i></div>';
+                                html += '        <span class="client-name-text" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + safeName + '</span>';
                                 if (c.is_default) {
-                                    html += '        <span style="font-size:10px; background:rgba(2,132,199,0.15); color:#0284c7; padding:2px 6px; border-radius:4px; font-weight:700;">DEFAULT</span>';
+                                    html += '    <span class="modal-badge-default" style="flex-shrink:0;"><i class="fa-solid fa-check" style="font-size:9px;"></i> Default</span>';
                                 }
                                 html += '      </div>';
                                 if (safeEmail) {
-                                    html += '      <span style="font-size:11px; color:var(--text-muted); margin-left:22px;"><i class="fa-regular fa-envelope"></i> ' + safeEmail + '</span>';
+                                    html += '    <div class="client-email-badge" title="' + safeEmail + '"><i class="fa-regular fa-envelope" style="font-size:10px;"></i> <span>' + safeEmail + '</span></div>';
                                 }
                                 html += '    </div>';
-                                html += '    <div style="display:flex; align-items:center; gap:6px;">';
-                                html += '      <button type="button" class="btn-start-edit-client" data-id="' + c.id + '" title="Edit Client" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px 6px;"><i class="fa-solid fa-pen-to-square"></i></button>';
-                                html += '      <button type="button" class="btn-delete-client" data-id="' + c.id + '" title="Delete Client" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:4px 6px;"><i class="fa-solid fa-trash-can"></i></button>';
+                                html += '    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">';
+                                html += '      <button type="button" class="btn-action-icon btn-start-edit-client" data-id="' + c.id + '" title="Edit Client"><i class="fa-solid fa-pen"></i></button>';
+                                if (!c.is_default) {
+                                    html += '    <button type="button" class="btn-action-icon delete btn-delete-client" data-id="' + c.id + '" title="Delete Client"><i class="fa-solid fa-trash"></i></button>';
+                                }
                                 html += '    </div>';
                                 html += '  </div>';
-                                html += '  <div class="client-edit-mode" style="display:none; align-items:center; gap:8px; width:100%;">';
-                                html += '    <input type="text" class="client-inline-name-input modal-form-input" value="' + safeName + '" placeholder="Client Name" style="flex:1; padding:6px 10px; font-size:12px;">';
-                                html += '    <input type="email" class="client-inline-email-input modal-form-input" value="' + safeEmail + '" placeholder="Email (optional)" style="flex:1; padding:6px 10px; font-size:12px;">';
-                                html += '    <button type="button" class="btn-save-inline-client btn btn-primary" data-id="' + c.id + '" style="padding:6px 12px; font-size:12px;"><i class="fa-solid fa-check"></i></button>';
-                                html += '    <button type="button" class="btn-cancel-inline-client" style="padding:6px 10px; font-size:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>';
+
+                                // Inline Edit Mode
+                                html += '  <div class="client-edit-mode" style="display:none; flex-direction:column; gap:8px; width:100%; box-sizing:border-box;">';
+                                html += '    <div style="display:flex; flex-direction:column; gap:8px; width:100%;">';
+                                html += '      <input type="text" class="client-inline-input" value="' + safeName + '" placeholder="Client Name">';
+                                html += '      <input type="email" class="client-inline-email" value="' + safeEmail + '" placeholder="Client Email (e.g. client@company.com)">';
+                                html += '    </div>';
+                                html += '    <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:2px;">';
+                                html += '      <button type="button" class="btn btn-primary btn-save-inline-client" data-id="' + c.id + '" style="padding:6px 14px; font-size:12px; font-weight:700;"><i class="fa-solid fa-check"></i> Save</button>';
+                                html += '      <button type="button" class="btn-action-icon btn-cancel-inline-client" title="Cancel"><i class="fa-solid fa-xmark"></i></button>';
+                                html += '    </div>';
                                 html += '  </div>';
+
                                 html += '</div>';
                             });
                         }
@@ -1880,7 +1903,7 @@
         });
     });
 
-    $(document).on('click', '.btn-delete-proj', function () {
+    $(document).on('click', '.btn-delete-proj, .btn-delete-project', function () {
         var id = $(this).data('id');
         var row = $(this).closest('.modal-project-item');
         var name = row.data('name') || 'this project';
