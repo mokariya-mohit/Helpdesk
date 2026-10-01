@@ -152,6 +152,37 @@ class TasksController extends AppController
     }
 
     /**
+     * Clean raw work note text to extract only task bullet points (preserving all user indentation)
+     */
+    private function extractTaskLines(?string $text): string
+    {
+        if (empty($text) || trim($text) === '') {
+            return '';
+        }
+
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
+        $lines = explode("\n", $text);
+        $startIndex = 0;
+
+        if (count($lines) > 0 && preg_match('/^\d{2}-\d{2}-\d{4}/', trim($lines[0]))) {
+            $startIndex = 1;
+            if (count($lines) > 1 && preg_match('/^[-=]{3,}/', trim($lines[1]))) {
+                $startIndex = 2;
+            }
+        }
+
+        $extracted = array_slice($lines, $startIndex);
+        while (!empty($extracted) && trim($extracted[0]) === '') {
+            array_shift($extracted);
+        }
+        while (!empty($extracted) && trim(end($extracted)) === '') {
+            array_pop($extracted);
+        }
+
+        return implode("\n", $extracted);
+    }
+
+    /**
      * Convert DD-MM-YYYY to YYYY-MM-DD
      */
     private function parseDateToIso(string $dateStr): string
@@ -195,13 +226,22 @@ class TasksController extends AppController
             $projectId = $default ? $default->id : 1;
         }
 
-        $log = $this->WorkLogs->find()
+        $query = $this->WorkLogs->find()
             ->where([
                 'WorkLogs.user_id' => $userId,
                 'WorkLogs.log_date' => $isoDate,
             ])
-            ->contain(['Projects', 'Clients'])
-            ->first();
+            ->contain(['Projects', 'Clients']);
+
+        if (!empty($projectId) && is_numeric($projectId) && (int)$projectId > 0) {
+            $log = (clone $query)->where(['WorkLogs.project_id' => (int)$projectId])->first();
+        } else {
+            $log = null;
+        }
+
+        if (!$log) {
+            $log = $query->first();
+        }
 
         if ($log) {
             return $this->response->withType('application/json')
@@ -352,7 +392,7 @@ class TasksController extends AppController
                 }
                 $dailyUpdate->done_tasks = $this->extractTaskLines($content);
                 $this->DailyUpdates->save($dailyUpdate);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 // Ignore silent sync error to not block work log save
             }
 

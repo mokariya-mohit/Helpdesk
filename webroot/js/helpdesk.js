@@ -926,20 +926,28 @@
             var hash = window.location.hash || '';
 
             if (search.indexOf('open=projects') !== -1 || hash === '#projects') {
-                var $p = $('#manageProjectModal');
-                if ($p.length) {
-                    setTimeout(function () {
-                        $p.addClass('active');
-                        $('#newProjectInput').val('').focus();
-                    }, 120);
+                if (window.HDModals && typeof window.HDModals.openProjects === 'function') {
+                    window.HDModals.openProjects();
+                } else {
+                    $('#manageProjectModal').addClass('active');
                 }
             } else if (search.indexOf('open=clients') !== -1 || hash === '#clients') {
-                var $c = $('#manageClientModal');
-                if ($c.length) {
-                    setTimeout(function () {
-                        $c.addClass('active');
-                        $('#newClientInput').val('').focus();
-                    }, 120);
+                if (window.HDModals && typeof window.HDModals.openClients === 'function') {
+                    window.HDModals.openClients();
+                } else {
+                    $('#manageClientModal').addClass('active');
+                }
+            } else if (search.indexOf('open=settings') !== -1 || hash === '#settings') {
+                if (window.HDModals && typeof window.HDModals.openSettings === 'function') {
+                    window.HDModals.openSettings();
+                } else {
+                    $('#settingsModal').addClass('active');
+                }
+            } else if (search.indexOf('open=profile') !== -1 || hash === '#profile') {
+                if (window.HDModals && typeof window.HDModals.openProfile === 'function') {
+                    window.HDModals.openProfile();
+                } else {
+                    $('#userProfileModal').addClass('active');
                 }
             } else if (search.indexOf('open=worklogs') !== -1 || hash === '#worklogs') {
                 var $w = $('#workLogsDrawer');
@@ -989,29 +997,21 @@
 
     // Dock Projects & Clients Triggers
     $(document).on('click', '#btnDockProjects', function (e) {
-        var $pModal = $('#manageProjectModal');
-        if ($pModal.length) {
-            e.preventDefault();
-            $pModal.addClass('active');
-            $('#newProjectInput').val('').focus();
-        } else if ($(this).is('a')) {
-            e.preventDefault();
-            HDMotion.smoothNavigate($(this).attr('href'));
+        e.preventDefault();
+        if (window.HDModals && typeof window.HDModals.openProjects === 'function') {
+            window.HDModals.openProjects();
         } else {
-            HDMotion.smoothNavigate(window.APP_BASE + '?open=projects');
+            $('#manageProjectModal').addClass('active');
+            $('#newProjectInput').val('').focus();
         }
     });
     $(document).on('click', '#btnDockClients', function (e) {
-        var $cModal = $('#manageClientModal');
-        if ($cModal.length) {
-            e.preventDefault();
-            $cModal.addClass('active');
-            $('#newClientInput').val('').focus();
-        } else if ($(this).is('a')) {
-            e.preventDefault();
-            HDMotion.smoothNavigate($(this).attr('href'));
+        e.preventDefault();
+        if (window.HDModals && typeof window.HDModals.openClients === 'function') {
+            window.HDModals.openClients();
         } else {
-            HDMotion.smoothNavigate(window.APP_BASE + '?open=clients');
+            $('#manageClientModal').addClass('active');
+            $('#newClientInput').val('').focus();
         }
     });
 
@@ -1447,4 +1447,546 @@
         });
     });
 
+    // ==========================================
+    // Global Modal Controller (HDModals)
+    // Works uniformly across all pages (Tasks, Chats, Daily Updates)
+    // ==========================================
+    var HDModals = {
+        openSettings: function () {
+            var $m = $('#settingsModal');
+            if (!$m.length) return;
+            $('#settingsAlert').hide().text('').removeAttr('style');
+            $('.settings-tab-btn').removeClass('active');
+            $('.settings-tab-btn[data-tab="geminiTab"]').addClass('active');
+            $('.settings-tab-pane').removeClass('active').hide();
+            $('#geminiTab').addClass('active').show();
+
+            $.ajax({
+                url: window.APP_BASE + 'users/get-profile',
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    if (res && res.success && res.user) {
+                        var u = res.user;
+                        $('#settingsGeminiKey').val(u.api_key || '');
+                        $('#settingsSmtpPass').val(u.smtp_password || '');
+                        if (u.api_key) {
+                            $('#settingsGeminiStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured (Google Gemini)</span>');
+                        } else {
+                            $('#settingsGeminiStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');
+                        }
+                        if (u.smtp_password) {
+                            $('#settingsSmtpStatus').html('<span style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> Configured</span>');
+                        } else {
+                            $('#settingsSmtpStatus').html('<span style="color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Not Configured</span>');
+                        }
+                    }
+                }
+            });
+            $m.addClass('active');
+        },
+
+        closeSettings: function () {
+            $('#settingsModal').removeClass('active');
+        },
+
+        openProfile: function () {
+            var $m = $('#userProfileModal');
+            if (!$m.length) return;
+            $('#profileAlert').hide().text('').removeAttr('style');
+            $('#profCurrentPass, #profNewPass, #profConfirmPass').val('');
+
+            $.ajax({
+                url: window.APP_BASE + 'users/get-profile',
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    if (res && res.success && res.user) {
+                        var u = res.user;
+                        $('#profInputName').val(u.name || '');
+                        $('#profInputEmail').val(u.email || '');
+                        $('#profileBannerName').text(u.name || 'User');
+                        $('#profileBannerEmail').text(u.email || '');
+                        $('#profileMemberSince').text(u.created_formatted || '-');
+
+                        var gender = (u.gender || 'male').toLowerCase();
+                        if (gender === 'female') {
+                            $('#profGenderFemale').prop('checked', true);
+                            $('#labelGenderFemale').addClass('active');
+                            $('#labelGenderMale').removeClass('active');
+                        } else {
+                            $('#profGenderMale').prop('checked', true);
+                            $('#labelGenderMale').addClass('active');
+                            $('#labelGenderFemale').removeClass('active');
+                        }
+
+                        var gIcon = gender === 'female' ? '<i class="fa-solid fa-venus" style="color:#ec4899; margin-right:4px;"></i>' : '<i class="fa-solid fa-mars" style="color:#3b82f6; margin-right:4px;"></i>';
+                        $('#profileGenderBadge').html(gIcon + '<span id="profileGenderText">' + (gender.charAt(0).toUpperCase() + gender.slice(1)) + '</span>');
+
+                        if (u.avatar_url) {
+                            $('#profileBigAvatarImg').attr('src', u.avatar_url).show();
+                            $('#profileAvatarBig .profile-avatar-fallback').hide();
+                        }
+                    }
+                }
+            });
+            $m.addClass('active');
+        },
+
+        closeProfile: function () {
+            $('#userProfileModal').removeClass('active');
+        },
+
+        openProjects: function () {
+            var $m = $('#manageProjectModal');
+            if (!$m.length) return;
+            $m.addClass('active');
+            $('#newProjectInput').val('').removeClass('is-invalid').focus();
+            $('#newProjectNameError').hide();
+            HDModals.loadProjects();
+        },
+
+        closeProjects: function () {
+            $('#manageProjectModal').removeClass('active');
+        },
+
+        loadProjects: function () {
+            var $list = $('#modalProjectList');
+            if (!$list.length) return;
+            $list.html('<div style="text-align:center; padding:16px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Loading projects...</div>');
+
+            $.ajax({
+                url: window.APP_BASE + 'projects/get-projects',
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    if (res && res.success && res.projects) {
+                        var html = '';
+                        if (res.projects.length === 0) {
+                            html = '<div style="text-align:center; padding:16px; color:var(--text-muted); font-size:12px;">No projects created yet.</div>';
+                        } else {
+                            res.projects.forEach(function (p) {
+                                var safeName = $('<div>').text(p.name).html();
+                                html += '<div class="modal-project-item" data-id="' + p.id + '" data-name="' + safeName + '">';
+                                html += '  <div class="proj-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%;">';
+                                html += '    <div style="display:flex; align-items:center; gap:8px;">';
+                                html += '      <i class="fa-solid fa-folder" style="color:#6366f1;"></i>';
+                                html += '      <span class="proj-item-name" style="font-weight:600; font-size:13px;">' + safeName + '</span>';
+                                if (p.is_default) {
+                                    html += '      <span style="font-size:10px; background:rgba(99,102,241,0.15); color:#6366f1; padding:2px 6px; border-radius:4px; font-weight:700;">DEFAULT</span>';
+                                }
+                                html += '    </div>';
+                                html += '    <div style="display:flex; align-items:center; gap:6px;">';
+                                html += '      <button type="button" class="btn-start-edit-proj" data-id="' + p.id + '" title="Rename Project" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px 6px;"><i class="fa-solid fa-pen-to-square"></i></button>';
+                                html += '      <button type="button" class="btn-delete-proj" data-id="' + p.id + '" title="Delete Project" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:4px 6px;"><i class="fa-solid fa-trash-can"></i></button>';
+                                html += '    </div>';
+                                html += '  </div>';
+                                html += '  <div class="proj-edit-mode" style="display:none; align-items:center; gap:8px; width:100%;">';
+                                html += '    <input type="text" class="proj-inline-input modal-form-input" value="' + safeName + '" style="flex:1; padding:6px 10px; font-size:12px;">';
+                                html += '    <button type="button" class="btn-save-inline-proj btn btn-primary" data-id="' + p.id + '" style="padding:6px 12px; font-size:12px;"><i class="fa-solid fa-check"></i></button>';
+                                html += '    <button type="button" class="btn-cancel-inline-proj" style="padding:6px 10px; font-size:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>';
+                                html += '  </div>';
+                                html += '</div>';
+                            });
+                        }
+                        $list.html(html);
+                    }
+                }
+            });
+        },
+
+        openClients: function () {
+            var $m = $('#manageClientModal');
+            if (!$m.length) return;
+            $m.addClass('active');
+            $('#newClientInput').val('').removeClass('is-invalid').focus();
+            $('#newClientEmailInput').val('').removeClass('is-invalid');
+            $('#newClientNameError, #newClientEmailError').hide();
+            HDModals.loadClients();
+        },
+
+        closeClients: function () {
+            $('#manageClientModal').removeClass('active');
+        },
+
+        loadClients: function () {
+            var $list = $('#modalClientList');
+            if (!$list.length) return;
+            $list.html('<div style="text-align:center; padding:16px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Loading clients...</div>');
+
+            $.ajax({
+                url: window.APP_BASE + 'clients/get-clients',
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    if (res && res.success && res.clients) {
+                        var html = '';
+                        if (res.clients.length === 0) {
+                            html = '<div style="text-align:center; padding:16px; color:var(--text-muted); font-size:12px;">No clients created yet.</div>';
+                        } else {
+                            res.clients.forEach(function (c) {
+                                var safeName = $('<div>').text(c.name).html();
+                                var safeEmail = c.email ? $('<div>').text(c.email).html() : '';
+                                html += '<div class="modal-project-item" data-id="' + c.id + '" data-name="' + safeName + '" data-email="' + safeEmail + '">';
+                                html += '  <div class="client-view-mode" style="display:flex; align-items:center; justify-content:space-between; width:100%;">';
+                                html += '    <div style="display:flex; flex-direction:column; gap:2px;">';
+                                html += '      <div style="display:flex; align-items:center; gap:8px;">';
+                                html += '        <i class="fa-solid fa-user-tie" style="color:#0284c7;"></i>';
+                                html += '        <span class="client-item-name" style="font-weight:600; font-size:13px;">' + safeName + '</span>';
+                                if (c.is_default) {
+                                    html += '        <span style="font-size:10px; background:rgba(2,132,199,0.15); color:#0284c7; padding:2px 6px; border-radius:4px; font-weight:700;">DEFAULT</span>';
+                                }
+                                html += '      </div>';
+                                if (safeEmail) {
+                                    html += '      <span style="font-size:11px; color:var(--text-muted); margin-left:22px;"><i class="fa-regular fa-envelope"></i> ' + safeEmail + '</span>';
+                                }
+                                html += '    </div>';
+                                html += '    <div style="display:flex; align-items:center; gap:6px;">';
+                                html += '      <button type="button" class="btn-start-edit-client" data-id="' + c.id + '" title="Edit Client" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px 6px;"><i class="fa-solid fa-pen-to-square"></i></button>';
+                                html += '      <button type="button" class="btn-delete-client" data-id="' + c.id + '" title="Delete Client" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:4px 6px;"><i class="fa-solid fa-trash-can"></i></button>';
+                                html += '    </div>';
+                                html += '  </div>';
+                                html += '  <div class="client-edit-mode" style="display:none; align-items:center; gap:8px; width:100%;">';
+                                html += '    <input type="text" class="client-inline-name-input modal-form-input" value="' + safeName + '" placeholder="Client Name" style="flex:1; padding:6px 10px; font-size:12px;">';
+                                html += '    <input type="email" class="client-inline-email-input modal-form-input" value="' + safeEmail + '" placeholder="Email (optional)" style="flex:1; padding:6px 10px; font-size:12px;">';
+                                html += '    <button type="button" class="btn-save-inline-client btn btn-primary" data-id="' + c.id + '" style="padding:6px 12px; font-size:12px;"><i class="fa-solid fa-check"></i></button>';
+                                html += '    <button type="button" class="btn-cancel-inline-client" style="padding:6px 10px; font-size:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>';
+                                html += '  </div>';
+                                html += '</div>';
+                            });
+                        }
+                        $list.html(html);
+                    }
+                }
+            });
+        }
+    };
+    window.HDModals = HDModals;
+
+    // Global Modal Open & Close Event Bindings
+    $(document).on('click', '#btnHeaderSettings', function (e) {
+        e.preventDefault();
+        HDModals.openSettings();
+    });
+
+    $(document).on('click', '#btnCloseSettingsModal, #btnCancelSettingsModal', function (e) {
+        e.preventDefault();
+        HDModals.closeSettings();
+    });
+
+    $(document).on('click', '#btnSaveSettingsModal', function (e) {
+        e.preventDefault();
+        var apiKey = $('#settingsGeminiKey').val().trim();
+        var smtpPass = $('#settingsSmtpPass').val().trim();
+        var $btn = $(this);
+        var origHtml = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Saving...');
+
+        $.ajax({
+            url: window.APP_BASE + 'users/save-settings',
+            type: 'POST',
+            data: { api_key: apiKey, smtp_password: smtpPass },
+            dataType: 'json',
+            success: function (res) {
+                $btn.prop('disabled', false).html(origHtml);
+                if (res.success) {
+                    if (typeof window.showToast === 'function') window.showToast(res.message, 'success');
+                    setTimeout(function () { HDModals.closeSettings(); }, 600);
+                } else {
+                    if (typeof window.showToast === 'function') window.showToast(res.message || 'Failed to save settings', 'error');
+                }
+            },
+            error: function () {
+                $btn.prop('disabled', false).html(origHtml);
+                if (typeof window.showToast === 'function') window.showToast('Network error while saving settings', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '#btnHeaderProfile', function (e) {
+        e.preventDefault();
+        HDModals.openProfile();
+    });
+
+    $(document).on('click', '#btnCloseProfileModal, #btnCancelProfileModal', function (e) {
+        e.preventDefault();
+        HDModals.closeProfile();
+    });
+
+    $(document).on('click', '#btnSaveProfileModal', function (e) {
+        e.preventDefault();
+        var name = $('#profInputName').val().trim();
+        var email = $('#profInputEmail').val().trim();
+        var gender = $('input[name="profGender"]:checked').val() || 'male';
+        var currentPass = $('#profCurrentPass').val();
+        var newPass = $('#profNewPass').val();
+        var confirmPass = $('#profConfirmPass').val();
+
+        var $btn = $(this);
+        var origHtml = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Saving...');
+
+        $.ajax({
+            url: window.APP_BASE + 'users/update-profile',
+            type: 'POST',
+            data: {
+                name: name,
+                email: email,
+                gender: gender,
+                current_password: currentPass,
+                new_password: newPass,
+                confirm_password: confirmPass
+            },
+            dataType: 'json',
+            success: function (res) {
+                $btn.prop('disabled', false).html(origHtml);
+                if (res.success) {
+                    if (typeof window.showToast === 'function') window.showToast(res.message, 'success');
+                    if (res.user && res.user.avatar_url) {
+                        $('#headerProfileAvatarImg').attr('src', res.user.avatar_url).show();
+                        $('#btnHeaderProfile .header-user-avatar-fallback').hide();
+                    }
+                    setTimeout(function () { HDModals.closeProfile(); }, 600);
+                } else {
+                    if (typeof window.showToast === 'function') window.showToast(res.message || 'Failed to update profile', 'error');
+                }
+            },
+            error: function () {
+                $btn.prop('disabled', false).html(origHtml);
+                if (typeof window.showToast === 'function') window.showToast('Network error while updating profile', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '#btnCloseProjectModal', function (e) {
+        e.preventDefault();
+        HDModals.closeProjects();
+    });
+
+    $(document).on('click', '#btnSaveNewProject', function (e) {
+        e.preventDefault();
+        var name = $('#newProjectInput').val().trim();
+        if (!name) {
+            $('#newProjectInput').addClass('is-invalid').focus();
+            $('#newProjectNameError').show().find('span').text('Please enter a project name.');
+            if (typeof window.showToast === 'function') window.showToast('Project name is required', 'warning');
+            return;
+        }
+
+        var $btn = $(this);
+        var origHtml = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i>');
+
+        $.ajax({
+            url: window.APP_BASE + 'projects/add',
+            type: 'POST',
+            data: { name: name },
+            dataType: 'json',
+            success: function (res) {
+                $btn.prop('disabled', false).html(origHtml);
+                if (res.success) {
+                    $('#newProjectInput').val('');
+                    if (typeof window.showToast === 'function') window.showToast(res.message, 'success');
+                    HDModals.loadProjects();
+                    if (typeof window.loadProjects === 'function') window.loadProjects();
+                } else {
+                    if (typeof window.showToast === 'function') window.showToast(res.message || 'Failed to add project', 'error');
+                }
+            },
+            error: function () {
+                $btn.prop('disabled', false).html(origHtml);
+                if (typeof window.showToast === 'function') window.showToast('Network error while adding project', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '#btnCloseClientModal', function (e) {
+        e.preventDefault();
+        HDModals.closeClients();
+    });
+
+    $(document).on('click', '#btnSaveNewClient', function (e) {
+        e.preventDefault();
+        var name = $('#newClientInput').val().trim();
+        var email = $('#newClientEmailInput').val().trim();
+        if (!name) {
+            $('#newClientInput').addClass('is-invalid').focus();
+            $('#newClientNameError').show().find('span').text('Client name cannot be empty.');
+            if (typeof window.showToast === 'function') window.showToast('Client name is required', 'warning');
+            return;
+        }
+
+        var $btn = $(this);
+        var origHtml = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i>');
+
+        $.ajax({
+            url: window.APP_BASE + 'clients/add',
+            type: 'POST',
+            data: { name: name, email: email },
+            dataType: 'json',
+            success: function (res) {
+                $btn.prop('disabled', false).html(origHtml);
+                if (res.success) {
+                    $('#newClientInput').val('');
+                    $('#newClientEmailInput').val('');
+                    if (typeof window.showToast === 'function') window.showToast(res.message, 'success');
+                    HDModals.loadClients();
+                    if (typeof window.loadClients === 'function') window.loadClients();
+                } else {
+                    if (typeof window.showToast === 'function') window.showToast(res.message || 'Failed to add client', 'error');
+                }
+            },
+            error: function () {
+                $btn.prop('disabled', false).html(origHtml);
+                if (typeof window.showToast === 'function') window.showToast('Network error while adding client', 'error');
+            }
+        });
+    });
+
+    // Inline edit / delete handlers for projects
+    $(document).on('click', '.btn-start-edit-proj', function () {
+        var row = $(this).closest('.modal-project-item');
+        row.find('.proj-view-mode').hide();
+        row.find('.proj-edit-mode').css('display', 'flex').find('.proj-inline-input').focus().select();
+    });
+
+    $(document).on('click', '.btn-cancel-inline-proj', function () {
+        var row = $(this).closest('.modal-project-item');
+        row.find('.proj-edit-mode').hide();
+        row.find('.proj-view-mode').css('display', 'flex');
+    });
+
+    $(document).on('click', '.btn-save-inline-proj', function () {
+        var row = $(this).closest('.modal-project-item');
+        var id = $(this).data('id');
+        var newName = row.find('.proj-inline-input').val().trim();
+        if (!newName) return;
+
+        $.ajax({
+            url: window.APP_BASE + 'projects/edit/' + id,
+            type: 'POST',
+            data: { name: newName },
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    if (typeof window.showToast === 'function') window.showToast(res.message, 'success');
+                    HDModals.loadProjects();
+                    if (typeof window.loadProjects === 'function') window.loadProjects();
+                } else {
+                    if (typeof window.showToast === 'function') window.showToast(res.message || 'Could not rename project', 'error');
+                }
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-delete-proj', function () {
+        var id = $(this).data('id');
+        var row = $(this).closest('.modal-project-item');
+        var name = row.data('name') || 'this project';
+
+        window.showConfirmModal({
+            title: 'Delete Project?',
+            message: 'Are you sure you want to delete "' + name + '"? This will unassign tasks from this project.',
+            type: 'danger',
+            confirmText: 'Delete',
+            onConfirm: function () {
+                $.ajax({
+                    url: window.APP_BASE + 'projects/delete/' + id,
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.success) {
+                            if (typeof window.showToast === 'function') window.showToast(res.message, 'success');
+                            HDModals.loadProjects();
+                            if (typeof window.loadProjects === 'function') window.loadProjects();
+                        } else {
+                            if (typeof window.showToast === 'function') window.showToast(res.message || 'Could not delete project', 'error');
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    // Inline edit / delete handlers for clients
+    $(document).on('click', '.btn-start-edit-client', function () {
+        var row = $(this).closest('.modal-project-item');
+        row.find('.client-view-mode').hide();
+        row.find('.client-edit-mode').css('display', 'flex').find('.client-inline-name-input').focus().select();
+    });
+
+    $(document).on('click', '.btn-cancel-inline-client', function () {
+        var row = $(this).closest('.modal-project-item');
+        row.find('.client-edit-mode').hide();
+        row.find('.client-view-mode').css('display', 'flex');
+    });
+
+    $(document).on('click', '.btn-save-inline-client', function () {
+        var row = $(this).closest('.modal-project-item');
+        var id = $(this).data('id');
+        var newName = row.find('.client-inline-name-input').val().trim();
+        var newEmail = row.find('.client-inline-email-input').val().trim();
+        if (!newName) return;
+
+        $.ajax({
+            url: window.APP_BASE + 'clients/edit/' + id,
+            type: 'POST',
+            data: { name: newName, email: newEmail },
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    if (typeof window.showToast === 'function') window.showToast(res.message, 'success');
+                    HDModals.loadClients();
+                    if (typeof window.loadClients === 'function') window.loadClients();
+                } else {
+                    if (typeof window.showToast === 'function') window.showToast(res.message || 'Could not update client', 'error');
+                }
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-delete-client', function () {
+        var id = $(this).data('id');
+        var row = $(this).closest('.modal-project-item');
+        var name = row.data('name') || 'this client';
+
+        window.showConfirmModal({
+            title: 'Delete Client?',
+            message: 'Are you sure you want to delete "' + name + '"?',
+            type: 'danger',
+            confirmText: 'Delete',
+            onConfirm: function () {
+                $.ajax({
+                    url: window.APP_BASE + 'clients/delete/' + id,
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.success) {
+                            if (typeof window.showToast === 'function') window.showToast(res.message, 'success');
+                            HDModals.loadClients();
+                            if (typeof window.loadClients === 'function') window.loadClients();
+                        } else {
+                            if (typeof window.showToast === 'function') window.showToast(res.message || 'Could not delete client', 'error');
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    // Close on overlay backdrop click or Escape key
+    $(document).on('click', '.modal-overlay', function (e) {
+        if (e.target === this) {
+            $(this).removeClass('active');
+        }
+    });
+
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            $('.modal-overlay.active').removeClass('active');
+        }
+    });
+
 })(window, window.jQuery);
+

@@ -22,9 +22,9 @@ $currentUserId = $currentUser ? (int)$currentUser['id'] : 0;
     <header class="top-header-bar">
         <div class="header-left-cluster">
             <a href="<?= $this->Url->build('/') ?>" class="header-brand" title="Helpdesk Daily Work Journal">
-                <span class="header-brand-logo">
+                <h1 class="header-brand-logo" style="margin:0; font-size:inherit; font-weight:inherit; display:inline-flex; align-items:center;">
                     <i class="fa-solid fa-layer-group"></i> HELPDESK
-                </span>
+                </h1>
             </a>
 
             <!-- Mode Switcher Pill (Matching Image 1: Mode: Sunrise ▾ / Mode: Dark ▾) -->
@@ -53,10 +53,10 @@ $currentUserId = $currentUser ? (int)$currentUser['id'] : 0;
                 <span class="header-notification-badge <?= $hasBadge ? 'show' : 'd-none' ?>" id="headerNotificationBadge" data-count="<?= $globalCount ?>" style="<?= $hasBadge ? 'display: inline-flex;' : 'display: none;' ?>"><?= $hasBadge ? ($globalCount > 99 ? '99+' : $globalCount) : '' ?></span>
             </button>
 
-            <!-- Settings Menu Gear Icon -->
-            <a href="<?= $this->Url->build('/#settings') ?>" class="btn-header-circle" id="btnHeaderSettings" title="System Settings" style="text-decoration:none;">
+            <!-- Settings Menu Gear Icon (Opens Settings Modal directly) -->
+            <button type="button" class="btn-header-circle" id="btnHeaderSettings" title="System Settings (Gemini AI & Google SMTP)">
                 <i class="fa-solid fa-gear"></i>
-            </a>
+            </button>
 
             <?php if (!empty($currentUser)): ?>
                 <?php
@@ -92,20 +92,20 @@ $currentUserId = $currentUser ? (int)$currentUser['id'] : 0;
                 </a>
 
                 <!-- 2. Projects Manager Modal -->
-                <a href="<?= $this->Url->build('/#projects') ?>" class="dock-item" id="btnDockProjects" data-title="Projects" style="text-decoration:none;">
+                <div class="dock-item" id="btnDockProjects" role="button" tabindex="0" data-title="Projects">
                     <div class="dock-item-icon">
                         <i class="fa-solid fa-folder-tree"></i>
                     </div>
                     <span class="dock-label-tooltip">Projects</span>
-                </a>
+                </div>
 
                 <!-- 3. Clients Manager Modal -->
-                <a href="<?= $this->Url->build('/#clients') ?>" class="dock-item" id="btnDockClients" data-title="Clients" style="text-decoration:none;">
+                <div class="dock-item" id="btnDockClients" role="button" tabindex="0" data-title="Clients">
                     <div class="dock-item-icon">
                         <i class="fa-solid fa-user-tie"></i>
                     </div>
                     <span class="dock-label-tooltip">Clients</span>
-                </a>
+                </div>
 
                 <div class="dock-divider"></div>
 
@@ -620,146 +620,6 @@ $currentUserId = $currentUser ? (int)$currentUser['id'] : 0;
             </button>
         </div>
     </div>
-</div>
-
-<!-- User Profile Modal (Matching Tasks page) -->
-<div id="userProfileModal" class="modal-overlay">
-    <div class="modal-card profile-modal-card">
-        <div class="profile-modal-header">
-            <div class="profile-header-title">
-                <i class="fa-solid fa-id-badge" style="color: var(--primary);"></i>
-                <span>User Profile & Account Settings</span>
-            </div>
-            <button type="button" class="btn-close-modal" id="btnCloseProfileModal" title="Close">&times;</button>
-        </div>
-
-        <div class="profile-modal-body">
-            <div id="profileAlert" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;"></div>
-
-            <!-- User Info Card -->
-            <div class="profile-banner-card">
-                <div class="profile-avatar-wrapper">
-                    <div id="profileAvatarBig" class="profile-avatar-circle">
-                        <?php
-                            $pGender = !empty($currentUser['gender']) ? $currentUser['gender'] : 'male';
-                            $pAvatar = !empty($currentUser['picture']) ? $currentUser['picture'] : "img/avatars/{$pGender}/{$pGender}_1.png";
-                            $pAvatarUrl = str_starts_with($pAvatar, 'http') ? $pAvatar : $this->Url->build('/' . ltrim($pAvatar, '/'));
-                        ?>
-                        <img src="<?= h($pAvatarUrl) ?>" alt="Avatar" id="profileBigAvatarImg" class="profile-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
-                        <span class="profile-avatar-fallback" style="display:none;"><?= strtoupper(substr($currentUser['name'] ?? 'U', 0, 1)) ?></span>
-                    </div>
-                </div>
-                <div class="profile-banner-meta">
-                    <div id="profileBannerName" class="profile-banner-name"><?= h($currentUser['name'] ?? 'User') ?></div>
-                    <div class="profile-banner-sub">
-                        <span><i class="fa-regular fa-envelope" style="margin-right: 3px;"></i> <span id="profileBannerEmail"><?= h($currentUser['email'] ?? '') ?></span></span>
-                        <span><i class="fa-regular fa-calendar-check" style="margin-right: 3px;"></i> Member Since: <strong id="profileMemberSince">-</strong></span>
-                        <span class="profile-gender-badge" id="profileGenderBadge">
-                            <i class="fa-solid <?= ($currentUser['gender'] ?? 'male') === 'female' ? 'fa-venus' : 'fa-mars' ?>" style="color: <?= ($currentUser['gender'] ?? 'male') === 'female' ? '#ec4899' : '#3b82f6' ?>; margin-right: 3px;"></i>
-                            <span id="profileGenderText"><?= ucfirst($currentUser['gender'] ?? 'male') ?></span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <div class="profile-section-title">Personal Information</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div>
-                        <label class="profile-field-label">Full Name :</label>
-                        <input type="text" id="profInputName" class="profile-input-field" placeholder="Your Name" value="<?= h($currentUser['name'] ?? '') ?>" readonly style="opacity: 0.85;">
-                    </div>
-                    <div>
-                        <label class="profile-field-label">Email Address :</label>
-                        <input type="email" id="profInputEmail" class="profile-input-field" placeholder="user@domain.com" value="<?= h($currentUser['email'] ?? '') ?>" readonly style="opacity: 0.85;">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="profile-modal-footer">
-            <button type="button" class="btn-prof-cancel" id="btnCancelProfileModal">Close</button>
-            <a href="<?= $this->Url->build('/') ?>" class="btn-prof-save" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-                <i class="fa-solid fa-pen-to-square"></i> Full Profile Settings
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Settings Modal (Matching Tasks page) -->
-<div id="settingsModal" class="modal-overlay">
-    <div class="modal-card settings-modal-card">
-        <div class="settings-modal-header">
-            <div class="settings-header-title">
-                <div class="settings-header-icon">
-                    <i class="fa-solid fa-gear"></i>
-                </div>
-                <div>
-                    <span class="settings-title-text">System Settings</span>
-                    <span class="settings-subtitle-text">Google Gemini AI & Google SMTP Integration</span>
-                </div>
-            </div>
-            <button type="button" class="btn-close-modal" id="btnCloseSettingsModal" title="Close">&times;</button>
-        </div>
-
-        <div class="settings-tabs-nav">
-            <button type="button" class="settings-tab-btn active" data-tab="geminiTab">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Gemini AI
-            </button>
-            <button type="button" class="settings-tab-btn" data-tab="smtpTab">
-                <i class="fa-solid fa-envelope"></i> Google SMTP
-            </button>
-        </div>
-
-        <div class="settings-modal-body">
-            <div class="settings-tab-pane active" id="geminiTab">
-                <div class="settings-pane-card">
-                    <div class="settings-pane-header">
-                        <div class="settings-pane-title">
-                            <i class="fa-solid fa-wand-magic-sparkles" style="color: #6366f1;"></i> Google Gemini AI API
-                        </div>
-                    </div>
-                    <p class="settings-pane-desc">
-                        Gemini AI powers automated daily polish, grammar correction, and smart summaries across Helpdesk.
-                    </p>
-                    <div style="margin-bottom: 12px;">
-                        <label class="profile-field-label">Gemini API Key :</label>
-                        <input type="password" id="settingsGeminiKey" class="profile-input-field" placeholder="Configured in database" readonly style="opacity: 0.85;">
-                    </div>
-                </div>
-            </div>
-
-            <div class="settings-tab-pane" id="smtpTab" style="display: none;">
-                <div class="settings-pane-card">
-                    <div class="settings-pane-header">
-                        <div class="settings-pane-title">
-                            <i class="fa-solid fa-envelope" style="color: #0284c7;"></i> Google SMTP Email Password
-                        </div>
-                    </div>
-                    <p class="settings-pane-desc">
-                        Required to dispatch daily updates and reports directly from your Gmail account via authenticated SMTP.
-                    </p>
-                    <div style="margin-bottom: 12px;">
-                        <label class="profile-field-label">16-Digit Google App Password :</label>
-                        <input type="password" id="settingsSmtpPass" class="profile-input-field" placeholder="Configured in database" readonly style="opacity: 0.85;">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-modal-footer">
-            <button type="button" class="btn-confirm-cancel" id="btnCancelSettingsModal">Close</button>
-            <a href="<?= $this->Url->build('/') ?>" class="btn-confirm-action" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-                <i class="fa-solid fa-gear"></i> Manage on Dashboard
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Global Toast Notification Container -->
-<div id="toastNotification" class="toast">
-    <i class="fa-solid fa-circle-check" id="toastIcon"></i>
-    <span id="toastMessage">Notification</span>
 </div>
 
 <script>

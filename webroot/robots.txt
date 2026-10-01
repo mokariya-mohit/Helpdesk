@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /signup
+Allow: /forgot-password
+Disallow: /messages
+Disallow: /users/
+Disallow: /scratch/
+
+Sitemap: https://help-desk.gt.tc/sitemap.xml

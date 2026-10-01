@@ -2,9 +2,14 @@
 /**
  * @var \App\View\AppView $this
  */
-$pageTitle = $this->fetch('title', 'Helpdesk - Daily Work Notepad & Update Generator');
-?>
-<!DOCTYPE html>
+$pageTitle = $this->fetch('title', "Today's Work Log & Tasks Notepad - Helpdesk");
+$metaDesc = $this->fetch('meta_description', 'Keep track of daily development progress, manage clients, organize project tasks, and generate formatted notes with Helpdesk.');
+$metaKeywords = $this->fetch('meta_keywords', 'work log, daily task notepad, software developer journal, task manager, helpdesk');
+$canonicalUrl = $this->Url->build($this->request->getRequestTarget(), ['fullBase' => true]);
+if (!str_contains($canonicalUrl, 'localhost') && !str_contains($canonicalUrl, '127.0.0.1')) {
+    $canonicalUrl = preg_replace('/^http:/i', 'https:', $canonicalUrl);
+}
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <?= $this->Html->charset() ?>
@@ -24,29 +29,70 @@ $pageTitle = $this->fetch('title', 'Helpdesk - Daily Work Notepad & Update Gener
         })();
     </script>
 
+    <!-- Preconnect & DNS-Prefetch for Protocol Speed & Resource Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <!-- Favicon (Physical icon + shortcut for standard SEO and crawler verification) -->
+    <link rel="icon" type="image/x-icon" href="<?= $this->Url->build('/favicon.ico') ?>">
+    <link rel="shortcut icon" href="<?= $this->Url->build('/favicon.ico') ?>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%234f46e5'/><path d='M368 112H144C126.3 112 112 126.3 112 144V368C112 385.7 126.3 400 144 400H272L368 304V144C368 126.3 353.7 112 336 112H368ZM256 384V304H336L256 384Z' fill='%23faf9f5'/></svg>">
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="<?= h($this->fetch('meta_description', 'Helpdesk is an intelligent, distraction-free daily work journal, task notepad, and daily update generator powered by CakePHP 5 & Gemini AI.')) ?>">
-    <meta name="keywords" content="<?= h($this->fetch('meta_keywords', 'work log, daily update, task manager, developer journal, helpdesk, cakephp 5, gemini ai')) ?>">
+    <meta name="description" content="<?= h($metaDesc) ?>">
+    <meta name="keywords" content="<?= h($metaKeywords) ?>">
     <meta name="author" content="Mohit Mokariya">
     <meta name="robots" content="index, follow">
 
+    <!-- Canonical Link -->
+    <link rel="canonical" href="<?= h($canonicalUrl) ?>">
+
     <!-- OpenGraph Social Sharing -->
     <meta property="og:title" content="<?= h($pageTitle) ?>">
-    <meta property="og:description" content="<?= h($this->fetch('meta_description', 'Track daily tasks, format notes into professional reports, and dispatch updates effortlessly.')) ?>">
+    <meta property="og:description" content="<?= h($metaDesc) ?>">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="<?= h($this->Url->build($this->request->getRequestTarget(), ['fullBase' => true])) ?>">
+    <meta property="og:url" content="<?= h($canonicalUrl) ?>">
     <meta property="og:site_name" content="Helpdesk Daily Work Journal">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="<?= h($pageTitle) ?>">
-    <meta name="twitter:description" content="<?= h($this->fetch('meta_description', 'Track daily tasks, format notes into professional reports, and dispatch updates effortlessly.')) ?>">
+    <meta name="twitter:description" content="<?= h($metaDesc) ?>">
 
-    <!-- Canonical Link -->
-    <link rel="canonical" href="<?= h($this->Url->build($this->request->getRequestTarget(), ['fullBase' => true])) ?>">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%234f46e5'/><path d='M368 112H144C126.3 112 112 126.3 112 144V368C112 385.7 126.3 400 144 400H272L368 304V144C368 126.3 353.7 112 336 112H368ZM256 384V304H336L256 384Z' fill='%23faf9f5'/></svg>">
+    <!-- JSON-LD Structured Data Schema for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "<?= h($canonicalUrl) ?>#webapp",
+          "name": "Helpdesk",
+          "alternateName": "Helpdesk Daily Work Journal",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "All",
+          "description": "<?= h($metaDesc) ?>",
+          "url": "<?= h($canonicalUrl) ?>",
+          "author": {
+            "@type": "Person",
+            "name": "Mohit Mokariya"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "<?= h($canonicalUrl) ?>#website",
+          "url": "<?= h($canonicalUrl) ?>",
+          "name": "Helpdesk",
+          "description": "<?= h($metaDesc) ?>",
+          "publisher": {
+            "@type": "Person",
+            "name": "Mohit Mokariya"
+          }
+        }
+      ]
+    }
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -117,5 +163,9 @@ $pageTitle = $this->fetch('title', 'Helpdesk - Daily Work Notepad & Update Gener
     <div id="hdGlobalProgressBar" class="hd-top-loader" aria-hidden="true"></div>
 
     <?= $this->fetch('content') ?>
+
+    <?php if (!empty($currentUser)): ?>
+        <?= $this->element('shared_modals') ?>
+    <?php endif; ?>
 </body>
 </html>
