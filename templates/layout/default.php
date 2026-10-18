@@ -34,10 +34,14 @@ if (!str_contains($canonicalUrl, 'localhost') && !str_contains($canonicalUrl, '1
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
-    <!-- Favicon (Physical icon + shortcut for standard SEO and crawler verification) -->
-    <link rel="icon" type="image/x-icon" href="<?= $this->Url->build('/favicon.ico') ?>">
-    <link rel="shortcut icon" href="<?= $this->Url->build('/favicon.ico') ?>">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%234f46e5'/><path d='M368 112H144C126.3 112 112 126.3 112 144V368C112 385.7 126.3 400 144 400H272L368 304V144C368 126.3 353.7 112 336 112H368ZM256 384V304H336L256 384Z' fill='%23faf9f5'/></svg>">
+    <!-- Favicon & App Icons (Full Cross-Browser & Mobile Support) -->
+    <link rel="icon" type="image/svg+xml" href="<?= $this->Url->build('/favicon.svg?v=2') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= $this->Url->build('/favicon-32x32.png?v=2') ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= $this->Url->build('/favicon-16x16.png?v=2') ?>">
+    <link rel="shortcut icon" href="<?= $this->Url->build('/favicon.ico?v=2') ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= $this->Url->build('/apple-touch-icon.png?v=2') ?>">
+    <link rel="manifest" href="<?= $this->Url->build('/site.webmanifest') ?>">
+    <meta name="theme-color" content="#4f46e5">
 
     <!-- SEO Meta Tags -->
     <meta name="description" content="<?= h($metaDesc) ?>">

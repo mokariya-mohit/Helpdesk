@@ -146,7 +146,8 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
     }
 
     .app-container {
-        max-width: 1440px;
+        max-width: 1720px;
+        width: 100%;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
@@ -888,19 +889,21 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 10px;
-        flex-wrap: nowrap;
+        gap: 12px;
+        flex-wrap: nowrap !important;
         overflow: visible !important;
         position: relative;
         z-index: 100;
+        min-width: 0;
     }
 
     .editor-title-group {
         display: flex;
         align-items: center;
         gap: 8px;
-        flex-wrap: nowrap;
+        flex-wrap: nowrap !important;
         flex-shrink: 0;
+        min-width: 0;
         position: relative;
         z-index: 110;
     }
@@ -909,9 +912,16 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         display: flex;
         align-items: center;
         gap: 6px;
-        flex-wrap: nowrap;
+        flex-wrap: nowrap !important;
         flex-shrink: 0;
         margin-left: auto;
+    }
+
+    .editor-toolbar-actions .btn {
+        padding: 6px 11px !important;
+        font-size: 12px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
     }
 
     .editor-toolbar-actions .btn:hover {
@@ -920,12 +930,14 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
     .editor-title {
         font-family: 'Fira Code', monospace;
-        font-size: 13.5px;
+        font-size: 13px;
         font-weight: 800;
         color: var(--text-headline);
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+        flex-shrink: 0;
+        white-space: nowrap;
     }
 
     /* Custom Project & Client Selection Pill Dropdown */
@@ -935,12 +947,15 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         align-items: center;
         gap: 6px;
         background: var(--glass-bg);
-        padding: 4px 6px 4px 14px;
+        padding: 4px 8px 4px 12px;
         border-radius: var(--radius-pill);
         border: 1.5px solid var(--glass-border);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
         transition: all 0.2s ease;
         z-index: 120;
+        min-width: 0;
+        max-width: 210px;
+        flex-shrink: 0;
     }
 
     .custom-project-wrapper:hover {
@@ -964,14 +979,43 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
         border: none;
         outline: none;
         font-family: 'Fira Code', monospace;
-        font-size: 12.5px;
+        font-size: 12px;
         font-weight: 800;
         color: var(--text-headline);
         cursor: pointer;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 7px;
-        padding: 2px 4px;
+        gap: 6px;
+        padding: 2px 0;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    #activeProjectDisplay,
+    #activeClientDisplay {
+        display: inline-block;
+        max-width: 140px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+
+    @media (max-width: 1400px) {
+        #activeProjectDisplay,
+        #activeClientDisplay {
+            max-width: 100px;
+        }
+        .custom-project-wrapper {
+            max-width: 165px;
+            padding: 4px 6px 4px 10px;
+        }
+        .editor-toolbar-actions .btn {
+            padding: 6px 9px !important;
+            font-size: 11.5px !important;
+            gap: 4px !important;
+        }
     }
 
     .custom-project-menu {
@@ -2775,7 +2819,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
             <!-- Global Search Pill -->
             <div class="header-search-box" id="topHeaderSearchBox">
                 <i class="fa-solid fa-magnifying-glass header-search-icon"></i>
-                <input type="text" id="topHeaderSearchInput" class="header-search-input" placeholder="Search database notes..." autocomplete="off" title="Click or type to search all past notes">
+                <input type="text" id="topHeaderSearchInput" class="header-search-input" placeholder="Search notes..." autocomplete="off" title="Click or type to search all past notes">
             </div>
         </div>
 
@@ -2905,9 +2949,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
                     <!-- Custom Project Selection Dropdown -->
                     <div class="custom-project-wrapper">
-                        <button type="button" id="btnProjectDropdownToggle" class="custom-project-trigger">
+                        <button type="button" id="btnProjectDropdownToggle" class="custom-project-trigger" title="<?= h($defaultProject ? $defaultProject->name : 'No Project') ?>">
                             <i class="fa-solid fa-folder-open text-indigo-600"></i>
-                            <span id="activeProjectDisplay" class="font-bold"><?= h($defaultProject ? $defaultProject->name : 'No Project') ?></span>
+                            <span id="activeProjectDisplay" class="font-bold" title="<?= h($defaultProject ? $defaultProject->name : 'No Project') ?>"><?= h($defaultProject ? $defaultProject->name : 'No Project') ?></span>
                             <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
                         </button>
 
@@ -2924,9 +2968,9 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
 
                     <!-- Custom Client Selection Dropdown -->
                     <div class="custom-project-wrapper">
-                        <button type="button" id="btnClientDropdownToggle" class="custom-project-trigger" style="border-color:#bae6fd;">
+                        <button type="button" id="btnClientDropdownToggle" class="custom-project-trigger" style="border-color:#bae6fd;" title="<?= h($defaultClient ? $defaultClient->name : 'Select Client') ?>">
                             <i class="fa-solid fa-user-tie" style="color:#0284c7;"></i>
-                            <span id="activeClientDisplay" class="font-bold"><?= h($defaultClient ? $defaultClient->name : 'Select Client') ?></span>
+                            <span id="activeClientDisplay" class="font-bold" title="<?= h($defaultClient ? $defaultClient->name : 'Select Client') ?>"><?= h($defaultClient ? $defaultClient->name : 'Select Client') ?></span>
                             <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
                         </button>
 
@@ -2942,7 +2986,7 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                     </div>
                 </div>
 
-                <div class="editor-toolbar-actions" style="display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; flex-shrink: 0;">
+                <div class="editor-toolbar-actions">
                     <button type="button" class="btn btn-primary" id="btnInsertTemplate" title="Insert Standard Daily Template">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> <span class="action-btn-text">Insert Template</span>
                     </button>
@@ -2950,13 +2994,13 @@ $this->assign('meta_keywords', 'work log, daily task notepad, software developer
                         <i class="fa-regular fa-eye" id="iconTogglePreview"></i> <span id="textTogglePreview">Preview</span>
                     </button>
                     <button type="button" class="btn" id="btnAiPolish" title="Fix grammar and make sentences professional with Gemini AI">
-                        <i class="fa-solid fa-pen-to-square"></i> AI Polish
+                        <i class="fa-solid fa-pen-to-square"></i> <span class="action-btn-text">AI Polish</span>
                     </button>
                     <button type="button" class="btn" id="btnCopyOnlyTasks" title="Copy only tasks (without headers, dates, or bullets)">
-                        <i class="fa-regular fa-copy" style="color: #4f46e5;"></i> Copy Content
+                        <i class="fa-regular fa-copy" style="color: #4f46e5;"></i> <span class="action-btn-text">Copy Content</span>
                     </button>
                     <button type="button" class="btn" id="btnClearCurrent" title="Clear current editor note">
-                        <i class="fa-solid fa-trash text-rose-500"></i> Clear Note
+                        <i class="fa-solid fa-trash text-rose-500"></i> <span class="action-btn-text">Clear Note</span>
                     </button>
                 </div>
             </div>
@@ -3130,6 +3174,25 @@ $(document).ready(function() {
     var monthLogsCache = [];
     var allLogsCache = [];
     var autoSaveTimer = null;
+
+    // Auto-sync tooltip title when project/client names are truncated or dynamically updated
+    try {
+        var pillObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                if (m.target) {
+                    var fullTxt = $(m.target).text().trim();
+                    if (fullTxt) {
+                        $(m.target).attr('title', fullTxt);
+                        $(m.target).closest('.custom-project-trigger').attr('title', fullTxt);
+                    }
+                }
+            });
+        });
+        var elProj = document.getElementById('activeProjectDisplay');
+        var elCli = document.getElementById('activeClientDisplay');
+        if (elProj) pillObserver.observe(elProj, { childList: true, characterData: true, subtree: true });
+        if (elCli) pillObserver.observe(elCli, { childList: true, characterData: true, subtree: true });
+    } catch(e) {}
 
     function isoToFormatted(iso) {
         if (!iso) return '';
